@@ -1,13 +1,42 @@
 import { GoogleGenAI } from "@google/genai";
 import type { ReportParameters } from '../types.ts';
 
-// Mock functions for Vercel deployment
+// Mock functions for Vercel deployment with enhanced data
+const MOCK_EXPORT_DATA: Record<string, any[]> = {
+  "Philippines": [
+    { commodity: "Electronics", tradeValue: 50000000000 },
+    { commodity: "Machinery", tradeValue: 30000000000 },
+    { commodity: "Chemicals", tradeValue: 25000000000 },
+    { commodity: "Agriculture", tradeValue: 15000000000 },
+    { commodity: "Textiles", tradeValue: 12000000000 }
+  ],
+  "Singapore": [
+    { commodity: "Electronics", tradeValue: 120000000000 },
+    { commodity: "Machinery", tradeValue: 80000000000 },
+    { commodity: "Chemicals", tradeValue: 60000000000 },
+    { commodity: "Oil & Gas", tradeValue: 45000000000 },
+    { commodity: "Pharmaceuticals", tradeValue: 35000000000 }
+  ],
+  "Malaysia": [
+    { commodity: "Electronics", tradeValue: 70000000000 },
+    { commodity: "Palm Oil", tradeValue: 25000000000 },
+    { commodity: "Machinery", tradeValue: 30000000000 },
+    { commodity: "Chemicals", tradeValue: 20000000000 },
+    { commodity: "Rubber", tradeValue: 8000000000 }
+  ]
+};
+
 const getGDPData = async (country: string): Promise<any[]> => {
-  return [{ value: 450000000000, date: "2023" }];
+  const countryCodes: Record<string, string> = {
+    "Philippines": "PHL", "Singapore": "SGP", "Malaysia": "MYS",
+    "Indonesia": "IDN", "Thailand": "THA"
+  };
+  const code = countryCodes[country] || "PHL";
+  return [{ value: 450000000000, date: "2023", country: { id: code } }];
 };
 
 const getTopExportsData = async (country: string): Promise<any[]> => {
-  return [
+  return MOCK_EXPORT_DATA[country] || [
     { commodity: "Electronics", tradeValue: 50000000000 },
     { commodity: "Machinery", tradeValue: 30000000000 },
     { commodity: "Chemicals", tradeValue: 25000000000 }

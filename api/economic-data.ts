@@ -1,32 +1,66 @@
 import type { EconomicData, WorldBankResponse } from '../types.ts';
 
-// Mock data for Vercel deployment
+// Mock data for Vercel deployment - enhanced with more realistic data
 const COUNTRY_CODES: Record<string, string> = {
   "Philippines": "PHL",
   "Singapore": "SGP",
   "Malaysia": "MYS",
   "Indonesia": "IDN",
-  "Thailand": "THA"
+  "Thailand": "THA",
+  "Vietnam": "VNM",
+  "China": "CHN",
+  "Japan": "JPN",
+  "South Korea": "KOR",
+  "India": "IND"
+};
+
+const MOCK_ECONOMIC_DATA: Record<string, any> = {
+  "PHL": {
+    gdp: [{ value: 450000000000, date: "2023" }],
+    population: [{ value: 110000000, date: "2023" }],
+    inflation: [{ value: 2.8, date: "2023" }],
+    fdi: [{ value: 25000000000, date: "2023" }]
+  },
+  "SGP": {
+    gdp: [{ value: 600000000000, date: "2023" }],
+    population: [{ value: 6000000, date: "2023" }],
+    inflation: [{ value: 1.2, date: "2023" }],
+    fdi: [{ value: 150000000000, date: "2023" }]
+  },
+  "MYS": {
+    gdp: [{ value: 400000000000, date: "2023" }],
+    population: [{ value: 33000000, date: "2023" }],
+    inflation: [{ value: 2.1, date: "2023" }],
+    fdi: [{ value: 18000000000, date: "2023" }]
+  },
+  "IDN": {
+    gdp: [{ value: 1400000000000, date: "2023" }],
+    population: [{ value: 270000000, date: "2023" }],
+    inflation: [{ value: 3.2, date: "2023" }],
+    fdi: [{ value: 35000000000, date: "2023" }]
+  },
+  "THA": {
+    gdp: [{ value: 500000000000, date: "2023" }],
+    population: [{ value: 70000000, date: "2023" }],
+    inflation: [{ value: 1.8, date: "2023" }],
+    fdi: [{ value: 22000000000, date: "2023" }]
+  }
 };
 
 const getGDPData = async (countryCode: string): Promise<any[]> => {
-  // Mock GDP data
-  return [{ value: 450000000000, date: "2023" }];
+  return MOCK_ECONOMIC_DATA[countryCode]?.gdp || [{ value: 450000000000, date: "2023" }];
 };
 
 const getPopulationData = async (countryCode: string): Promise<any[]> => {
-  // Mock population data
-  return [{ value: 110000000, date: "2023" }];
+  return MOCK_ECONOMIC_DATA[countryCode]?.population || [{ value: 110000000, date: "2023" }];
 };
 
 const getInflationData = async (countryCode: string): Promise<any[]> => {
-  // Mock inflation data
-  return [{ value: 2.8, date: "2023" }];
+  return MOCK_ECONOMIC_DATA[countryCode]?.inflation || [{ value: 2.8, date: "2023" }];
 };
 
 const getFDIData = async (countryCode: string): Promise<any[]> => {
-  // Mock FDI data
-  return [{ value: 25000000000, date: "2023" }];
+  return MOCK_ECONOMIC_DATA[countryCode]?.fdi || [{ value: 25000000000, date: "2023" }];
 };
 
 export const config = {
