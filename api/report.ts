@@ -1,30 +1,69 @@
 import { GoogleGenAI } from "@google/genai";
 import type { ReportParameters } from '../types.ts';
 
-// Mock functions for Vercel deployment with enhanced data
-const MOCK_EXPORT_DATA: Record<string, any[]> = {
-  "Philippines": [
-    { commodity: "Electronics", tradeValue: 50000000000 },
-    { commodity: "Machinery", tradeValue: 30000000000 },
-    { commodity: "Chemicals", tradeValue: 25000000000 },
-    { commodity: "Agriculture", tradeValue: 15000000000 },
-    { commodity: "Textiles", tradeValue: 12000000000 }
-  ],
-  "Singapore": [
-    { commodity: "Electronics", tradeValue: 120000000000 },
-    { commodity: "Machinery", tradeValue: 80000000000 },
-    { commodity: "Chemicals", tradeValue: 60000000000 },
-    { commodity: "Oil & Gas", tradeValue: 45000000000 },
-    { commodity: "Pharmaceuticals", tradeValue: 35000000000 }
-  ],
-  "Malaysia": [
-    { commodity: "Electronics", tradeValue: 70000000000 },
-    { commodity: "Palm Oil", tradeValue: 25000000000 },
-    { commodity: "Machinery", tradeValue: 30000000000 },
-    { commodity: "Chemicals", tradeValue: 20000000000 },
-    { commodity: "Rubber", tradeValue: 8000000000 }
-  ]
+// Live UN Comtrade API integration for Vercel Edge Functions
+const COUNTRY_CODES: Record<string, string> = {
+  "Philippines": "608",
+  "Singapore": "702",
+  "Malaysia": "458",
+  "Indonesia": "360",
+  "Thailand": "764",
+  "Vietnam": "704",
+  "China": "156",
+  "Japan": "392",
+  "South Korea": "410",
+  "India": "699",
+  "United States": "842",
+  "Germany": "276",
+  "United Kingdom": "826",
+  "France": "251",
+  "Australia": "036"
 };
+
+async function fetchUNComtradeData(reporterCode: string): Promise<any[]> {
+  // UN Comtrade API v1 endpoint (free tier)
+  const baseUrl = "https://comtradeapi.un.org/data/v1/get";
+  const params = new URLSearchParams({
+    subscription: "free",
+    classification: "HS",
+    cmdCode: "TOTAL", // All commodities
+    reporterCode: reporterCode,
+    partnerCode: "0", // World
+    flowCode: "X", // Exports
+    period: "2022",
+    format: "json",
+    maxRecords: "5"
+  });
+
+  const url = `${baseUrl}/HS/X?${params.toString()}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'BWGA-Nexus-AI/1.0'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`UN Comtrade API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.data && Array.isArray(data.data)) {
+      return data.data.slice(0, 5).map((item: any) => ({
+        commodity: item.cmdDescE || "Various Products",
+        tradeValue: parseFloat(item.primaryValue || 0),
+        year: item.period || "2022"
+      }));
+    }
+
+    return [];
+  } catch (error) {
+    console.error("UN Comtrade API error:", error);
+    return [];
+  }
+}
 
 const getGDPData = async (country: string): Promise<any[]> => {
   const countryCodes: Record<string, string> = {
@@ -32,15 +71,26 @@ const getGDPData = async (country: string): Promise<any[]> => {
     "Indonesia": "IDN", "Thailand": "THA"
   };
   const code = countryCodes[country] || "PHL";
-  return [{ value: 450000000000, date: "2023", country: { id: code } }];
+
+  try {
+    const response = await fetch(`https://api.worldbank.org/v2/country/${code}/indicator/NY.GDP.MKTP.CD?date=2020:2023&format=json&per_page=5`, {
+      headers: { 'User-Agent': 'BWGA-Nexus-AI/1.0' }
+    });
+    const data = await response.json();
+    return data[1] || [];
+  } catch (error) {
+    console.error("GDP API error:", error);
+    return [];
+  }
 };
 
 const getTopExportsData = async (country: string): Promise<any[]> => {
-  return MOCK_EXPORT_DATA[country] || [
-    { commodity: "Electronics", tradeValue: 50000000000 },
-    { commodity: "Machinery", tradeValue: 30000000000 },
-    { commodity: "Chemicals", tradeValue: 25000000000 }
-  ];
+  const reporterCode = COUNTRY_CODES[country];
+  if (!reporterCode) {
+    return [];
+  }
+
+  return await fetchUNComtradeData(reporterCode);
 };
 
 

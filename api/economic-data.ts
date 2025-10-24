@@ -1,6 +1,6 @@
 import type { EconomicData, WorldBankResponse } from '../types.ts';
 
-// Mock data for Vercel deployment - enhanced with more realistic data
+// Live World Bank API integration for Vercel Edge Functions
 const COUNTRY_CODES: Record<string, string> = {
   "Philippines": "PHL",
   "Singapore": "SGP",
@@ -11,56 +11,56 @@ const COUNTRY_CODES: Record<string, string> = {
   "China": "CHN",
   "Japan": "JPN",
   "South Korea": "KOR",
-  "India": "IND"
+  "India": "IND",
+  "United States": "USA",
+  "Germany": "DEU",
+  "United Kingdom": "GBR",
+  "France": "FRA",
+  "Australia": "AUS"
 };
 
-const MOCK_ECONOMIC_DATA: Record<string, any> = {
-  "PHL": {
-    gdp: [{ value: 450000000000, date: "2023" }],
-    population: [{ value: 110000000, date: "2023" }],
-    inflation: [{ value: 2.8, date: "2023" }],
-    fdi: [{ value: 25000000000, date: "2023" }]
-  },
-  "SGP": {
-    gdp: [{ value: 600000000000, date: "2023" }],
-    population: [{ value: 6000000, date: "2023" }],
-    inflation: [{ value: 1.2, date: "2023" }],
-    fdi: [{ value: 150000000000, date: "2023" }]
-  },
-  "MYS": {
-    gdp: [{ value: 400000000000, date: "2023" }],
-    population: [{ value: 33000000, date: "2023" }],
-    inflation: [{ value: 2.1, date: "2023" }],
-    fdi: [{ value: 18000000000, date: "2023" }]
-  },
-  "IDN": {
-    gdp: [{ value: 1400000000000, date: "2023" }],
-    population: [{ value: 270000000, date: "2023" }],
-    inflation: [{ value: 3.2, date: "2023" }],
-    fdi: [{ value: 35000000000, date: "2023" }]
-  },
-  "THA": {
-    gdp: [{ value: 500000000000, date: "2023" }],
-    population: [{ value: 70000000, date: "2023" }],
-    inflation: [{ value: 1.8, date: "2023" }],
-    fdi: [{ value: 22000000000, date: "2023" }]
+async function fetchWorldBankData(indicator: string, countryCode: string): Promise<any[]> {
+  const url = `https://api.worldbank.org/v2/country/${countryCode}/indicator/${indicator}?date=2018:2023&format=json&per_page=10`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'BWGA-Nexus-AI/1.0'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`World Bank API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // World Bank API returns [metadata, data_array]
+    if (Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
+      return data[1].filter((item: any) => item.value !== null);
+    }
+
+    return [];
+  } catch (error) {
+    console.error(`World Bank API error for ${indicator}:`, error);
+    return [];
   }
-};
+}
 
 const getGDPData = async (countryCode: string): Promise<any[]> => {
-  return MOCK_ECONOMIC_DATA[countryCode]?.gdp || [{ value: 450000000000, date: "2023" }];
+  return await fetchWorldBankData("NY.GDP.MKTP.CD", countryCode);
 };
 
 const getPopulationData = async (countryCode: string): Promise<any[]> => {
-  return MOCK_ECONOMIC_DATA[countryCode]?.population || [{ value: 110000000, date: "2023" }];
+  return await fetchWorldBankData("SP.POP.TOTL", countryCode);
 };
 
 const getInflationData = async (countryCode: string): Promise<any[]> => {
-  return MOCK_ECONOMIC_DATA[countryCode]?.inflation || [{ value: 2.8, date: "2023" }];
+  return await fetchWorldBankData("FP.CPI.TOTL.ZG", countryCode);
 };
 
 const getFDIData = async (countryCode: string): Promise<any[]> => {
-  return MOCK_ECONOMIC_DATA[countryCode]?.fdi || [{ value: 25000000000, date: "2023" }];
+  return await fetchWorldBankData("BX.KLT.DINV.CD.WD", countryCode);
 };
 
 export const config = {
