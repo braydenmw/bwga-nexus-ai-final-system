@@ -269,6 +269,30 @@ export const WorkforceSpecialistIcon: React.FC<React.SVGProps<SVGSVGElement>> = 
     </Icon>
 );
 
+export const GlobeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <Icon {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3.6V20.4M7.2 7.2l9.6 9.6M16.8 7.2l-9.6 9.6" />
+    </Icon>
+);
+
+export const UsersIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <Icon {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.53-2.475c0 .245.02.488.06.726" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75a3 3 0 100-6 3 3 0 000 6z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12.75a3 3 0 100-6 3 3 0 000 6z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 19.128a9.38 9.38 0 00-2.625.372 9.337 9.337 0 00-4.121-.952 4.125 4.125 0 007.53 2.475c0 .245-.02.488-.06.726" />
+    </Icon>
+);
+
+export const PuzzleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <Icon {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v.65c0 .384-.148.755-.414 1.036-.282.283-.689.417-1.101.417-.512 0-.992-.192-1.35-.512-.36-.32-.55-.754-.55-1.21v-.456c0-.384.148-.755.414-1.036.282-.283.689-.417 1.101-.417.512 0 .992.192 1.35.512.36.32.55.754.55 1.21v.456c0 .355-.186.676-.401.959-.221.29-.349.634-.349 1.003 0 1.036 1.007 1.875 2.25 1.875s2.25-.84 2.25-1.875c0-.369-.128-.713-.349-1.003-.215-.283-.401-.604-.401-.959v-.65z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 15.75a3 3 0 100-6 3 3 0 000 6z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5h3M10.5 3.75h3M10.5 6h3M10.5 8.25h3M10.5 10.5h3M10.5 12.75h3M10.5 15h3M10.5 17.25h3M10.5 19.5h3" />
+    </Icon>
+);
+
 export const TechnologyIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <Icon {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-1.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25zm-6-2.25h.008v.008H15V3zm-3.375 0h.008v.008h-.008V3zm-3.375 0h.008v.008h-.008V3z" />
