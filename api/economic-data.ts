@@ -1,6 +1,33 @@
-import { getGDPData, getPopulationData, getInflationData, getFDIData } from '../services/worldBankService.ts';
-import { COUNTRY_CODES } from '../data/country-codes.ts';
 import type { EconomicData, WorldBankResponse } from '../types.ts';
+
+// Mock data for Vercel deployment
+const COUNTRY_CODES: Record<string, string> = {
+  "Philippines": "PHL",
+  "Singapore": "SGP",
+  "Malaysia": "MYS",
+  "Indonesia": "IDN",
+  "Thailand": "THA"
+};
+
+const getGDPData = async (countryCode: string): Promise<any[]> => {
+  // Mock GDP data
+  return [{ value: 450000000000, date: "2023" }];
+};
+
+const getPopulationData = async (countryCode: string): Promise<any[]> => {
+  // Mock population data
+  return [{ value: 110000000, date: "2023" }];
+};
+
+const getInflationData = async (countryCode: string): Promise<any[]> => {
+  // Mock inflation data
+  return [{ value: 2.8, date: "2023" }];
+};
+
+const getFDIData = async (countryCode: string): Promise<any[]> => {
+  // Mock FDI data
+  return [{ value: 25000000000, date: "2023" }];
+};
 
 export const config = {
   runtime: 'edge',

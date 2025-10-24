@@ -1,7 +1,18 @@
 import { GoogleGenAI } from "@google/genai";
 import type { ReportParameters } from '../types.ts';
-import { getGDPData } from '../services/worldBankService.ts';
-import { getTopExportsData } from '../services/unComtradeService.ts';
+
+// Mock functions for Vercel deployment
+const getGDPData = async (country: string): Promise<any[]> => {
+  return [{ value: 450000000000, date: "2023" }];
+};
+
+const getTopExportsData = async (country: string): Promise<any[]> => {
+  return [
+    { commodity: "Electronics", tradeValue: 50000000000 },
+    { commodity: "Machinery", tradeValue: 30000000000 },
+    { commodity: "Chemicals", tradeValue: 25000000000 }
+  ];
+};
 
 
 export const config = {

@@ -22,4 +22,7 @@ export default defineConfig({
       // Vite will automatically pick up tailwindcss and autoprefixer.
     },
   },
+  define: {
+    global: 'globalThis',
+  },
 })

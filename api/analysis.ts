@@ -1,5 +1,4 @@
 import { GoogleGenAI } from "@google/genai";
-import type { LiveOpportunityItem } from '../types.ts';
 
 export const config = {
   runtime: 'edge',
@@ -38,7 +37,7 @@ export default async function handler(request: Request) {
   }
 
   try {
-    const { item, region } = (await request.json()) as { item: LiveOpportunityItem, region: string };
+    const { item, region } = (await request.json()) as { item: any, region: string };
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
