@@ -23,14 +23,14 @@ export default async function handler(request: Request) {
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405, headers: { 'Content-Type': 'application/json' } });
   }
 
-  if (!process.env.API_KEY) {
+  if (!process.env.GOOGLE_GENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 
   try {
     const { context, history } = (await request.json()) as { context: SymbiosisContext; history: ChatMessage[] };
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
 
     // Construct a focused prompt that includes the context and chat history
     let prompt = `

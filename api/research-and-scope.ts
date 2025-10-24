@@ -45,7 +45,7 @@ export default async function handler(request: Request) {
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405, headers: { 'Content-Type': 'application/json' } });
   }
 
-  if (!process.env.API_KEY) {
+  if (!process.env.GOOGLE_GENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 
@@ -56,7 +56,7 @@ export default async function handler(request: Request) {
       return new Response(JSON.stringify({ error: 'Query parameter is required.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
 
     const contextPrompt = context ? `The user providing this query has the following profile:
 - Organization Type: ${context.organizationType || 'Not specified'}
