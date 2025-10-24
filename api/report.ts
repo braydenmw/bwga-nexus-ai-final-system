@@ -45,17 +45,20 @@ async function fetchUNComtradeData(reporterCode: string): Promise<any[]> {
     });
 
     if (!response.ok) {
-      throw new Error(`UN Comtrade API error: ${response.status}`);
+      console.error(`UN Comtrade API error: ${response.status} for reporter ${reporterCode}`);
+      return [];
     }
 
     const data = await response.json();
 
     if (data.data && Array.isArray(data.data)) {
-      return data.data.slice(0, 5).map((item: any) => ({
+      const processedData = data.data.slice(0, 5).map((item: any) => ({
         commodity: item.cmdDescE || "Various Products",
         tradeValue: parseFloat(item.primaryValue || 0),
         year: item.period || "2022"
       }));
+      console.log(`Fetched ${processedData.length} trade records for reporter ${reporterCode}`);
+      return processedData;
     }
 
     return [];
