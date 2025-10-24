@@ -186,11 +186,11 @@ export default async function handler(request: Request) {
   try {
     const params = (await request.json()) as ReportParameters;
 
-    if (!process.env.API_KEY) {
+    if (!process.env.GOOGLE_GENAI_API_KEY) {
         return new Response('API key is not configured.', { status: 500 });
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
     
     // --- Data Grounding Step ---
     let groundingDataPrompt = '';

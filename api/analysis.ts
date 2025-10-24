@@ -32,14 +32,14 @@ export default async function handler(request: Request) {
     return new Response('Method Not Allowed', { status: 405 });
   }
 
-  if (!process.env.API_KEY) {
+  if (!process.env.GOOGLE_GENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' }});
   }
 
   try {
     const { item, region } = (await request.json()) as { item: any, region: string };
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
 
     const prompt = `
       **Deep-Dive Analysis Request:**
