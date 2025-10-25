@@ -112,21 +112,21 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     </div>
                 </section>
 
-                <section class="bg-gray-50 py-16">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="text-center mb-12">
-                            <h2 class="text-3xl font-bold text-gray-900">How We Forge Connections and Create Opportunities</h2>
-                            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">We bridge the gap between regional potential and global ambition, giving a voice to every city and guiding businesses to their next frontier.</p>
+                <section className="bg-gray-50 py-16">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-bold text-gray-900">How We Forge Connections and Create Opportunities</h2>
+                            <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">We bridge the gap between regional potential and global ambition, giving a voice to every city and guiding businesses to their next frontier.</p>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                            <div class="space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                            <div className="space-y-8">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-800">For Regional Governments: A Global Megaphone</h3>
-                                    <p class="mt-2 text-gray-600">We transform your region's raw data into a compelling, evidence-based narrative. Our platform highlights your unique strengths, from infrastructure and workforce to quality of life and investment incentives. We then put this story in front of a global audience of corporations actively seeking new markets, ensuring your voice is heard in the boardrooms that matter.</p>
+                                    <h3 className="text-xl font-semibold text-gray-800">For Regional Governments: A Global Megaphone</h3>
+                                    <p className="mt-2 text-gray-600">We transform your region's raw data into a compelling, evidence-based narrative. Our platform highlights your unique strengths, from infrastructure and workforce to quality of life and investment incentives. We then put this story in front of a global audience of corporations actively seeking new markets, ensuring your voice is heard in the boardrooms that matter.</p>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-800">For Businesses: A Compass to Opportunity</h3>
-                                    <p class="mt-2 text-gray-600">Stop navigating the world with an outdated map. Nexus AI provides a live, multi-dimensional view of the global economic landscape. We help you identify and vet high-potential regional cities that align with your strategic goals, de-risking expansion and uncovering opportunities for growth, resilience, and innovation in markets you may have never considered.</p>
+                                    <h3 className="text-xl font-semibold text-gray-800">For Businesses: A Compass to Opportunity</h3>
+                                    <p className="mt-2 text-gray-600">Stop navigating the world with an outdated map. Nexus AI provides a live, multi-dimensional view of the global economic landscape. We help you identify and vet high-potential regional cities that align with your strategic goals, de-risking expansion and uncovering opportunities for growth, resilience, and innovation in markets you may have never considered.</p>
                                 </div>
                             </div>
                             <div className="text-center">
@@ -141,7 +141,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 </section>
 
                 {/* Core Technology Section */}
-                <section class="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
+                <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
                     <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Our Technological Edge</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="border-l-4 border-gray-300 pl-6">
@@ -197,6 +197,23 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     </div>
                 </section>
 
+                {/* Shared Value Model Section */}
+                <section className="bg-gradient-to-r from-green-50 to-blue-50 p-8 md:p-12 rounded-2xl shadow-lg text-center border border-green-200">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Shared Value Model – Investing in Communities Together</h2>
+                    <p className="text-lg text-gray-600 max-w-4xl mx-auto mb-8">
+                        BW Global Advisory is founded on the principle of creating mutual, sustainable benefit. We are committed to ensuring that our work not only drives business success but also contributes positively to the regions we analyze. Therefore, <strong className="text-green-700">10% of the net fee from every commissioned AI-Human Intelligence Report is directly reinvested into community-identified development initiatives</strong> (such as education, local health programs, or small-scale livelihood support) within the specific region(s) analyzed in your report. Partnering with BWGA means your strategic market intelligence also fosters tangible local impact.
+                    </p>
+                    <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-green-300 inline-block">
+                        <div className="flex items-center justify-center mb-4">
+                            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <span className="text-2xl">🌱</span>
+                            </div>
+                        </div>
+                        <p className="text-green-800 font-semibold">10% Community Reinvestment</p>
+                        <p className="text-sm text-gray-600 mt-1">From every report fee</p>
+                    </div>
+                </section>
+
                 {/* Pricing Section */}
                 <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg text-center">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
@@ -211,6 +228,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                             <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> Real-Time Data Access</li>
                             <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> Multi-Persona AI Analysis</li>
                             <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> Flexible subscription terms (1, 3, 6, 12 months)</li>
+                            <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> 10% Community Reinvestment Program</li>
                         </ul>
                     </div>
                 </section>
