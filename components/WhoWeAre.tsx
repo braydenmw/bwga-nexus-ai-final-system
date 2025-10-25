@@ -197,25 +197,24 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     </div>
                 </section>
 
-                {/* Shared Value Model Section */}
-                <section className="bg-gradient-to-r from-green-50 to-blue-50 p-8 md:p-12 rounded-2xl shadow-lg text-center border border-green-200">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Shared Value Model – Investing in Communities Together</h2>
-                    <p className="text-lg text-gray-600 max-w-4xl mx-auto mb-8">
-                        BW Global Advisory is founded on the principle of creating mutual, sustainable benefit. We are committed to ensuring that our work not only drives business success but also contributes positively to the regions we analyze. Therefore, <strong className="text-green-700">10% of the net fee from every commissioned AI-Human Intelligence Report is directly reinvested into community-identified development initiatives</strong> (such as education, local health programs, or small-scale livelihood support) within the specific region(s) analyzed in your report. Partnering with BWGA means your strategic market intelligence also fosters tangible local impact.
-                    </p>
-                    <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-green-300 inline-block">
-                        <div className="flex items-center justify-center mb-4">
-                            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                {/* Pricing Section with Shared Value Model */}
+                <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg text-center">
+                    <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-3">Our Shared Value Model – Investing in Communities Together</h3>
+                        <p className="text-gray-600 mb-4">
+                            BW Global Advisory is founded on the principle of creating mutual, sustainable benefit. We are committed to ensuring that our work not only drives business success but also contributes positively to the regions we analyze. Therefore, <strong className="text-green-700">10% of the net fee from every commissioned AI-Human Intelligence Report is directly reinvested into community-identified development initiatives</strong> (such as education, local health programs, or small-scale livelihood support) within the specific region(s) analyzed in your report. Partnering with BWGA means your strategic market intelligence also fosters tangible local impact.
+                        </p>
+                        <div className="flex items-center justify-center">
+                            <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm rounded-lg px-4 py-2 border border-green-300">
                                 <span className="text-2xl">🌱</span>
+                                <div>
+                                    <p className="text-green-800 font-semibold">10% Community Reinvestment</p>
+                                    <p className="text-sm text-gray-600">From every report fee</p>
+                                </div>
                             </div>
                         </div>
-                        <p className="text-green-800 font-semibold">10% Community Reinvestment</p>
-                        <p className="text-sm text-gray-600 mt-1">From every report fee</p>
                     </div>
-                </section>
 
-                {/* Pricing Section */}
-                <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg text-center">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
                         Gain full access to the BWGA Nexus AI platform with unlimited usage. No hidden fees, no complex tiers. Just pure, unadulterated clarity.
