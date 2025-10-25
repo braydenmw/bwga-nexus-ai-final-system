@@ -83,6 +83,60 @@ const Compliance: React.FC = () => {
                         Information is provided <strong>"as is" and "as available."</strong> Given the developmental nature of the platform and its reliance on public data, BWGA makes no warranties as to its absolute completeness or accuracy. The Recipient's use of the Information is solely at their own risk.
                     </p>
                 </Section>
+
+                <Section title="Social Responsibility & Community Impact">
+                    <p>
+                        BWGA Nexus is committed to social responsibility through our <strong>10% Community Reinvestment Program</strong>. For every subscription sold, 10% of the revenue is automatically allocated to community development initiatives in the regions where our clients operate. This includes:
+                    </p>
+                    <ul>
+                        <li><strong>Educational Programs:</strong> Supporting STEM education and digital literacy initiatives</li>
+                        <li><strong>Economic Development:</strong> Funding local entrepreneurship and small business development</li>
+                        <li><strong>Environmental Sustainability:</strong> Supporting green technology and conservation projects</li>
+                        <li><strong>Digital Inclusion:</strong> Expanding access to technology and internet connectivity</li>
+                    </ul>
+                    <p>
+                        This program ensures that our success contributes directly to the communities we serve, creating a positive feedback loop of regional development and prosperity.
+                    </p>
+                </Section>
+
+                <Section title="Enterprise-Grade Security & Compliance">
+                    <p>
+                        BWGA Nexus implements <strong>enterprise-grade security measures</strong> including:
+                    </p>
+                    <ul>
+                        <li><strong>End-to-End Encryption:</strong> All data transmission and storage uses AES-256 encryption</li>
+                        <li><strong>Multi-Factor Authentication:</strong> Advanced access controls for enterprise accounts</li>
+                        <li><strong>Regular Security Audits:</strong> Independent third-party security assessments</li>
+                        <li><strong>GDPR & Privacy Compliance:</strong> Full compliance with international data protection standards</li>
+                        <li><strong>Incident Response:</strong> 24/7 monitoring and rapid response capabilities</li>
+                    </ul>
+                </Section>
+
+                <Section title="Continuous Improvement & AI Ethics">
+                    <p>
+                        Our AI systems undergo continuous improvement through:
+                    </p>
+                    <ul>
+                        <li><strong>Regular Model Updates:</strong> Incorporating latest research and best practices</li>
+                        <li><strong>Bias Detection & Mitigation:</strong> Ongoing monitoring for algorithmic fairness</li>
+                        <li><strong>User Feedback Integration:</strong> Client input drives system improvements</li>
+                        <li><strong>Ethical AI Governance:</strong> Dedicated ethics committee oversight</li>
+                        <li><strong>Transparency Reports:</strong> Annual disclosure of AI system performance and improvements</li>
+                    </ul>
+                </Section>
+
+                <Section title="Professional Services & Support">
+                    <p>
+                        Beyond the platform, BWGA offers comprehensive professional services:
+                    </p>
+                    <ul>
+                        <li><strong>Strategic Consulting:</strong> Expert guidance on report implementation and strategic planning</li>
+                        <li><strong>Custom Development:</strong> Tailored AI solutions for specific organizational needs</li>
+                        <li><strong>Training & Workshops:</strong> Staff training on AI-assisted decision making</li>
+                        <li><strong>Integration Services:</strong> Seamless integration with existing enterprise systems</li>
+                        <li><strong>24/7 Technical Support:</strong> Round-the-clock assistance for enterprise clients</li>
+                    </ul>
+                </Section>
             </div>
         </div>
     );
