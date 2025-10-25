@@ -273,68 +273,71 @@ export const Inquire = ({
 
             <div className="mt-4 flex-grow overflow-y-auto pr-2 -mr-2 space-y-4">
                  {wizardStep === 4 && (
-                    <div className="p-3 bg-white/5 rounded-lg border border-white/10 space-y-3 animate-fadeIn">
-                         <h3 className="font-semibold text-nexus-text-primary text-md flex items-center gap-2">
-                            <NexusLogo className="w-5 h-5" />
-                            Nexus Brain Commands
-                        </h3>
-                        
-                        {/* --- DIAGNOSE --- */}
-                        <button onClick={() => setActiveCommand('diagnose')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Diagnose Region (RROI)</button>
-                        {activeCommand === 'diagnose' && (
-                            <div className="p-3 border-t">
-                                <p className="text-xs text-nexus-text-secondary mb-2">This will generate a detailed economic diagnosis for the region defined in Step 2. Proceed?</p>
-                                <div className="flex gap-2">
-                                    <button onClick={() => handleBrainCommand('diagnose')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'diagnose' ? 'Diagnosing...' : 'Confirm'}</button>
-                                    <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
-                                </div>
-                            </div>
-                        )}
-                        {brainResults.diagnosis && <div className="p-3 border-t animate-fadeIn"><RROIResultDisplay rroi={brainResults.diagnosis} /></div>}
+                     <div className="p-3 bg-white/5 rounded-lg border border-white/10 space-y-3 animate-fadeIn">
+                          <h3 className="font-semibold text-nexus-text-primary text-md flex items-center gap-2">
+                             <NexusLogo className="w-5 h-5" />
+                             Nexus Brain Commands - Pre-Report Analysis
+                         </h3>
+                         <p className="text-xs text-nexus-text-secondary mb-3">
+                           Run advanced AI analysis before generating your final report. These insights will be automatically included in your comprehensive analysis.
+                         </p>
 
-                        {/* --- SIMULATE --- */}
-                        <button onClick={() => setActiveCommand('simulate')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Simulate Pathway (TPT)</button>
-                        {activeCommand === 'simulate' && brainResults.diagnosis && (
-                            <div className="p-3 border-t space-y-2">
-                                <p className="text-xs text-nexus-text-secondary">Describe the strategic intervention to simulate (e.g., "build a new university science park").</p>
-                                <input type="text" value={simulationInput} onChange={e => setSimulationInput(e.target.value)} placeholder="Describe the intervention..." className="w-full text-xs p-2 bg-white/5 border border-white/10 rounded-md" />
-                                <div className="flex gap-2">
-                                    <button onClick={() => handleBrainCommand('simulate')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'simulate' ? 'Simulating...' : 'Run'}</button>
-                                    <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
-                                </div>
-                            </div>
-                        )}
-                        {brainResults.simulation && <div className="p-3 border-t animate-fadeIn"><TPTResultDisplay sim={brainResults.simulation} /></div>}
-                        
-                        {/* --- ARCHITECT --- */}
-                        <button onClick={() => setActiveCommand('architect')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Architect Ecosystem (SEAM)</button>
-                         {activeCommand === 'architect' && brainResults.diagnosis && (
-                            <div className="p-3 border-t">
-                                <p className="text-xs text-nexus-text-secondary mb-2">This will design a partner ecosystem based on the diagnosis and your Core Objective. Proceed?</p>
-                                <div className="flex gap-2">
-                                    <button onClick={() => handleBrainCommand('architect')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'architect' ? 'Architecting...' : 'Confirm'}</button>
-                                    <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
-                                </div>
-                            </div>
-                        )}
-                        {brainResults.ecosystem && <div className="p-3 border-t animate-fadeIn"><SEAMResultDisplay seam={brainResults.ecosystem} /></div>}
+                         {/* --- DIAGNOSE --- */}
+                         <button onClick={() => setActiveCommand('diagnose')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Diagnose Region (RROI)</button>
+                         {activeCommand === 'diagnose' && (
+                             <div className="p-3 border-t">
+                                 <p className="text-xs text-nexus-text-secondary mb-2">This will generate a detailed economic diagnosis for the region defined in Step 2. Proceed?</p>
+                                 <div className="flex gap-2">
+                                     <button onClick={() => handleBrainCommand('diagnose')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'diagnose' ? 'Diagnosing...' : 'Confirm'}</button>
+                                     <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
+                                 </div>
+                             </div>
+                         )}
+                         {brainResults.diagnosis && <div className="p-3 border-t animate-fadeIn"><RROIResultDisplay rroi={brainResults.diagnosis} /></div>}
 
-                        {/* --- GENERATE MODEL (V2) --- */}
-                        <button onClick={() => handleBrainCommand('generate_model')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-brown hover:bg-nexus-accent-brown/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!brainResults.diagnosis} title="Future capability: Generate a new economic model for the region.">Generate Novel Model (V2)</button>
-                         {activeCommand === 'generate_model' && brainResults.diagnosis && (
-                            <div className="p-3 border-t">
-                                <p className="text-xs text-nexus-text-secondary mb-2">This will use the RROI diagnosis to generate a new, hybrid economic theory for the region. Proceed?</p>
-                                <div className="flex gap-2">
-                                    <button onClick={() => handleBrainCommand('generate_model')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'generate_model' ? 'Generating...' : 'Confirm'}</button>
-                                    <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
-                                </div>
-                            </div>
-                        )}
-                        {brainResults.generativeModel && <div className="p-3 border-t animate-fadeIn"><GenerativeModelResultDisplay model={brainResults.generativeModel} /></div>}
+                         {/* --- SIMULATE --- */}
+                         <button onClick={() => setActiveCommand('simulate')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Simulate Pathway (TPT)</button>
+                         {activeCommand === 'simulate' && brainResults.diagnosis && (
+                             <div className="p-3 border-t space-y-2">
+                                 <p className="text-xs text-nexus-text-secondary">Describe the strategic intervention to simulate (e.g., "build a new university science park").</p>
+                                 <input type="text" value={simulationInput} onChange={e => setSimulationInput(e.target.value)} placeholder="Describe the intervention..." className="w-full text-xs p-2 bg-white/5 border border-white/10 rounded-md" />
+                                 <div className="flex gap-2">
+                                     <button onClick={() => handleBrainCommand('simulate')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'simulate' ? 'Simulating...' : 'Run'}</button>
+                                     <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
+                                 </div>
+                             </div>
+                         )}
+                         {brainResults.simulation && <div className="p-3 border-t animate-fadeIn"><TPTResultDisplay sim={brainResults.simulation} /></div>}
 
-                        {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
-                    </div>
-                )}
+                         {/* --- ARCHITECT --- */}
+                         <button onClick={() => setActiveCommand('architect')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Architect Ecosystem (SEAM)</button>
+                          {activeCommand === 'architect' && brainResults.diagnosis && (
+                             <div className="p-3 border-t">
+                                 <p className="text-xs text-nexus-text-secondary mb-2">This will design a partner ecosystem based on the diagnosis and your Core Objective. Proceed?</p>
+                                 <div className="flex gap-2">
+                                     <button onClick={() => handleBrainCommand('architect')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'architect' ? 'Architecting...' : 'Confirm'}</button>
+                                     <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
+                                 </div>
+                             </div>
+                         )}
+                         {brainResults.ecosystem && <div className="p-3 border-t animate-fadeIn"><SEAMResultDisplay seam={brainResults.ecosystem} /></div>}
+
+                         {/* --- GENERATE MODEL (V2) --- */}
+                         <button onClick={() => handleBrainCommand('generate_model')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-brown hover:bg-nexus-accent-brown/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!brainResults.diagnosis} title="Future capability: Generate a new economic model for the region.">Generate Novel Model (V2)</button>
+                          {activeCommand === 'generate_model' && brainResults.diagnosis && (
+                             <div className="p-3 border-t">
+                                 <p className="text-xs text-nexus-text-secondary mb-2">This will use the RROI diagnosis to generate a new, hybrid economic theory for the region. Proceed?</p>
+                                 <div className="flex gap-2">
+                                     <button onClick={() => handleBrainCommand('generate_model')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'generate_model' ? 'Generating...' : 'Confirm'}</button>
+                                     <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
+                                 </div>
+                             </div>
+                         )}
+                         {brainResults.generativeModel && <div className="p-3 border-t animate-fadeIn"><GenerativeModelResultDisplay model={brainResults.generativeModel} /></div>}
+
+                         {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
+                     </div>
+                 )}
                 
                 {wizardStep === 1 && aiInteractionState === 'idle' && capabilities ? ( // Initial capabilities view
                     <div className="p-3 text-sm text-nexus-text-secondary bg-white/5 rounded-lg border border-white/10 animate-fadeIn">

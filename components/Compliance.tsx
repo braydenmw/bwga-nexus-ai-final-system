@@ -1,25 +1,24 @@
 import React from 'react';
-import Card from './common/Card.tsx';
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
     <section className="mb-12">
-        <h3 className="text-2xl font-extrabold text-nexus-text-primary tracking-tight bg-gradient-to-r from-nexus-text-primary via-nexus-accent-cyan to-nexus-text-primary bg-clip-text text-transparent mb-4">{title}</h3>
-        <Card className="p-6 bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 border-nexus-border-medium/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div className="prose prose-invert max-w-none text-nexus-text-secondary text-base prose-p:my-3 prose-strong:text-nexus-text-primary leading-relaxed">
+        <h3 className="text-3xl font-bold text-gray-900 mb-6">{title}</h3>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 md:p-8">
+            <div className="prose max-w-none text-gray-700 text-base leading-relaxed prose-p:mb-4 prose-strong:font-semibold prose-strong:text-gray-900">
                 {children}
             </div>
-        </Card>
+        </div>
     </section>
 );
 
 const Compliance: React.FC = () => {
     return (
-        <div className="bg-nexus-primary-900">
-            <header className="text-center py-20 md:py-28 px-4 bg-gradient-to-br from-nexus-primary-800/30 via-nexus-surface-800/20 to-nexus-primary-800/30">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-nexus-text-primary tracking-tight font-serif mb-6 bg-gradient-to-r from-nexus-text-primary via-nexus-accent-cyan to-nexus-text-primary bg-clip-text text-transparent">
+        <div className="bg-gray-50">
+            <header className="text-center py-24 px-4 bg-white border-b border-gray-200">
+                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
                   Compliance, Security, and Data Governance
                 </h1>
-                <p className="mt-4 text-xl md:text-2xl text-nexus-text-secondary max-w-4xl mx-auto leading-relaxed">
+                <p className="mt-4 text-lg md:text-xl text-gray-600 max-w-4xl mx-auto">
                     Ensuring Trust, Transparency, and Ethical AI Practices
                 </p>
             </header>
@@ -85,19 +84,6 @@ const Compliance: React.FC = () => {
                     </p>
                 </Section>
             </div>
-
-            <footer className="mt-16 py-8 border-t border-nexus-border-medium bg-nexus-primary-800/50">
-                <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
-                    <div className="space-y-2">
-                        <p className="text-sm text-nexus-text-secondary">
-                            BWGA Global Advisory operates under Australian Business Number <strong className="text-nexus-text-primary">ABN 55 978 113 300</strong>
-                        </p>
-                        <p className="text-xs text-nexus-text-muted">
-                            © 2024 BWGA Global Advisory. All rights reserved.
-                        </p>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 };

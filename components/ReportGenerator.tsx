@@ -1,18 +1,15 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { ReportParameters, UserProfile as UserProfileType, ReportSuggestions } from '../types.ts';
-import { generateReportStream } from '../services/nexusService.ts';
+import { generateReportStream, startReportGeneration, checkReportStatus } from '../services/nexusService.ts';
 import { REGIONS_AND_COUNTRIES, INDUSTRIES, AI_PERSONAS, ORGANIZATION_TYPES, ANALYTICAL_LENSES, TONES_AND_STYLES, TIERS_BY_ORG_TYPE, ANALYTICAL_MODULES } from '../constants.tsx';
-import Card from './common/Card.tsx';
 import Spinner from './Spinner.tsx';
-import { Inquire } from './Inquire.tsx'; // This import is correct now.
-import { CustomPersonaIcon, CustomIndustryIcon, ArrowUpIcon } from './Icons.tsx';
+import { Inquire } from './Inquire.tsx';
+import { CustomPersonaIcon, CustomIndustryIcon, ArrowUpIcon, NexusLogo } from './Icons.tsx';
 import QualityAnalysis from './QualityAnalysis.tsx';
 import { ProfileStep } from './ProfileStep.tsx';
 import { TradeDisruptionDisplay, TradeDisruptionAnalyzer } from './TradeDisruptionModel.tsx';
-import { MarketDiversificationDashboard, MarketDiversificationEngine } from './MarketDiversificationModule.tsx';
-
-type AiInteractionState = 'idle' | 'welcomed' | 'prompted' | 'answeredPrompt' | 'active';
+import { MarketDiversificationDashboard } from './MarketDiversificationModule.tsx';
 
 interface ReportGeneratorProps {
     params: ReportParameters;
@@ -20,13 +17,12 @@ interface ReportGeneratorProps {
     onReportUpdate: (params: ReportParameters, content: string, error: string | null, generating: boolean) => void;
     onProfileUpdate: (profile: UserProfileType) => void;
     isGenerating: boolean;
-    // Props for the Inquire Co-Pilot
     onApplySuggestions: (suggestions: ReportSuggestions) => void;
     savedReports: ReportParameters[];
     onSaveReport: (params: ReportParameters) => void;
     onLoadReport: (params: ReportParameters) => void;
     onDeleteReport: (reportName: string) => void;
-    onScopeComplete: () => void; // New prop to handle navigation
+    onScopeComplete: () => void;
 }
 
 const WIZARD_STEPS = [
@@ -36,79 +32,52 @@ const WIZARD_STEPS = [
     { id: 4, title: 'Review & Generate' }
 ];
 
-const ReportGenerator: React.FC<ReportGeneratorProps> = ({ 
-    params, 
-    onParamsChange, 
-    onReportUpdate, 
-    onProfileUpdate, 
+const ReportGenerator: React.FC<ReportGeneratorProps> = ({
+    params,
+    onParamsChange,
+    onReportUpdate,
+    onProfileUpdate,
     isGenerating,
     ...restInquireProps
 }) => {
     const [step, setStep] = useState(1);
     const [error, setError] = useState<string | null>(null);
-    const [aiInteractionState, setAiInteractionState] = useState<AiInteractionState>('idle');
-    
-    // Local state for region/country dropdowns
+    const [aiInteractionState, setAiInteractionState] = useState<'idle' | 'welcomed' | 'prompted' | 'answeredPrompt' | 'active'>('idle');
+
     const [targetRegion, setTargetRegion] = useState('');
     const [targetCountry, setTargetCountry] = useState('');
     const [targetCity, setTargetCity] = useState('');
 
-    // State and ref for back-to-top button
+    // DEBUG: Force default organization type if missing
+    useEffect(() => {
+        if (!params.organizationType || params.organizationType === '') {
+            handleChange('organizationType', 'Default');
+        }
+    }, [params.organizationType]);
+
     const [showScroll, setShowScroll] = useState(false);
     const scrollPanelRef = useRef<HTMLDivElement>(null);
 
-    // Effect for scroll listener
     useEffect(() => {
         const panel = scrollPanelRef.current;
         if (!panel) return;
-
-        const handleScroll = () => {
-            if (panel.scrollTop > 300) {
-                setShowScroll(true);
-            } else {
-                setShowScroll(false);
-            }
-        };
-
+        const handleScroll = () => setShowScroll(panel.scrollTop > 300);
         panel.addEventListener('scroll', handleScroll);
         return () => panel.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const scrollToTop = () => {
-        scrollPanelRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    const scrollToTop = () => scrollPanelRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // This effect triggers when the user starts typing their name
-    useEffect(() => {
-        if (params.userName.trim() && aiInteractionState === 'idle') {
-            setAiInteractionState('welcomed');
-        }
-    }, [params.userName, aiInteractionState]);
-
-    // This effect triggers when the user types a report name, making the AI fully active
     useEffect(() => {
         if (params.reportName.trim() && aiInteractionState !== 'active') {
             setAiInteractionState('active');
         }
     }, [params.reportName, aiInteractionState]);
 
-    // This effect prompts the user if they've entered a name but paused without entering a report goal
-    useEffect(() => {
-        let timer: number;
-        if (aiInteractionState === 'welcomed' && !params.reportName.trim()) {
-            timer = window.setTimeout(() => {
-                setAiInteractionState('prompted');
-            }, 5000); // 5-second delay
-        }
-        return () => clearTimeout(timer);
-    }, [aiInteractionState, params.reportName]);
-
-
-    const handleChange = (field: string | number | symbol, value: any) => {
+    const handleChange = (field: keyof ReportParameters, value: any) => {
         onParamsChange({ ...params, [field]: value });
     };
 
-    // Effect to parse the `params.region` string into the UI fields for Step 2
     useEffect(() => {
         const regionValue = params.region;
         if (regionValue) {
@@ -132,14 +101,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     }, [params.region]);
     
-    // Effect to combine the local city/country state back into `params.region`
     useEffect(() => {
         const combinedRegion = [targetCity, targetCountry].filter(Boolean).join(', ');
         if (combinedRegion !== params.region) {
             handleChange('region', combinedRegion);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [targetCity, targetCountry]);
-
 
     const handleMultiSelectToggle = (field: 'aiPersona' | 'analyticalLens' | 'toneAndStyle' | 'industry' | 'tier', value: string) => {
         const currentValues = params[field] as string[] || [];
@@ -147,9 +115,8 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
             ? currentValues.filter(v => v !== value)
             : [...currentValues, value];
         
-        // This logic is a UI enhancement to prevent unselecting the last item on required fields
         if ((field === 'aiPersona' || field === 'industry') && newValues.length === 0 && (params[field] as string[]).length > 0) {
-            return; // Don't allow unselecting the last one if it's required to have at least one
+            return;
         }
 
         onParamsChange({ ...params, [field]: newValues });
@@ -160,22 +127,21 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         switch(stepNum) {
             case 1:
                 if (!params.userName.trim()) errors.push("Your Name is required.");
-                // Report Name validation is now handled in nextStep
+                if (!params.reportName.trim()) errors.push("Report Name is required.");
                 break;
             case 2:
                 if (params.tier.length === 0) errors.push("At least one Report Tier must be selected.");
                 if (!params.region.trim()) errors.push("A target location is required.");
                 if (params.industry.length === 0) errors.push("At least one Core Industry must be selected.");
-                if (params.industry.includes('Custom') && !params.customIndustry?.trim()) errors.push("Custom Industry Definition is required when 'Custom' is selected.");
+                if (params.industry.includes('Custom') && !params.customIndustry?.trim()) errors.push("Custom Industry Definition is required.");
                 if (!params.idealPartnerProfile.trim()) errors.push("Ideal Partner Profile is required.");
                 break;
             case 3:
                 if (!params.problemStatement.trim()) errors.push("Core Objective is required.");
                 if (params.aiPersona.length === 0) errors.push("At least one AI Analyst persona must be selected.");
-                if (params.aiPersona.includes('Custom') && !params.customAiPersona?.trim()) errors.push("Custom Persona Definition is required when 'Custom' is selected.");
+                if (params.aiPersona.includes('Custom') && !params.customAiPersona?.trim()) errors.push("Custom Persona Definition is required.");
                 break;
-            default:
-                break;
+            default: break;
         }
         return errors;
     }, [params]);
@@ -183,16 +149,6 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     const nextStep = () => {
         setError(null);
         scrollToTop();
-
-        // Custom validation for Step 1's interactive AI flow
-        if (step === 1) {
-            if (!params.reportName.trim() && aiInteractionState !== 'answeredPrompt' && aiInteractionState !== 'active') {
-                setError("Please provide a Report Name or respond to the Nexus AI assistant's prompt before proceeding.");
-                setAiInteractionState('prompted'); // Force the prompt if user clicks next too early
-                return;
-            }
-        }
-
         const validationErrors = getValidationErrors(step);
         if (validationErrors.length === 0) {
             if (step < WIZARD_STEPS.length) setStep(s => s + 1);
@@ -214,46 +170,50 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
     const handleGenerateReport = useCallback(async () => {
         setError(null);
-        const allErrors = [
-            ...getValidationErrors(1),
-            ...getValidationErrors(2),
-            ...getValidationErrors(3),
-        ];
-
+        const allErrors = [...getValidationErrors(1), ...getValidationErrors(2), ...getValidationErrors(3)];
         if (allErrors.length > 0) {
-            setError("Some steps are incomplete. Please go back and fill all required fields. Missing: " + allErrors.join(', '));
+            setError("Please complete all required fields. Missing: " + allErrors.join(', '));
             return;
         }
-        
+
         onProfileUpdate({ userName: params.userName, userDepartment: params.userDepartment, organizationType: params.organizationType, userCountry: params.userCountry });
         onReportUpdate(params, '', null, true);
 
         try {
-            const stream = await generateReportStream(params);
-            const reader = stream.getReader();
-            const decoder = new TextDecoder();
-            let content = '';
-            let decodedChunk = '';
+            // Use new async job queue system
+            const jobId = await startReportGeneration(params);
 
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                decodedChunk = decoder.decode(value, { stream: true });
-                content += decodedChunk;
-                onReportUpdate(params, content, null, true);
-            }
-            onReportUpdate(params, content, null, false);
+            // Poll for completion
+            const pollForCompletion = async () => {
+                try {
+                    const status = await checkReportStatus(jobId);
+                    if (status.status === 'complete') {
+                        onReportUpdate(params, status.result || '', null, false);
+                    } else if (status.status === 'failed') {
+                        onReportUpdate(params, '', status.error || 'Report generation failed', false);
+                    } else {
+                        // Still processing, poll again in 2 seconds
+                        setTimeout(pollForCompletion, 2000);
+                    }
+                } catch (pollError) {
+                    console.error('Polling error:', pollError);
+                    setTimeout(pollForCompletion, 2000);
+                }
+            };
+
+            // Start polling
+            setTimeout(pollForCompletion, 2000);
+
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
-            console.error("Report generation failed:", errorMessage);
             setError(errorMessage);
             onReportUpdate(params, '', errorMessage, false);
         }
     }, [params, onReportUpdate, onProfileUpdate, getValidationErrors]);
 
-    const inputStyles = "w-full p-2 bg-nexus-surface-800 border border-nexus-border-medium rounded-lg focus:ring-2 focus:ring-nexus-accent-cyan focus:border-nexus-accent-cyan outline-none transition-all duration-200 placeholder:text-nexus-text-muted text-nexus-text-primary shadow-soft hover:shadow-medium text-sm";
-    const labelStyles = "block text-xs font-semibold text-nexus-text-primary mb-1";
-    const currentTiers = TIERS_BY_ORG_TYPE[params.organizationType] || TIERS_BY_ORG_TYPE['Default'];
+    const inputStyles = "w-full p-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800 outline-none transition-all duration-200 placeholder:text-gray-400 text-gray-800 shadow-sm text-sm";
+    const labelStyles = "block text-sm font-semibold text-gray-800 mb-2";
+    const currentTiers = TIERS_BY_ORG_TYPE[params.organizationType] || TIERS_BY_ORG_TYPE['Default'] || [];
 
     const renderStepContent = () => {
         switch (step) {
@@ -261,75 +221,85 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 return <ProfileStep params={params} handleChange={handleChange} inputStyles={inputStyles} labelStyles={labelStyles} />;
             case 2: // Opportunity & Tiers
                 return (
-                    <Card className="bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 border-nexus-border-medium/50 shadow-xl">
+                    <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
                         <div className="flex items-center gap-4 mb-6">
-                          <div className="w-12 h-12 bg-nexus-surface-600 rounded-xl flex items-center justify-center shadow-lg border border-nexus-border-medium">
+                          <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
                             <span className="text-2xl">🎯</span>
                           </div>
                           <div>
-                            <h3 className="text-2xl font-bold text-nexus-text-primary font-serif bg-gradient-to-r from-nexus-accent-cyan to-nexus-accent-cyan-dark bg-clip-text text-transparent">Strategic Opportunity & Analysis Tiers</h3>
-                            <p className="text-nexus-text-secondary text-sm">Define your market opportunity with precision targeting and comprehensive analysis frameworks</p>
+                            <h3 className="text-2xl font-bold text-gray-900">Strategic Opportunity & Analysis Tiers</h3>
+                            <p className="text-gray-600 text-sm">Define your market opportunity and analysis frameworks.</p>
                           </div>
                         </div>
-                        <p className="text-nexus-text-secondary mb-8 text-base leading-relaxed bg-nexus-surface-600/30 p-4 rounded-lg border border-nexus-border-medium/30">
-                          Advanced AI integration and real-time data streams are now active. Select analysis tiers that align with your strategic objectives and target market positioning.
-                        </p>
+
+                        {/* DEBUG INFO - Remove after testing */}
+                        <div className="mb-4 p-4 bg-yellow-100 border border-yellow-300 rounded">
+                          <strong>Debug Info:</strong><br/>
+                          Organization Type: {params.organizationType || 'Not set'}<br/>
+                          Available Tiers: {currentTiers.length}<br/>
+                          Current Step: {step}
+                        </div>
                         
                         <div className="mt-8">
-                            <div className="bg-nexus-surface-600/30 p-6 rounded-xl border border-nexus-border-medium/30 mb-6">
-                              <h4 className="text-xl font-bold text-nexus-text-primary mb-3 flex items-center gap-3">
-                                <span className="text-nexus-accent-brown">📊</span>
-                                Analysis Tiers (Strategic Methodology)
+                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                              <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
+                                <span className="text-gray-500">📊</span>
+                                Analysis Tiers (Methodology)
                               </h4>
-                              <p className="text-nexus-text-secondary text-base leading-relaxed">Select comprehensive analysis frameworks. The AI will intelligently combine selected tiers into a unified strategic blueprint.</p>
+                              <p className="text-gray-600 text-base">Select frameworks. The AI will combine selected tiers into a unified blueprint.</p>
                             </div>
                             <div className="grid md:grid-cols-2 gap-8">
-                            {currentTiers.map((tier) => (
-                                     <label key={tier.id} className={`p-8 rounded-2xl text-left border-2 transition-all duration-300 w-full flex flex-col h-full cursor-pointer bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 hover:from-nexus-surface-700 hover:to-nexus-surface-600 shadow-lg hover:shadow-xl ${params.tier.includes(tier.id) ? 'border-nexus-accent-cyan bg-gradient-to-br from-nexus-accent-cyan/20 to-nexus-accent-cyan/10 scale-105 shadow-2xl shadow-nexus-accent-cyan/30 ring-2 ring-nexus-accent-cyan/20' : 'border-nexus-border-medium hover:border-nexus-accent-cyan/50 hover:shadow-nexus-accent-cyan/10'}`}>
-                                         <div className="flex justify-between items-start mb-4">
-                                         <span className="font-bold text-nexus-text-primary text-2xl">{tier.title}</span>
-                                             <input
-                                                 type="checkbox"
-                                                 checked={params.tier.includes(tier.id)}
-                                                 onChange={() => handleMultiSelectToggle('tier', tier.id)}
-                                                 className="h-7 w-7 rounded border-2 border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan focus:ring-2"
-                                             />
-                                         </div>
-                                         <p className="text-base text-nexus-text-secondary mb-6 flex-grow leading-relaxed">{tier.desc}</p>
-                                         <div className="border-t border-nexus-border-medium pt-4">
-                                             <p className="text-sm font-bold text-nexus-accent-cyan mb-3 uppercase tracking-wide">Strategic Capabilities</p>
-                                             <ul className="text-sm text-nexus-text-secondary space-y-2">
-                                                 {tier.features.map(f => <li key={f} className="flex items-center gap-3"><span className="w-2 h-2 bg-nexus-accent-cyan rounded-full"></span> {f}</li>)}
-                                             </ul>
-                                         </div>
-                                     </label>
-                             ))}
-                             </div>
+                            {currentTiers.length > 0 ? currentTiers.map((tier) => (
+                                      <label key={tier.id} className={`p-8 rounded-2xl text-left border-2 transition-all duration-300 w-full flex flex-col h-full cursor-pointer bg-white hover:bg-gray-50 shadow-md hover:shadow-lg ${params.tier.includes(tier.id) ? 'border-gray-800 scale-105 shadow-xl ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`}>
+                                          <div className="flex justify-between items-start mb-4">
+                                          <span className="font-bold text-gray-900 text-2xl">{tier.title}</span>
+                                              <input
+                                                  type="checkbox"
+                                                  checked={params.tier.includes(tier.id)}
+                                                  onChange={() => handleMultiSelectToggle('tier', tier.id)}
+                                                  className="h-6 w-6 rounded border-gray-300 text-gray-800 focus:ring-gray-800 focus:ring-2"
+                                              />
+                                          </div>
+                                          <p className="text-base text-gray-600 mb-6 flex-grow">{tier.desc}</p>
+                                          <div className="border-t border-gray-200 pt-4">
+                                              <p className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">Capabilities</p>
+                                              <ul className="text-sm text-gray-600 space-y-2">
+                                                  {tier.features.map(f => <li key={f} className="flex items-center gap-3"><span className="w-2 h-2 bg-gray-800 rounded-full"></span> {f}</li>)}
+                                              </ul>
+                                          </div>
+                                      </label>
+                              )) : (
+                                <div className="col-span-2 p-8 text-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl">
+                                  <p className="text-gray-500">No tiers available for the selected organization type.</p>
+                                  <p className="text-sm text-gray-400 mt-2">Please select a different organization type or contact support.</p>
+                                </div>
+                              )}
+                              </div>
                          </div>
 
-                         <div className="mt-8 pt-8 border-t border-nexus-border-medium/50">
-                             <div className="bg-nexus-surface-600/30 p-6 rounded-xl border border-nexus-border-medium/30 mb-6">
-                               <h4 className="text-xl font-bold text-nexus-text-primary mb-3 flex items-center gap-3">
-                                 <span className="text-nexus-accent-cyan">🧠</span>
+                         <div className="mt-8 pt-8 border-t border-gray-200">
+                             <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                               <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
+                                 <span className="text-gray-500">🧠</span>
                                  Advanced Analytical Modules
                                </h4>
-                               <p className="text-nexus-text-secondary text-base leading-relaxed">These enterprise-grade modules enhance your report with specialized intelligence and predictive capabilities.</p>
+                               <p className="text-gray-600 text-base">Enhance your report with specialized intelligence.</p>
                              </div>
                              <div className="space-y-6">
                                {Object.entries(ANALYTICAL_MODULES).map(([key, group]: [string, any]) => (
-                                 <div key={key} className="bg-nexus-surface-600/20 p-6 rounded-xl border border-nexus-border-medium/30">
-                                   <h5 className="text-lg font-bold text-nexus-text-primary mb-4 flex items-center gap-3">
-                                     <span className="text-nexus-accent-cyan">⚡</span>
+                                 <div key={key} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                   <h5 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
+                                     <span className="text-gray-800">⚡</span>
                                      {group.title}
                                    </h5>
                                    <div className="grid md:grid-cols-2 gap-4">
                                      {group.modules.map((module: any) => (
-                                       <div key={module.id} className="p-4 bg-nexus-surface-700/50 rounded-lg border border-nexus-border-medium/20">
+                                       <div key={module.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                                          <div className="flex items-start justify-between mb-2">
-                                           <h6 className="font-semibold text-nexus-text-primary text-sm">{module.name}</h6>
-                                           <span className="text-xs px-2 py-1 bg-nexus-accent-cyan/20 text-nexus-accent-cyan rounded-full">{module.status}</span>
+                                           <h6 className="font-semibold text-gray-800 text-sm">{module.name}</h6>
+                                           <span className={`text-xs px-2 py-1 rounded-full ${module.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700'}`}>{module.status}</span>
                                          </div>
-                                         <p className="text-xs text-nexus-text-secondary">{module.description}</p>
+                                         <p className="text-xs text-gray-600">{module.description}</p>
                                        </div>
                                      ))}
                                    </div>
@@ -338,13 +308,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                              </div>
                          </div>
 
-                        <div className="mt-8 pt-8 border-t border-nexus-border-medium/50">
-                            <div className="bg-nexus-surface-600/30 p-6 rounded-xl border border-nexus-border-medium/30 mb-6">
-                              <h4 className="text-xl font-bold text-nexus-text-primary mb-3 flex items-center gap-3">
-                                <span className="text-nexus-accent-brown">📍</span>
+                        <div className="mt-8 pt-8 border-t border-gray-200">
+                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                              <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
+                                <span className="text-gray-500">📍</span>
                                 Geographic Targeting & Scope
                               </h4>
-                              <p className="text-nexus-text-secondary text-base leading-relaxed">Define your market focus with precision. Geographic targeting enables hyper-local intelligence gathering and regional opportunity analysis.</p>
+                              <p className="text-gray-600 text-base">Define your market focus for hyper-local intelligence.</p>
                             </div>
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
@@ -353,10 +323,10 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                                         <option value="">Select Global Region</option>
                                         {REGIONS_AND_COUNTRIES.map(region => <option key={region.name} value={region.name}>{region.name}</option>)}
                                     </select>
-</div>
+                                </div>
                                 <div className="space-y-2">
                                     <label className={labelStyles}>Target Country *</label>
-                                      <select value={targetCountry} onChange={e => setTargetCountry(e.target.value)} disabled={!targetRegion} className={`${inputStyles} disabled:bg-nexus-surface-600 disabled:text-nexus-text-muted text-base`} aria-label="Target Country">
+                                      <select value={targetCountry} onChange={e => setTargetCountry(e.target.value)} disabled={!targetRegion} className={`${inputStyles} disabled:bg-gray-100 disabled:text-gray-500 text-base`} aria-label="Target Country">
                                         <option value="">Select Country</option>
                                         {REGIONS_AND_COUNTRIES.find(r => r.name === targetRegion)?.countries.map(country => <option key={country} value={country}>{country}</option>)}
                                     </select>
@@ -377,17 +347,17 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
                             <div className="mt-8">
                                 <label className={`${labelStyles} text-lg`}>Core Industry Focus (Select one or more) *</label>
-                                <div className="bg-nexus-surface-600/20 p-6 rounded-xl border border-nexus-border-medium/30 mt-3">
+                                <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-3">
                                   <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
                                       {INDUSTRIES.map((industry) => (
-                                          <button key={industry.id} onClick={() => handleMultiSelectToggle('industry', industry.id)} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center text-center h-full group bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 hover:from-nexus-surface-700 hover:to-nexus-surface-600 shadow-md hover:shadow-lg ${params.industry.includes(industry.id) ? 'border-nexus-accent-brown bg-gradient-to-br from-nexus-accent-brown/20 to-nexus-accent-brown/10 scale-105 shadow-xl shadow-nexus-accent-brown/30 ring-2 ring-nexus-accent-brown/20' : 'border-nexus-border-medium hover:border-nexus-accent-brown/50 hover:shadow-nexus-accent-brown/10'}`}>
-                                              <industry.icon className={`w-12 h-12 mb-3 transition-colors duration-200 ${params.industry.includes(industry.id) ? 'text-nexus-accent-brown' : 'text-nexus-text-secondary group-hover:text-nexus-text-primary'}`} />
-                                              <span className="font-bold text-nexus-text-primary text-sm leading-tight">{industry.title}</span>
+                                          <button key={industry.id} onClick={() => handleMultiSelectToggle('industry', industry.id)} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.industry.includes(industry.id) ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`}>
+                                              <industry.icon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.industry.includes(industry.id) ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
+                                              <span className="font-semibold text-gray-800 text-xs leading-tight">{industry.title}</span>
                                           </button>
                                       ))}
-                                      <button onClick={() => handleMultiSelectToggle('industry', 'Custom')} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center text-center h-full group bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 hover:from-nexus-surface-700 hover:to-nexus-surface-600 shadow-md hover:shadow-lg ${params.industry.includes('Custom') ? 'border-nexus-accent-brown bg-gradient-to-br from-nexus-accent-brown/20 to-nexus-accent-brown/10 scale-105 shadow-xl shadow-nexus-accent-brown/30 ring-2 ring-nexus-accent-brown/20' : 'border-nexus-border-medium hover:border-nexus-accent-brown/50 hover:shadow-nexus-accent-brown/10'}`} title="Define a custom industry">
-                                          <CustomIndustryIcon className={`w-12 h-12 mb-3 transition-colors duration-200 ${params.industry.includes('Custom') ? 'text-nexus-accent-brown' : 'text-nexus-text-secondary group-hover:text-nexus-text-primary'}`} />
-                                          <span className="font-bold text-nexus-text-primary text-sm leading-tight">Custom</span>
+                                      <button onClick={() => handleMultiSelectToggle('industry', 'Custom')} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.industry.includes('Custom') ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`} title="Define a custom industry">
+                                          <CustomIndustryIcon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.industry.includes('Custom') ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
+                                          <span className="font-semibold text-gray-800 text-xs leading-tight">Custom</span>
                                       </button>
                                   </div>
                                 </div>
@@ -400,59 +370,56 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                             )}
                             <div className="mt-8">
                                 <label className={`${labelStyles} text-lg`}>Ideal Partner Profile *</label>
-                                <div className="bg-nexus-surface-600/20 p-6 rounded-xl border border-nexus-border-medium/30 mt-3">
-                                  <textarea value={params.idealPartnerProfile} onChange={e => handleChange('idealPartnerProfile', e.target.value)} rows={5} className={`${inputStyles} text-base resize-none`} placeholder="Describe your ideal strategic partner in detail. Consider: company size, technological capabilities, market presence, cultural fit, financial stability, and complementary strengths..." />
-                                  <p className="text-sm text-nexus-text-secondary mt-3 flex items-center gap-2">
-                                    <span className="text-nexus-accent-cyan">💡</span>
-                                    Be specific about partnership criteria to enable precise matching algorithms
+                                <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-3">
+                                  <textarea value={params.idealPartnerProfile} onChange={e => handleChange('idealPartnerProfile', e.target.value)} rows={5} className={`${inputStyles} text-base resize-none`} placeholder="Describe your ideal strategic partner in detail..." />
+                                  <p className="text-sm text-gray-600 mt-3 flex items-center gap-2">
+                                    <span className="text-gray-800">💡</span>
+                                    Specificity enables precise matching algorithms.
                                   </p>
                                 </div>
                             </div>
                         </div>
-                    </Card>
+                    </div>
                 );
              case 3: // Objective & AI Analyst
                 return (
-                    <Card className="bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 border-nexus-border-medium/50 shadow-xl">
+                    <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
                         <div className="flex items-center gap-4 mb-6">
-                          <div className="w-12 h-12 bg-nexus-surface-600 rounded-xl flex items-center justify-center shadow-lg border border-nexus-border-medium">
+                          <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
                             <span className="text-2xl">🎯</span>
                           </div>
                           <div>
-                            <h3 className="text-2xl font-bold text-nexus-text-primary font-serif bg-gradient-to-r from-nexus-accent-cyan to-nexus-accent-cyan-dark bg-clip-text text-transparent">Strategic Objective & AI Intelligence</h3>
-                            <p className="text-nexus-text-secondary text-sm">Define your mission and configure advanced AI analytical frameworks</p>
+                            <h3 className="text-2xl font-bold text-gray-900">Strategic Objective & AI Intelligence</h3>
+                            <p className="text-gray-600 text-sm">Define your mission and configure AI analytical frameworks.</p>
                           </div>
                         </div>
-                        <p className="text-nexus-text-secondary mb-8 text-base leading-relaxed bg-nexus-surface-600/30 p-4 rounded-lg border border-nexus-border-medium/30">
-                          Articulate your strategic objective with precision. The AI will adapt its analytical approach based on your defined purpose and selected intelligence personas.
-                        </p>
                         
                         <div className="mt-8">
                             <label className={`${labelStyles} text-lg`}>Define Core Strategic Objective (The 'Why') *</label>
-                            <div className="bg-nexus-surface-600/20 p-6 rounded-xl border border-nexus-border-medium/30 mt-3">
-                              <textarea value={params.problemStatement} onChange={e => handleChange('problemStatement', e.target.value)} rows={6} className={`${inputStyles} text-base resize-none`} placeholder="Articulate your strategic objective with clarity. What specific challenge are you addressing? What market opportunity are you pursuing? What measurable outcomes define success?" />
-                              <p className="text-sm text-nexus-text-secondary mt-3 flex items-center gap-2">
-                                <span className="text-nexus-accent-cyan">🎯</span>
-                                Clear objectives enable the AI to provide targeted, actionable intelligence
+                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-3">
+                              <textarea value={params.problemStatement} onChange={e => handleChange('problemStatement', e.target.value)} rows={6} className={`${inputStyles} text-base resize-none`} placeholder="Articulate your strategic objective. What challenge are you addressing? What opportunity are you pursuing?" />
+                              <p className="text-sm text-gray-600 mt-3 flex items-center gap-2">
+                                <span className="text-gray-800">🎯</span>
+                                Clear objectives enable targeted, actionable intelligence.
                               </p>
                             </div>
                         </div>
 
-                        <div className="mt-8 pt-8 border-t border-nexus-border-medium/50">
-                            <div className="bg-nexus-surface-600/30 p-6 rounded-xl border border-nexus-border-medium/30 mb-6">
+                        <div className="mt-8 pt-8 border-t border-gray-200">
+                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
                               <label className={`${labelStyles} text-lg`}>Configure AI Intelligence Analyst *</label>
-                              <p className="text-nexus-text-secondary text-base leading-relaxed mt-2">Select AI personas that align with your analytical needs. Each persona brings specialized expertise and communication styles.</p>
+                              <p className="text-gray-600 text-base mt-2">Select AI personas that align with your analytical needs.</p>
                             </div>
                             <div className="grid grid-cols-4 gap-4">
                                 {AI_PERSONAS.map((persona) => (
-                                    <button key={persona.id} onClick={() => handleMultiSelectToggle('aiPersona', persona.id)} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center text-center h-full group bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 hover:from-nexus-surface-700 hover:to-nexus-surface-600 shadow-md hover:shadow-lg ${params.aiPersona.includes(persona.id) ? 'border-nexus-accent-brown bg-gradient-to-br from-nexus-accent-brown/20 to-nexus-accent-brown/10 scale-105 shadow-xl shadow-nexus-accent-brown/30 ring-2 ring-nexus-accent-brown/20' : 'border-nexus-border-medium hover:border-nexus-accent-brown/50 hover:shadow-nexus-accent-brown/10'}`} title={persona.description}>
-                                        <persona.icon className={`w-12 h-12 mb-3 transition-colors duration-200 ${params.aiPersona.includes(persona.id) ? 'text-nexus-accent-brown' : 'text-nexus-text-secondary group-hover:text-nexus-text-primary'}`} />
-                                        <span className="font-bold text-nexus-text-primary text-sm leading-tight">{persona.title}</span>
+                                    <button key={persona.id} onClick={() => handleMultiSelectToggle('aiPersona', persona.id)} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.aiPersona.includes(persona.id) ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`} title={persona.description}>
+                                        <persona.icon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.aiPersona.includes(persona.id) ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
+                                        <span className="font-semibold text-gray-800 text-xs leading-tight">{persona.title}</span>
                                     </button>
                                 ))}
-                                <button onClick={() => handleMultiSelectToggle('aiPersona', 'Custom')} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center text-center h-full group bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 hover:from-nexus-surface-700 hover:to-nexus-surface-600 shadow-md hover:shadow-lg ${params.aiPersona.includes('Custom') ? 'border-nexus-accent-brown bg-gradient-to-br from-nexus-accent-brown/20 to-nexus-accent-brown/10 scale-105 shadow-xl shadow-nexus-accent-brown/30 ring-2 ring-nexus-accent-brown/20' : 'border-nexus-border-medium hover:border-nexus-accent-brown/50 hover:shadow-nexus-accent-brown/10'}`} title="Define a custom persona">
-                                    <CustomPersonaIcon className={`w-12 h-12 mb-3 transition-colors duration-200 ${params.aiPersona.includes('Custom') ? 'text-nexus-accent-brown' : 'text-nexus-text-secondary group-hover:text-nexus-text-primary'}`} />
-                                    <span className="font-bold text-nexus-text-primary text-sm leading-tight">Custom</span>
+                                <button onClick={() => handleMultiSelectToggle('aiPersona', 'Custom')} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.aiPersona.includes('Custom') ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`} title="Define a custom persona">
+                                    <CustomPersonaIcon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.aiPersona.includes('Custom') ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
+                                    <span className="font-semibold text-gray-800 text-xs leading-tight">Custom</span>
                                 </button>
                             </div>
 
@@ -467,28 +434,28 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         <div className="grid md:grid-cols-2 gap-8 mt-8">
                             <div>
                                 <label className={`${labelStyles} text-lg`}>Analytical Frameworks</label>
-                                <div className="bg-nexus-surface-600/20 p-4 rounded-xl border border-nexus-border-medium/30 mt-3 space-y-3">
+                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-3 space-y-3">
                                     {ANALYTICAL_LENSES.map(lens => (
-                                        <label key={lens} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.analyticalLens?.includes(lens) ? 'border-nexus-accent-cyan bg-nexus-accent-cyan/10 shadow-md ring-1 ring-nexus-accent-cyan/30' : 'border-nexus-border-medium hover:border-nexus-accent-cyan/50 bg-nexus-surface-800 hover:bg-nexus-surface-700'}`}>
-                                            <input type="checkbox" checked={params.analyticalLens?.includes(lens)} onChange={() => handleMultiSelectToggle('analyticalLens', lens)} className="h-5 w-5 rounded border-2 border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan focus:ring-2" />
-                                            <span className="text-base font-medium text-nexus-text-primary">{lens}</span>
+                                        <label key={lens} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.analyticalLens?.includes(lens) ? 'border-gray-800 bg-gray-100 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
+                                            <input type="checkbox" checked={params.analyticalLens?.includes(lens)} onChange={() => handleMultiSelectToggle('analyticalLens', lens)} className="h-5 w-5 rounded border-gray-300 text-gray-800 focus:ring-gray-800 focus:ring-2" />
+                                            <span className="text-base font-medium text-gray-800">{lens}</span>
                                         </label>
                                     ))}
                                 </div>
                             </div>
                             <div>
                                 <label className={`${labelStyles} text-lg`}>Communication Styles</label>
-                                <div className="bg-nexus-surface-600/20 p-4 rounded-xl border border-nexus-border-medium/30 mt-3 space-y-3">
+                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-3 space-y-3">
                                     {TONES_AND_STYLES.map(style => (
-                                        <label key={style} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.toneAndStyle?.includes(style) ? 'border-nexus-accent-cyan bg-nexus-accent-cyan/10 shadow-md ring-1 ring-nexus-accent-cyan/30' : 'border-nexus-border-medium hover:border-nexus-accent-cyan/50 bg-nexus-surface-800 hover:bg-nexus-surface-700'}`}>
-                                            <input type="checkbox" checked={params.toneAndStyle?.includes(style)} onChange={() => handleMultiSelectToggle('toneAndStyle', style)} className="h-5 w-5 rounded border-2 border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan focus:ring-2"/>
-                                            <span className="text-base font-medium text-nexus-text-primary">{style}</span>
+                                        <label key={style} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.toneAndStyle?.includes(style) ? 'border-gray-800 bg-gray-100 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
+                                            <input type="checkbox" checked={params.toneAndStyle?.includes(style)} onChange={() => handleMultiSelectToggle('toneAndStyle', style)} className="h-5 w-5 rounded border-gray-300 text-gray-800 focus:ring-gray-800 focus:ring-2"/>
+                                            <span className="text-base font-medium text-gray-800">{style}</span>
                                         </label>
                                     ))}
                                 </div>
                             </div>
                         </div>
-                    </Card>
+                    </div>
                 );
             case 4: // Review & Generate
                 const isInvalid = (field: keyof ReportParameters, condition?: boolean) => {
@@ -500,186 +467,124 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 };
 
                 const summaryItemClasses = (invalid: boolean) =>
-                    `p-2 rounded-md transition-colors ${invalid ? 'bg-red-500/10 border border-red-500/20 shadow-inner' : ''}`;
-
+                    `p-3 rounded-lg transition-colors ${invalid ? 'bg-red-100 border border-red-200' : 'bg-gray-50'}`;
 
                 const SummaryItem: React.FC<{label: string, value: React.ReactNode, invalid?: boolean}> = ({label, value, invalid = false}) => (
                     <div className={summaryItemClasses(invalid)}>
-                        <div className="text-sm font-semibold text-nexus-text-secondary">{label}</div>
-                        <div className="text-nexus-text-primary pl-2">{value || <span className="text-red-500 italic">Not Provided</span>}</div>
+                        <div className="text-sm font-semibold text-gray-600">{label}</div>
+                        <div className="text-gray-900 pl-2 mt-1">{value || <span className="text-red-600 italic">Not Provided</span>}</div>
                     </div>
                 );
-                
+
                 return (
-                      <Card className="bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 border-nexus-border-medium/50 shadow-xl">
-                         <div className="flex items-center gap-4 mb-6">
-                           <div className="w-12 h-12 bg-nexus-surface-600 rounded-xl flex items-center justify-center shadow-lg border border-nexus-border-medium">
-                             <span className="text-2xl">🚀</span>
-                           </div>
-                           <div>
-                             <h3 className="text-2xl font-bold text-nexus-text-primary font-serif bg-gradient-to-r from-nexus-accent-cyan to-nexus-accent-cyan-dark bg-clip-text text-transparent">Final Review & Intelligence Generation</h3>
-                             <p className="text-nexus-text-secondary text-sm">AI-powered quality assessment and strategic blueprint synthesis</p>
-                           </div>
-                         </div>
-                         <p className="text-nexus-text-secondary mb-8 text-base leading-relaxed bg-nexus-surface-600/30 p-4 rounded-lg border border-nexus-border-medium/30">
-                           Your configuration has been analyzed by advanced AI systems. Review the quality assessment below and proceed with confidence. Enterprise-grade collaboration and real-time intelligence integration are now active.
-                         </p>
-                        
+                      <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                          <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
+                              <span className="text-2xl">🚀</span>
+                            </div>
+                            <div>
+                              <h3 className="text-2xl font-bold text-gray-900">Final Review & Generation</h3>
+                              <p className="text-gray-600 text-sm">Review the quality assessment and generate your report.</p>
+                            </div>
+                          </div>
+
                         <QualityAnalysis params={params} />
 
-                        {/* Trade Disruption & Market Diversification Analysis */}
-                        <div className="mb-8">
-                            <h4 className="text-lg font-semibold text-nexus-text-primary mb-4">Global Trade Intelligence Analysis</h4>
-                            <p className="text-sm text-nexus-text-secondary mb-6">
-                                Advanced AI-powered analysis of current trade disruptions and market diversification opportunities, considering US tariff impacts and emerging market potential.
+                        {/* Nexus Brain Integration - Show available analysis */}
+                        {step === 4 && (
+                          <div className="my-8 p-6 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-xl">
+                            <h4 className="text-lg font-semibold text-nexus-accent-cyan mb-4 flex items-center gap-2">
+                              <span className="text-nexus-accent-cyan">🧠</span>
+                              Nexus Brain Analysis Available
+                            </h4>
+                            <p className="text-sm text-nexus-text-secondary mb-4">
+                              Before generating your final report, you can run advanced AI analysis on your defined region and objectives.
+                              The Nexus Brain will provide RROI diagnosis, TPT simulations, and SEAM ecosystem design.
                             </p>
+                            <div className="text-xs text-nexus-text-muted">
+                              Note: This analysis will be automatically included in your final report generation.
+                            </div>
+                          </div>
+                        )}
 
-                            {/* Sample Trade Disruption Analysis */}
+                        <div className="my-8">
+                            <h4 className="text-lg font-semibold text-gray-800 mb-4">Global Trade Intelligence</h4>
                             <div className="mb-8">
                                 {(() => {
-                                    const sampleTradeVolume = 2500000000; // $2.5B
-                                    const sampleTariffRate = 15; // 15%
+                                    const sampleTradeVolume = 2500000000;
+                                    const sampleTariffRate = 15;
                                     const sampleMarkets = ['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia'];
-                                    const analysis = TradeDisruptionAnalyzer.calculateDisruptionImpact(
-                                        sampleTradeVolume,
-                                        sampleTariffRate,
-                                        sampleMarkets,
-                                        35 // diversification index
-                                    );
+                                    const analysis = TradeDisruptionAnalyzer.calculateDisruptionImpact(sampleTradeVolume, sampleTariffRate, sampleMarkets, 35);
                                     return <TradeDisruptionDisplay analysis={analysis} />;
                                 })()}
                             </div>
-
-                            {/* Sample Market Diversification Dashboard */}
                             <div className="mb-8">
                                 <MarketDiversificationDashboard
-                                    currentMarkets={{
-                                        'United States': 45,
-                                        'China': 25,
-                                        'European Union': 20,
-                                        'Japan': 10
-                                    }}
+                                    currentMarkets={{ 'United States': 45, 'China': 25, 'European Union': 20, 'Japan': 10 }}
                                     potentialMarkets={['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia', 'Turkey', 'South Africa', 'Thailand']}
                                     tradeDisruptionRisk={0.6}
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-6 p-6 bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 border border-nexus-border-medium/50 rounded-xl shadow-lg">
+                        <div className="space-y-6 p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-inner">
                             <div className="grid md:grid-cols-2 gap-6">
                               <SummaryItem label="Report Name" value={params.reportName} invalid={isInvalid('reportName')} />
-                              <SummaryItem label="Intelligence Operator" value={`${params.userName || 'N/A'} (${params.organizationType})`} invalid={isInvalid('userName')} />
+                              <SummaryItem label="Operator" value={`${params.userName || 'N/A'} (${params.organizationType})`} invalid={isInvalid('userName')} />
                               <SummaryItem label="Analysis Tiers" value={<ul className="list-disc list-inside space-y-1">{params.tier.map(t => <li key={t} className="text-sm">{currentTiers.find(tier => tier.id === t)?.title || t}</li>)}</ul>} invalid={isInvalid('tier')} />
                               <SummaryItem label="Geographic Focus" value={`${params.region || 'N/A'}`} invalid={isInvalid('region')} />
                               <SummaryItem label="Industry Sectors" value={params.industry.filter(i=>i !== 'Custom').join(', ') || 'N/A'} invalid={isInvalid('industry')} />
                               <SummaryItem label="Custom Sector" value={params.customIndustry || 'Not specified'} invalid={isInvalid('customIndustry', params.industry.includes('Custom'))} />
                             </div>
-                            <div className="border-t border-nexus-border-medium/30 pt-6 space-y-4">
-                              <SummaryItem label="Strategic Objective" value={<div className="italic text-nexus-accent-cyan bg-nexus-accent-cyan/5 p-3 rounded-lg border border-nexus-accent-cyan/20">"{params.problemStatement}"</div>} invalid={isInvalid('problemStatement')} />
-                              <SummaryItem label="AI Intelligence Personas" value={<ul className="list-disc list-inside space-y-1">{params.aiPersona.filter(p=>p !== 'Custom').map(p => <li key={p} className="text-sm">{p}</li>)}</ul>} invalid={isInvalid('aiPersona')} />
-                              <SummaryItem label="Custom Intelligence Profile" value={params.customAiPersona || 'Not configured'} invalid={isInvalid('customAiPersona', params.aiPersona.includes('Custom'))} />
+                            <div className="border-t border-gray-200 pt-6 space-y-4">
+                              <SummaryItem label="Strategic Objective" value={<div className="italic text-gray-800 bg-gray-100 p-3 rounded-lg border border-gray-200">"{params.problemStatement}"</div>} invalid={isInvalid('problemStatement')} />
+                              <SummaryItem label="AI Personas" value={<ul className="list-disc list-inside space-y-1">{params.aiPersona.filter(p=>p !== 'Custom').map(p => <li key={p} className="text-sm">{p}</li>)}</ul>} invalid={isInvalid('aiPersona')} />
+                              <SummaryItem label="Custom Profile" value={params.customAiPersona || 'Not configured'} invalid={isInvalid('customAiPersona', params.aiPersona.includes('Custom'))} />
                             </div>
                         </div>
-
-                        <div className="mt-6">
-                            <h4 className="text-lg font-semibold text-nexus-text-primary mb-2">Advanced Capabilities Now Available</h4>
-                            <p className="text-sm text-nexus-text-secondary mb-4">Your Nexus Blueprint now includes cutting-edge features for enhanced strategic intelligence.</p>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="p-4 bg-nexus-surface-700 border border-nexus-border-medium rounded-lg">
-                                    <p className="text-sm font-bold text-nexus-accent-cyan mb-2">🚀 Advanced Data Integration</p>
-                                    <p className="text-xs text-nexus-text-secondary">Real-time Bloomberg/Reuters data, competitor analysis, regulatory databases, and industry-specific feeds integrated.</p>
-                                </div>
-                                <div className="p-4 bg-nexus-surface-700 border border-nexus-border-medium rounded-lg">
-                                    <p className="text-sm font-bold text-nexus-accent-brown mb-2">🤝 Collaborative Intelligence</p>
-                                    <p className="text-xs text-nexus-text-secondary">Multi-user collaboration, stakeholder feedback, version control, and team workspaces enabled.</p>
-                                </div>
-                                <div className="p-4 bg-nexus-surface-700 border border-nexus-border-medium rounded-lg">
-                                    <p className="text-sm font-bold text-nexus-accent-cyan mb-2">🎨 Custom Templates & Branding</p>
-                                    <p className="text-xs text-nexus-text-secondary">Professional templates, custom branding, multiple export formats (PDF, PowerPoint, Word), and flexible layouts.</p>
-                                </div>
-                                <div className="p-4 bg-nexus-surface-700 border border-nexus-border-medium rounded-lg">
-                                    <p className="text-sm font-bold text-nexus-accent-brown mb-2">🧠 AI Content Enhancement</p>
-                                    <p className="text-xs text-nexus-text-secondary">Intelligent content optimization, readability scoring, automated summaries, and content gap analysis.</p>
-                                </div>
-                                <div className="p-4 bg-nexus-surface-700 border border-nexus-border-medium rounded-lg">
-                                    <p className="text-sm font-bold text-nexus-accent-cyan mb-2">📊 Advanced Visualizations</p>
-                                    <p className="text-xs text-nexus-text-secondary">Interactive charts, custom dashboards, data visualization libraries, and exportable visual reports.</p>
-                                </div>
-                                <div className="p-4 bg-nexus-surface-700 border border-nexus-border-medium rounded-lg">
-                                    <p className="text-sm font-bold text-nexus-accent-brown mb-2">🔍 Smart Search & Discovery</p>
-                                    <p className="text-xs text-nexus-text-secondary">Full-text search, tag-based organization, report analytics, and integrated knowledge base.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-6">
-                            <h4 className="text-lg font-semibold text-nexus-text-primary mb-2">Standard Analytical Modules</h4>
-                            <p className="text-sm text-nexus-text-secondary mb-4">The following core methodologies are automatically applied to every Nexus Blueprint to ensure analytical rigor and strategic depth.</p>
-                            <div className="p-4 bg-nexus-surface-700 border border-nexus-border-medium rounded-lg space-y-3">
-                                <div>
-                                    <p className="text-sm font-bold text-nexus-accent-cyan">Core Analytics</p>
-                                    <p className="text-xs text-nexus-text-secondary">Global Data API Integration, ARIMA Time Series Analysis, Monte Carlo Risk Simulation, Game Theory.</p>
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-nexus-accent-brown">Enterprise Intelligence</p>
-                                    <p className="text-xs text-nexus-text-secondary">Predictive Policy Modeling, Cross-Border Synergy Mapper, Automated ESG Compliance Framework.</p>
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-nexus-accent-cyan">Trade & Market Intelligence</p>
-                                    <p className="text-xs text-nexus-text-secondary">Global Trade Disruption Analysis, Market Diversification Engine, Tariff Impact Modeling, Alternative Market Opportunity Scoring.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
+                    </div>
                 );
             default: return null;
         }
     };
 
     return (
-        <div className="generator-workspace h-full bg-nexus-primary-900">
-            <div ref={scrollPanelRef} className="generator-panel bg-nexus-primary-900 text-nexus-text-primary overflow-y-auto">
-                <div className="max-w-5xl mx-auto px-4 md:px-6 h-full flex flex-col">
-                    {/* --- Non-scrolling Header --- */}
-                    <div className="flex-shrink-0 pt-8 md:pt-12 pb-4">
-                        <header className="text-center mb-4">
-                            <div className="mb-8 mt-4">
-                                <h2 className="text-2xl md:text-3xl font-bold text-nexus-text-primary tracking-tight font-serif mb-2 leading-tight bg-gradient-to-r from-nexus-text-primary via-nexus-accent-cyan to-nexus-text-primary bg-clip-text text-transparent">
-                                    Intelligence Blueprint Generator
-                                </h2>
-                                <p className="text-sm md:text-base text-nexus-text-secondary max-w-2xl mx-auto leading-snug">
-                                    Transform strategic opportunities into intelligence reports. AI collaboration, real-time data, and enterprise customization.
-                                </p>
-                            </div>
-                        </header>
-                    </div>
+        <div className="flex h-screen bg-gray-100 font-sans">
+            <div ref={scrollPanelRef} className="flex-grow overflow-y-auto bg-gray-50">
+                <div className="max-w-5xl mx-auto px-4 md:px-6 flex flex-col min-h-full">
+                    <header className="text-center py-12 flex-shrink-0">
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+                            Intelligence Blueprint Generator
+                        </h2>
+                        <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+                            Transform strategic opportunities into actionable intelligence reports.
+                        </p>
+                    </header>
 
-                    {/* --- Scrolling Content --- */}
-                    <div className="flex-grow pb-16">
+                    <main className="flex-grow pb-16">
                         {renderStepContent()}
-                    </div>
+                    </main>
 
-                    {/* --- Non-scrolling Footer --- */}
-                    <div className="flex-shrink-0 py-8 border-t border-nexus-border-medium bg-nexus-primary-800/30">
-                        {error && <p className="text-red-600 text-center mb-4 text-sm bg-red-50 p-3 rounded-md border border-red-200">{error}</p>}
+                    <footer className="flex-shrink-0 py-6 border-t border-gray-200 bg-white/50 backdrop-blur-sm sticky bottom-0">
+                        {error && <p className="text-red-600 text-center mb-4 text-sm bg-red-100 p-3 rounded-md border border-red-200">{error}</p>}
 
-                        <div className="wizard-nav max-w-5xl px-4 md:px-6" style={{ marginTop: 0 }}>
-                            {step > 1 && (
-                                <button onClick={prevStep} disabled={isGenerating} className="nexus-button-secondary">Back</button>
-                            )}
+                        <div className="flex justify-between items-center max-w-5xl mx-auto px-4 md:px-6">
+                            {step > 1 ? (
+                                <button onClick={prevStep} disabled={isGenerating} className="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">Back</button>
+                            ) : <div />}
 
-                            {step < WIZARD_STEPS.length && step > 1 ? (
-                                <button onClick={nextStep} disabled={isGenerating} className="nexus-button-primary">Next</button>
+                            {step < WIZARD_STEPS.length ? (
+                                <button onClick={nextStep} disabled={isGenerating} className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md">Next</button>
                             ) : (
-                                step === WIZARD_STEPS.length && <button onClick={handleGenerateReport} disabled={isGenerating} className="w-full max-w-xs bg-gradient-to-r from-nexus-accent-brown to-nexus-accent-brown-dark text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg shadow-nexus-accent-brown/30 hover:shadow-xl hover:shadow-nexus-accent-brown/50 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-nexus-accent-brown/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3">
+                                <button onClick={handleGenerateReport} disabled={isGenerating} className="w-full max-w-xs bg-gray-800 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-800/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3">
                                     {isGenerating ? <><Spinner /> Generating...</> : 'Generate Report'}
                                 </button>
                             )}
                         </div>
-                    </div>
+                    </footer>
                 </div>
             </div>
-            <div className="inquire-panel bg-nexus-surface-800 border-l border-nexus-border-medium w-96 flex-shrink-0">
+            <div className="w-96 flex-shrink-0 bg-white border-l border-gray-200 shadow-lg">
                 <Inquire
                     {...restInquireProps}
                     params={params}
@@ -693,13 +598,15 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 />
             </div>
 
-            <button
-                onClick={scrollToTop}
-                className={`back-to-top-btn ${showScroll ? 'visible' : ''}`}
-                aria-label="Back to top"
-            >
-                <ArrowUpIcon className="w-6 h-6" />
-            </button>
+            {showScroll && (
+                <button
+                    onClick={scrollToTop}
+                    className="fixed bottom-8 right-8 bg-gray-800 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-900 transition-all duration-300 z-50"
+                    aria-label="Back to top"
+                >
+                    <ArrowUpIcon className="w-6 h-6" />
+                </button>
+            )}
         </div>
     );
 };
