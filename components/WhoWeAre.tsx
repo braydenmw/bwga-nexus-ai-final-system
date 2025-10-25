@@ -36,10 +36,10 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 {/* Founder & BWGA Section */}
                 <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-8 md:gap-12">
                     <div className="flex-shrink-0">
-                        <img 
-                            src="https://images.unsplash.com/photo-1514395462725-fb4566210144?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-                            alt="Melbourne, Australia" 
-                            className="w-48 h-48 rounded-full object-cover shadow-md border-4 border-white"
+                        <img
+                            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            alt="Melbourne, Australia"
+                            className="w-32 h-32 rounded-lg object-cover shadow-md border-4 border-white"
                         />
                     </div>
                     <div>

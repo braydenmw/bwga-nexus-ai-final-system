@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import type { View, ReportParameters, LiveOpportunityItem, SymbiosisContext, UserProfile as UserProfileType, ChatMessage, ReportSuggestions } from './types.ts';
 import { Header } from './components/Header.tsx';
-import { Welcome } from './components/Welcome.tsx';
 
 import { LiveOpportunities } from './components/LiveOpportunities.tsx';
 import { Inquire } from './components/Inquire.tsx';
@@ -17,6 +16,7 @@ import { COUNTRIES, INDUSTRIES, AI_PERSONAS, ORGANIZATION_TYPES, ANALYTICAL_LENS
 import { SampleReport } from './components/SampleReport.tsx';
 import { TechnicalManual } from './components/TechnicalManual.tsx';
 import WhoWeAre from './components/WhoWeAre.tsx';
+import TermsAndConditions from './components/TermsAndConditions.tsx';
 import { saveAutoSave, loadAutoSave, clearAutoSave, getSavedReports, saveReport, deleteReport } from './services/storageService.ts';
 
 const initialReportParams: ReportParameters = {
@@ -40,9 +40,12 @@ const initialReportParams: ReportParameters = {
 };
 
 function App() {
-  const [showWelcome, setShowWelcome] = useState(true);
   const [currentView, setCurrentView] = useState<View>('who-we-are');
-  
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState<boolean>(() => {
+    // Check if user has already accepted terms
+    return localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
+  });
+
   // State for report generation
   const [reportParams, setReportParams] = useState<ReportParameters>(initialReportParams);
   const [reportContent, setReportContent] = useState<string>('');
@@ -130,7 +133,21 @@ function App() {
     if (isViewingReport) {
         handleResetReport();
     }
+    // Reset terms acceptance when navigating to report view
+    if (view === 'report') {
+        setHasAcceptedTerms(localStorage.getItem('bwga-nexus-terms-accepted') === 'true');
+    }
     setCurrentView(view);
+  };
+
+  const handleAcceptTerms = () => {
+    localStorage.setItem('bwga-nexus-terms-accepted', 'true');
+    setHasAcceptedTerms(true);
+  };
+
+  const handleDeclineTerms = () => {
+    // Redirect to external site or show message
+    window.location.href = 'https://www.bwga.com.au';
   };
   
   const handleApplySuggestions = useCallback((suggestions: ReportSuggestions) => {
@@ -251,8 +268,19 @@ function App() {
     }
   };
   
-  if (showWelcome) {
-    return <Welcome onAccept={() => setShowWelcome(false)} />;
+
+
+
+  // Show terms and conditions if not accepted and trying to access report
+  if (!hasAcceptedTerms && currentView === 'report') {
+    return (
+      <ErrorBoundary>
+        <TermsAndConditions
+          onAccept={handleAcceptTerms}
+          onDecline={handleDeclineTerms}
+        />
+      </ErrorBoundary>
+    );
   }
 
   return (
@@ -280,7 +308,7 @@ function App() {
             onSendMessage={(history) => fetchSymbiosisResponse(symbiosisContext, history)}
           />
         )}
-        
+
         {analysisItem && (
           <AnalysisModal
             item={analysisItem}
@@ -288,7 +316,7 @@ function App() {
             onClose={() => setAnalysisItem(null)}
           />
         )}
-        
+
         {letterModalOpen && (
           <LetterGeneratorModal
             isOpen={letterModalOpen}

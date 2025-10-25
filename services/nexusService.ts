@@ -232,6 +232,33 @@ export async function generateSpeech(text: string): Promise<string> {
     return data.audioContent;
 }
 
+// --- Report Generation with Job Queue ---
+export async function startReportGeneration(params: ReportParameters): Promise<string> {
+    const response = await fetch('/api/report/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Report generation failed to start: ${response.status} ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data.jobId;
+}
+
+export async function checkReportStatus(jobId: string): Promise<{ status: 'pending' | 'processing' | 'complete' | 'failed', result?: string, error?: string }> {
+    const response = await fetch(`/api/report/status/${jobId}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to check report status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 // --- Economic Data ---
 export async function fetchEconomicDataForCountry(country: string): Promise<EconomicData> {
     try {

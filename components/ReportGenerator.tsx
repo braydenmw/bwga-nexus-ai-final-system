@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { ReportParameters, UserProfile as UserProfileType, ReportSuggestions } from '../types.ts';
-import { generateReportStream } from '../services/nexusService.ts';
+import { generateReportStream, startReportGeneration, checkReportStatus } from '../services/nexusService.ts';
 import { REGIONS_AND_COUNTRIES, INDUSTRIES, AI_PERSONAS, ORGANIZATION_TYPES, ANALYTICAL_LENSES, TONES_AND_STYLES, TIERS_BY_ORG_TYPE, ANALYTICAL_MODULES } from '../constants.tsx';
 import Spinner from './Spinner.tsx';
 import { Inquire } from './Inquire.tsx';
@@ -10,6 +10,7 @@ import QualityAnalysis from './QualityAnalysis.tsx';
 import { ProfileStep } from './ProfileStep.tsx';
 import { TradeDisruptionDisplay, TradeDisruptionAnalyzer } from './TradeDisruptionModel.tsx';
 import { MarketDiversificationDashboard } from './MarketDiversificationModule.tsx';
+import Stepper from './Stepper';
 
 interface ReportGeneratorProps {
     params: ReportParameters;
@@ -47,6 +48,12 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     const [targetRegion, setTargetRegion] = useState('');
     const [targetCountry, setTargetCountry] = useState('');
     const [targetCity, setTargetCity] = useState('');
+
+    const handleStepClick = (stepNumber: number) => {
+        if (stepNumber < step) {
+            setStep(stepNumber);
+        }
+    };
 
     // DEBUG: Force default organization type if missing
     useEffect(() => {
@@ -180,19 +187,29 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         onReportUpdate(params, '', null, true);
 
         try {
-            // Generate the full report
-            const stream = await generateReportStream(params);
-            const reader = stream.getReader();
-            const decoder = new TextDecoder();
-            let content = '';
+            // Use new async job queue system
+            const jobId = await startReportGeneration(params);
 
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                content += decoder.decode(value, { stream: true });
-                onReportUpdate(params, content, null, true);
-            }
-            onReportUpdate(params, content, null, false);
+            // Poll for completion
+            const pollForCompletion = async () => {
+                try {
+                    const status = await checkReportStatus(jobId);
+                    if (status.status === 'complete') {
+                        onReportUpdate(params, status.result || '', null, false);
+                    } else if (status.status === 'failed') {
+                        onReportUpdate(params, '', status.error || 'Report generation failed', false);
+                    } else {
+                        // Still processing, poll again in 2 seconds
+                        setTimeout(pollForCompletion, 2000);
+                    }
+                } catch (pollError) {
+                    console.error('Polling error:', pollError);
+                    setTimeout(pollForCompletion, 2000);
+                }
+            };
+
+            // Start polling
+            setTimeout(pollForCompletion, 2000);
 
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
@@ -538,21 +555,42 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     };
 
+    // Reset terms acceptance on page refresh
+    useEffect(() => {
+        localStorage.removeItem('bwga-nexus-terms-accepted');
+    }, []);
+
     return (
         <div className="flex h-screen bg-gray-100 font-sans">
             <div ref={scrollPanelRef} className="flex-grow overflow-y-auto bg-gray-50">
                 <div className="max-w-5xl mx-auto px-4 md:px-6 flex flex-col min-h-full">
-                    <header className="text-center py-12 flex-shrink-0">
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+                    <header className="py-8 flex-shrink-0">
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2 text-center">
                             Intelligence Blueprint Generator
                         </h2>
-                        <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+                        <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto text-center">
                             Transform strategic opportunities into actionable intelligence reports.
                         </p>
+                        <div className="mt-8">
+                            <Stepper steps={WIZARD_STEPS.map(s => s.title)} currentStep={step} onStepClick={handleStepClick} />
+                        </div>
                     </header>
 
-                    <main className="flex-grow pb-16">
+                    <main className="flex-grow pb-16 relative">
                         {renderStepContent()}
+
+                        {/* Next Step Button - positioned to the right under region window */}
+                        {step === 1 && (
+                            <div className="absolute bottom-20 right-8 z-10">
+                                <button
+                                    onClick={nextStep}
+                                    disabled={isGenerating}
+                                    className="px-8 py-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                >
+                                    Next Step
+                                </button>
+                            </div>
+                        )}
                     </main>
 
                     <footer className="flex-shrink-0 py-6 border-t border-gray-200 bg-white/50 backdrop-blur-sm sticky bottom-0">
@@ -564,7 +602,19 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                             ) : <div />}
 
                             {step < WIZARD_STEPS.length ? (
-                                <button onClick={nextStep} disabled={isGenerating} className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md">Next</button>
+                                <div className="flex gap-4">
+                                    <button
+                                        onClick={nextStep}
+                                        disabled={isGenerating}
+                                        className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                        style={{ visibility: 'visible', opacity: 1 }}
+                                    >
+                                        Next
+                                    </button>
+                                    <button onClick={() => window.location.reload()} className="px-6 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors">
+                                        Reset Workspace
+                                    </button>
+                                </div>
                             ) : (
                                 <button onClick={handleGenerateReport} disabled={isGenerating} className="w-full max-w-xs bg-gray-800 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-800/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3">
                                     {isGenerating ? <><Spinner /> Generating...</> : 'Generate Report'}
@@ -574,7 +624,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                     </footer>
                 </div>
             </div>
-            <div className="w-96 flex-shrink-0 bg-white border-l border-gray-200 shadow-lg">
+            <div className="w-[28rem] flex-shrink-0 bg-white border-l border-gray-200 shadow-lg">
                 <Inquire
                     {...restInquireProps}
                     params={params}
@@ -585,6 +635,10 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                     onReportUpdate={onReportUpdate}
                     onProfileUpdate={onProfileUpdate}
                     isGenerating={isGenerating}
+                    onNextStep={nextStep}
+                    onPrevStep={prevStep}
+                    canGoNext={step < WIZARD_STEPS.length}
+                    canGoPrev={step > 1}
                 />
             </div>
 

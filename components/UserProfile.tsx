@@ -18,11 +18,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ profile }) => {
 
   return (
     <Card>
-      <h3 className="text-xl font-bold text-nexus-accent-brown mb-4">Current Operator Profile</h3>
+      <h3 className="text-xl font-bold text-nexus-accent-brown mb-4">Your Profile (The Operator)</h3>
       <div className="space-y-2 text-nexus-text-secondary">
         <p><strong>Name:</strong> <span className="text-nexus-text-primary">{profile.userName}</span></p>
         <p><strong>Department:</strong> <span className="text-nexus-text-primary">{profile.userDepartment}</span></p>
         <p><strong>Country:</strong> <span className="text-nexus-text-primary">{profile.userCountry}</span></p>
+        <p className="mt-4 text-sm text-nexus-text-muted">
+          keep this text
+        </p>
       </div>
     </Card>
   );

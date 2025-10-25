@@ -28,6 +28,10 @@ interface InquireProps {
     onReportUpdate: (params: ReportParameters, content: string, error: string | null, generating: boolean) => void;
     onProfileUpdate: (profile: UserProfile) => void;
     isGenerating: boolean;
+    onNextStep?: () => void;
+    onPrevStep?: () => void;
+    canGoNext?: boolean;
+    canGoPrev?: boolean;
 }
 
 const WIZARD_HELP_TEXT: Record<number, string> = {
@@ -51,6 +55,10 @@ export const Inquire = ({
     onReportUpdate,
     onProfileUpdate,
     isGenerating,
+    onNextStep,
+    onPrevStep,
+    canGoNext,
+    canGoPrev,
 }: InquireProps) => {
     const [query, setQuery] = useState('');
     const [loadingCommand, setLoadingCommand] = useState<BrainCommand | 'quick_scope' | null>(null);
@@ -258,7 +266,7 @@ export const Inquire = ({
     };
     
     return (
-        <div className="p-4 h-full flex flex-col">
+        <div className="p-4 h-full flex flex-col max-w-6xl mx-auto">
             <header className="flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="bg-nexus-accent-cyan/10 p-2 rounded-lg">
@@ -382,59 +390,61 @@ export const Inquire = ({
                     />
                 )}
                 
-                <SavedWorkManager 
+                <SavedWorkManager
                     currentParams={params}
                     savedReports={savedReports}
                     onSave={onSaveReport}
                     onLoad={onLoadReport}
                     onDelete={onDeleteReport}
                 />
-            </div>
-            
-            <div className="flex-shrink-0 pt-4 mt-4 border-t border-nexus-border-subtle">
-                 <form onSubmit={handleQuickScope} className="space-y-3">
-                    <label className="text-xs font-semibold text-nexus-text-secondary">Start Report</label>
-                    <textarea
-                        ref={queryTextAreaRef}
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Start with a high-level goal or question..."
-                        className="w-full p-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-nexus-accent-cyan focus:outline-none transition placeholder:text-nexus-text-muted text-sm"
-                        rows={4}
-                        disabled={!!loadingCommand}
-                    />
-                    <div className="flex items-center justify-between gap-2">
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            className="hidden"
-                            accept=".txt,.pdf,.md,.docx"
-                            aria-label="Attach document"
+
+                {/* Quick Start Report Form - positioned below */}
+                <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">
+                    <form onSubmit={handleQuickScope} className="space-y-3">
+                        <label className="text-xs font-semibold text-nexus-text-secondary">Quick Start Report</label>
+                        <textarea
+                            ref={queryTextAreaRef}
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            placeholder="Start with a high-level goal or question..."
+                            className="w-full p-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-nexus-accent-cyan focus:outline-none transition placeholder:text-nexus-text-muted text-sm"
+                            rows={4}
+                            disabled={!!loadingCommand}
                         />
-                        <button type="button" onClick={() => fileInputRef.current?.click()} className="text-xs font-semibold p-2 rounded-md bg-white/5 border border-white/10 text-nexus-text-primary hover:bg-white/10 transition-colors w-full text-center" disabled={!!loadingCommand}>
-                            Attach Document
+                        <div className="flex items-center justify-between gap-2">
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                                accept=".txt,.pdf,.md,.docx"
+                                aria-label="Attach document"
+                            />
+                            <button type="button" onClick={() => fileInputRef.current?.click()} className="text-xs font-semibold p-2 rounded-md bg-white/5 border border-white/10 text-nexus-text-primary hover:bg-white/10 transition-colors flex-1 text-center" disabled={!!loadingCommand}>
+                                Attach Document
+                            </button>
+                            {fileName && (
+                                <div className="text-xs text-nexus-text-secondary flex items-center gap-1 flex-shrink-0">
+                                    <span className="truncate max-w-[120px]">{fileName}</span>
+                                    <button onClick={clearFile} className="text-red-400 hover:text-red-600 flex-shrink-0 ml-1">&times;</button>
+                                </div>
+                            )}
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={!!loadingCommand || !query.trim()}
+                            className="w-full p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            {loadingCommand === 'quick_scope' ? (
+                                <><SpinnerSmall /> Starting Report...</>
+                            ) : (
+                                'Start Report'
+                            )}
                         </button>
-                        {fileName && (
-                            <div className="text-xs text-nexus-text-secondary flex items-center gap-1 truncate">
-                                <span className="truncate max-w-[100px]">{fileName}</span>
-                                <button onClick={clearFile} className="text-red-400 hover:text-red-600 flex-shrink-0">&times;</button>
-                            </div>
-                        )}
-                    </div>
-                    
-                    <button
-                        type="submit"
-                        disabled={!!loadingCommand || !query.trim()}
-                        className="w-full p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    >
-                        {loadingCommand === 'quick_scope' ? (
-                            <><SpinnerSmall /> Starting Report...</>
-                        ) : (
-                            'Start Report'
-                        )}
-                    </button>
-                </form>
+                    </form>
+                </div>
+
             </div>
         </div>
     );
