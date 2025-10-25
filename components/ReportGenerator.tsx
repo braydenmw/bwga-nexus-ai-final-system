@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { ReportParameters, UserProfile as UserProfileType, ReportSuggestions } from '../types.ts';
-import { generateReportStream, startReportGeneration, checkReportStatus } from '../services/nexusService.ts';
+import { generateReportStream } from '../services/nexusService.ts';
 import { REGIONS_AND_COUNTRIES, INDUSTRIES, AI_PERSONAS, ORGANIZATION_TYPES, ANALYTICAL_LENSES, TONES_AND_STYLES, TIERS_BY_ORG_TYPE, ANALYTICAL_MODULES } from '../constants.tsx';
 import Spinner from './Spinner.tsx';
 import { Inquire } from './Inquire.tsx';
@@ -180,29 +180,19 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         onReportUpdate(params, '', null, true);
 
         try {
-            // Use new async job queue system
-            const jobId = await startReportGeneration(params);
+            // Generate the full report
+            const stream = await generateReportStream(params);
+            const reader = stream.getReader();
+            const decoder = new TextDecoder();
+            let content = '';
 
-            // Poll for completion
-            const pollForCompletion = async () => {
-                try {
-                    const status = await checkReportStatus(jobId);
-                    if (status.status === 'complete') {
-                        onReportUpdate(params, status.result || '', null, false);
-                    } else if (status.status === 'failed') {
-                        onReportUpdate(params, '', status.error || 'Report generation failed', false);
-                    } else {
-                        // Still processing, poll again in 2 seconds
-                        setTimeout(pollForCompletion, 2000);
-                    }
-                } catch (pollError) {
-                    console.error('Polling error:', pollError);
-                    setTimeout(pollForCompletion, 2000);
-                }
-            };
-
-            // Start polling
-            setTimeout(pollForCompletion, 2000);
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                content += decoder.decode(value, { stream: true });
+                onReportUpdate(params, content, null, true);
+            }
+            onReportUpdate(params, content, null, false);
 
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
