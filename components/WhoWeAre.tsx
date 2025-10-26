@@ -21,10 +21,10 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 </div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
-                        Welcome to BWGA Nexus AI
+                        The World's First Global Economic Empowerment OS
                     </h1>
                     <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
-                        Bridge the Global Understanding Gap with AI-powered regional intelligence. We provide the initial intelligence layer that connects regional potential with global ambition, giving every city a voice in the global marketplace.
+                        BWGA Nexus AI bridges the Global Understanding Gap with AI-powered regional intelligence. We provide the initial intelligence layer that connects regional potential with global ambition, giving every city a voice in the global marketplace.
                     </p>
                 </div>
             </section>
@@ -69,9 +69,9 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 {/* Our Solution Section */}
                 <section className="bg-white rounded-2xl p-8 md:p-12 shadow-lg">
                     <div className="text-center mb-10">
-                        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Our Solution: A Platform for Certainty</h2>
-                        <p className="text-base text-gray-600 max-w-4xl mx-auto">
-                        We provide AI-powered regional intelligence that connects regional potential with global ambition, giving every city a voice in the global marketplace.
+                        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">The "How": A Platform for Certainty</h2>
+                        <p className="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">
+                        BWGA Nexus AI bridges the gap between regional potential and global ambition by providing a platform that gives every city a voice and guides businesses to their next frontier.
                         </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -93,9 +93,9 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 {/* Intelligence Copilot Section */}
                 <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Generate Game-Changing Intelligence: From Data to Action</h2>
-                        <p className="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">
-                            Transform hours of manual research into comprehensive intelligence reports in minutes. Access $500K consulting insights for $59/month. Reduce failed market entries by 70% with data-driven regional intelligence.
+                        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">The "What": Intelligence Blueprints - From Data to Action</h2>
+                        <p className="mt-3 text-lg text-gray-600 max-w-4xl mx-auto">
+                            A Nexus Intelligence Blueprint is more than a report; it's a catalyst for action. Here's a breakdown of what our system creates to transform raw data into a clear, strategic advantage.
                         </p>
                     </div>
 
@@ -172,7 +172,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 {/* What Makes It Different Section */}
                 <section className="bg-gray-800 text-white p-8 md:p-12 rounded-2xl shadow-lg">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-extrabold tracking-tight">What Makes BWGA Nexus AI Different?</h2>
+                        <h2 className="text-3xl font-extrabold tracking-tight">The "Difference": What Makes BWGA Nexus AI Unique?</h2>
                         <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-300">This isn't just another AI tool. It's your strategic advantage in a world of uncertainty, specifically designed for early-stage understanding where clarity is most needed and hardest to find.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -198,7 +198,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 {/* Pricing Section with Shared Value Model */}
                 <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg text-center">
                     <div className="text-center mb-10">
-                        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Simple, Transparent Pricing & Our Shared Value Model</h2>
+                        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">The "Offer": Simple, Transparent Pricing & Shared Value Model</h2>
                     </div>
                     <p className="text-base text-gray-600 max-w-2xl mx-auto mb-10">
                         Gain full access to the BWGA Nexus AI platform with unlimited usage. No hidden fees, no complex tiers. Just pure, unadulterated clarity.

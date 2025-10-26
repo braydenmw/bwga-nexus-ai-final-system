@@ -43,9 +43,15 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => 
                         className="flex items-center gap-3 cursor-pointer"
                         onClick={() => handleNavClick('who-we-are')}
                     >
-                        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-                            BWGA Nexus AI
-                        </h1>
+                        <NexusLogo className="w-10 h-10 text-blue-600" />
+                        <div className="flex flex-col">
+                            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+                                BWGA Nexus AI
+                            </h1>
+                            <p className="text-xs text-gray-600 leading-tight">
+                                The World's First Global Economic Empowerment OS
+                            </p>
+                        </div>
                     </div>
 
                     {/* Desktop Navigation */}
