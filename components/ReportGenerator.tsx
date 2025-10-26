@@ -239,12 +239,45 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                           </div>
                         </div>
 
-                        {/* DEBUG INFO - Remove after testing */}
-                        <div className="mb-4 p-4 bg-yellow-100 border border-yellow-300 rounded">
-                          <strong>Debug Info:</strong><br/>
-                          Organization Type: {params.organizationType || 'Not set'}<br/>
-                          Available Tiers: {currentTiers.length}<br/>
-                          Current Step: {step}
+                        {/* AI-Powered Recommendations */}
+                        <div className="mb-6 p-6 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-xl">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="nexus-icon-circle-accent">
+                              <NexusLogo className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <h4 className="text-lg font-semibold text-nexus-accent-cyan">🤖 Nexus AI Recommendations</h4>
+                              <p className="text-sm text-nexus-text-secondary">AI-powered suggestions based on your profile</p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-4">
+                            <div className="bg-white/50 p-4 rounded-lg border border-nexus-accent-cyan/30">
+                              <h5 className="font-semibold text-nexus-text-primary mb-2">Recommended Analysis Tiers for {params.organizationType}</h5>
+                              <div className="text-sm text-nexus-text-secondary mb-3">
+                                Based on your {params.organizationType} profile, Nexus AI suggests these analysis frameworks:
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                {currentTiers.slice(0, 3).map((tier) => (
+                                  <span key={tier.id} className="px-3 py-1 bg-nexus-accent-cyan/20 text-nexus-accent-cyan text-xs rounded-full border border-nexus-accent-cyan/30">
+                                    ⭐ {tier.title}
+                                  </span>
+                                ))}
+                              </div>
+                              <p className="text-xs text-nexus-text-muted mt-2 italic">
+                                💡 These are AI recommendations - you can select any combination that fits your needs
+                              </p>
+                            </div>
+
+                            {params.region && (
+                              <div className="bg-white/50 p-4 rounded-lg border border-nexus-accent-cyan/30">
+                                <h5 className="font-semibold text-nexus-text-primary mb-2">Regional Intelligence Focus</h5>
+                                <p className="text-sm text-nexus-text-secondary">
+                                  For <strong>{params.region}</strong>, consider adding regional economic analysis and market entry strategies to your report.
+                                </p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         
                         <div className="mt-8">
