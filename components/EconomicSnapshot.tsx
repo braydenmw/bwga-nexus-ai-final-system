@@ -87,7 +87,7 @@ export const EconomicSnapshot: React.FC<EconomicSnapshotProps> = ({ country, isR
             <h3 className="font-semibold text-nexus-text-primary text-md mb-1">
                 Economic Snapshot: <span className="text-nexus-accent-cyan">{country}</span>
             </h3>
-             <p className="text-xs text-nexus-text-secondary mb-3">Live economic indicators to provide real-world context for your report.</p>
+             <p className="text-xs text-nexus-text-secondary mb-3">Live economic indicators to provide real-world context for your report. Data is updated daily and reflects the most current available information as of today.</p>
             {isLoading && (
                 <div className="flex items-center justify-center py-4">
                     <Spinner />
