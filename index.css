@@ -236,7 +236,7 @@ body {
 /* Intelligence Workspace Layout */
 .intelligence-workspace {
   display: grid;
-  grid-template-columns: 1fr 450px;
+  grid-template-columns: 450px 1fr;
   height: 100%;
   overflow: hidden;
 }
@@ -246,7 +246,7 @@ body {
   flex-direction: column;
   height: 100%;
   background-image: linear-gradient(to bottom, var(--surface-color), var(--light-surface-color));
-  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   overflow-y: auto;
 }
 
