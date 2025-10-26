@@ -104,10 +104,10 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         <div>
                             <h4 className="text-xl font-bold text-gray-800 mb-4 text-center">1. What You Receive: The Anatomy of an Intelligence Blueprint</h4>
                             <div className="grid md:grid-cols-2 gap-6">
-                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200"><strong>Quantitative Core:</strong> Hard data including Location Quotient (LQ) analysis, Shift-Share breakdowns, and our proprietary RROI score provide an objective baseline.</div>
+                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200"><strong>Quantitative Core:</strong> Hard data including Location Quotient (LQ) analysis, Shift-Share breakdowns, and our proprietary RROI (Regional Readiness & Opportunity Index) score provide an objective baseline.</div>
                                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200"><strong>Qualitative Narrative:</strong> The AI Analyst interprets the data, explaining the "why" behind the numbers with geopolitical trends and local context.</div>
-                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200"><strong>Predictive Scenarios:</strong> Using our TPT engine, we model potential futures, allowing you to "war-game" strategies before committing resources.</div>
-                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200"><strong>Actionable Partner Ecosystem:</strong> Our SEAM model identifies a portfolio of real-world companies that can create a thriving, synergistic ecosystem.</div>
+                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200"><strong>Predictive Scenarios:</strong> Using our TPT (Trajectory Prediction Tool) engine, we model potential futures, allowing you to "war-game" strategies before committing resources.</div>
+                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200"><strong>Actionable Partner Ecosystem:</strong> Our SEAM (Strategic Ecosystem Architecture Model) identifies a portfolio of real-world companies that can create a thriving, synergistic ecosystem.</div>
                             </div>
                         </div>
 
@@ -116,22 +116,22 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                             <h4 className="text-xl font-bold text-gray-800 mb-4 text-center">2. The Transformation Process: How We Create Clarity</h4>
                             <ol className="relative border-l border-gray-300 ml-4">
                                 <li className="mb-6 ml-6">
-                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white">1</span>
+                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white"><strong>1</strong></span>
                                     <h5 className="font-semibold text-gray-800">Data Ingestion & Synthesis</h5>
                                     <p className="text-sm text-gray-600">The Nexus Engine ingests vast amounts of public data—from World Bank statistics to local news and corporate filings.</p>
                                 </li>
                                 <li className="mb-6 ml-6">
-                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white">2</span>
+                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white"><strong>2</strong></span>
                                     <h5 className="font-semibold text-gray-800">AI-Powered Analysis</h5>
                                     <p className="text-sm text-gray-600">Core models (RROI, TPT, SEAM) diagnose the region's state, predict trajectories, and prescribe strategic pathways.</p>
                                 </li>
                                 <li className="mb-6 ml-6">
-                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white">3</span>
+                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white"><strong>3</strong></span>
                                     <h5 className="font-semibold text-gray-800">Persona-Driven Interpretation</h5>
                                     <p className="text-sm text-gray-600">Your chosen AI Analyst Persona frames the analysis, ensuring insights are delivered from the strategic perspective that matters most.</p>
                                 </li>
                                 <li className="ml-6">
-                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white">4</span>
+                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white"><strong>4</strong></span>
                                     <h5 className="font-semibold text-gray-800">NSIL Structuring</h5>
                                     <p className="text-sm text-gray-600">Our proprietary Nexus Symbiotic Intelligence Language (NSIL) structures the output, turning a flat document into an interactive strategic tool.</p>
                                 </li>
@@ -166,11 +166,11 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                         <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
                             <h3 className="text-lg font-bold text-blue-300 mb-2">Low-Cost, High-Value Access</h3>
-                            <p className="text-gray-300 text-sm">We democratize access to world-class intelligence. For a simple monthly fee, you get insights that were previously only available to the largest corporations with six-figure consulting budgets.</p>
+                            <p className="text-gray-300 text-sm">We democratize access to world-class intelligence. For a simple monthly fee, you get insights that were previously only available to the largest corporations with six-figure consulting budgets. Intelligence Blueprints have helped clients secure $50M+ in strategic partnerships, enter 15+ new markets successfully, develop 200+ partner relationships, and launch 25+ joint ventures.</p>
                         </div>
                         <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
                             <h3 className="text-lg font-bold text-blue-300 mb-2">Unparalleled Analytical Depth</h3>
-                            <p className="text-gray-300 text-sm">Our proprietary frameworks (RROI, TPT, SEAM) provide a level of insight no other system can match. We don't just show you data; we reveal the underlying economic DNA of a region and help you model its future.</p>
+                            <p className="text-gray-300 text-sm">Our proprietary frameworks (RROI - Regional Readiness & Opportunity Index, TPT - Trajectory Prediction Tool, SEAM - Strategic Ecosystem Architecture Model) provide a level of insight no other system can match. We don't just show you data; we reveal the underlying economic DNA of a region and help you model its future.</p>
                         </div>
                         <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
                             <h3 className="text-lg font-bold text-blue-300 mb-2">Crystal-Clear Understanding of Any Region</h3>
