@@ -451,6 +451,12 @@ export const Inquire = ({
                                 </div>
                             )}
                         </div>
+                        <div className="mt-3 pt-3 border-t border-nexus-accent-cyan/20">
+                            <p className="text-xs text-nexus-text-secondary mb-2">💡 <strong>Automatic Data Integration:</strong></p>
+                            <p className="text-xs text-nexus-text-secondary">
+                                When you select {params.userCountry} as your location, the system automatically fetches and integrates the latest economic indicators, market data, and regional insights to enhance your AI analysis without manual uploads.
+                            </p>
+                        </div>
                     </div>
                 )}
 
