@@ -69,7 +69,10 @@ export const Inquire = ({
     const [fileContent, setFileContent] = useState<string | null>(null);
     const [researchSummary, setResearchSummary] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const economicDataInputRef = useRef<HTMLInputElement>(null);
     const queryTextAreaRef = useRef<HTMLTextAreaElement>(null);
+    const [economicDataFile, setEconomicDataFile] = useState<string | null>(null);
+    const [economicDataFileName, setEconomicDataFileName] = useState<string | null>(null);
     
     // Nexus Brain state
     const [brainResults, setBrainResults] = useState<NexusBrainState>({ diagnosis: null, simulation: null, ecosystem: null, generativeModel: null });
@@ -107,6 +110,27 @@ export const Inquire = ({
             };
             reader.onerror = () => setError("Failed to read the selected file.");
             reader.readAsText(file);
+        }
+    };
+
+    const handleEconomicDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setEconomicDataFileName(file.name);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setEconomicDataFile(e.target?.result as string);
+            };
+            reader.onerror = () => setError("Failed to read the economic data file.");
+            reader.readAsText(file);
+        }
+    };
+
+    const clearEconomicDataFile = () => {
+        setEconomicDataFileName(null);
+        setEconomicDataFile(null);
+        if (economicDataInputRef.current) {
+            economicDataInputRef.current.value = '';
         }
     };
     
@@ -397,6 +421,38 @@ export const Inquire = ({
                     onLoad={onLoadReport}
                     onDelete={onDeleteReport}
                 />
+
+                {/* Economic Data Upload Section */}
+                {params.userCountry && (
+                    <div className="mt-4 p-3 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-lg">
+                        <h4 className="text-sm font-semibold text-nexus-accent-cyan mb-2 flex items-center gap-2">
+                            <NexusLogo className="w-4 h-4" />
+                            Upload Economic Data for {params.userCountry}
+                        </h4>
+                        <p className="text-xs text-nexus-text-secondary mb-3">
+                            Enhance your AI analysis by uploading economic data, reports, or datasets specific to your region. This will provide more accurate and localized insights.
+                        </p>
+                        <div className="flex items-center justify-between gap-2">
+                            <input
+                                type="file"
+                                ref={economicDataInputRef}
+                                onChange={handleEconomicDataChange}
+                                className="hidden"
+                                accept=".txt,.pdf,.md,.docx,.csv,.xlsx,.json"
+                                aria-label="Upload economic data"
+                            />
+                            <button type="button" onClick={() => economicDataInputRef.current?.click()} className="text-xs font-semibold p-2 rounded-md bg-nexus-accent-cyan/10 border border-nexus-accent-cyan/30 text-nexus-accent-cyan hover:bg-nexus-accent-cyan/20 transition-colors flex-1 text-center" disabled={!!loadingCommand}>
+                                📊 Upload Economic Data
+                            </button>
+                            {economicDataFileName && (
+                                <div className="text-xs text-nexus-text-secondary flex items-center gap-1 flex-shrink-0">
+                                    <span className="truncate max-w-[120px]">{economicDataFileName}</span>
+                                    <button onClick={clearEconomicDataFile} className="text-red-400 hover:text-red-600 flex-shrink-0 ml-1">&times;</button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/* Quick Start Report Form - positioned below */}
                 <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">

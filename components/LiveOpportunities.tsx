@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchLiveOpportunities, saveUserOpportunity, getUserOpportunities, fetchPredictiveAnalysis } from '../services/nexusService.ts';
 import type { LiveOpportunityItem, SymbiosisContext, FeedPost, PredictiveAnalysis } from '../types.ts';
-import { PlusCircleIcon, GeospatialIcon, ShieldCheckIcon, BookmarkIcon, BriefcaseIcon, NexusLogo } from './Icons.tsx';
+import { PlusCircleIcon, GeospatialIcon, ShieldCheckIcon, BookmarkIcon, BriefcaseIcon, NexusLogo, GlobeIcon } from './Icons.tsx';
 import Loader from './common/Loader.tsx';
 import { AddOpportunityModal } from './AddOpportunityModal.tsx';
 import { RegionalSnapshot } from './RegionalSnapshot.tsx';
@@ -137,6 +137,104 @@ const IntelligenceToolItem: React.FC<{ icon: React.ReactNode, title: string, chi
     </div>
 );
 
+const RotatingGlobalInsights: React.FC<{ feed: FeedPost[] }> = ({ feed }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const globalInsights = [
+        {
+            region: "Southeast Asia",
+            title: "Manufacturing Corridor Boom",
+            content: "Vietnam and Thailand emerging as cost-effective manufacturing hubs with skilled labor forces and improving infrastructure.",
+            opportunities: ["Electronics assembly", "Automotive parts", "Textile production"]
+        },
+        {
+            region: "East Africa",
+            title: "Digital Transformation Wave",
+            content: "Kenya and Rwanda leading fintech innovation with mobile payment systems and growing startup ecosystems.",
+            opportunities: ["Fintech partnerships", "Mobile technology", "Digital services"]
+        },
+        {
+            region: "Latin America",
+            title: "Renewable Energy Frontier",
+            content: "Chile and Brazil dominating clean energy development with vast solar and wind potential.",
+            opportunities: ["Solar panel manufacturing", "Wind turbine components", "Energy storage systems"]
+        },
+        {
+            region: "Central Europe",
+            title: "Advanced Manufacturing Revival",
+            content: "Poland and Czech Republic offering high-tech manufacturing with EU market access and skilled engineering talent.",
+            opportunities: ["Automotive innovation", "Industrial automation", "Aerospace components"]
+        },
+        {
+            region: "Middle East",
+            title: "Infrastructure Mega-Projects",
+            content: "UAE and Saudi Arabia driving massive infrastructure development with focus on smart cities and transportation.",
+            opportunities: ["Construction technology", "Smart city solutions", "Transportation systems"]
+        }
+    ];
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentIndex((prev) => (prev + 1) % globalInsights.length);
+        }, 8000); // Rotate every 8 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const currentInsight = globalInsights[currentIndex];
+
+    return (
+        <Card className="nexus-card-glass p-6 mb-6 animate-fadeIn animation-delay-300 border-nexus-accent-gold/50 bg-nexus-accent-gold/5">
+            <div className="flex items-center gap-3 mb-4">
+                <GlobeIcon className="w-8 h-8 text-nexus-accent-gold animate-pulse" />
+                <div>
+                    <h3 className="font-semibold text-nexus-text-primary text-lg">Global Market Spotlight</h3>
+                    <p className="text-sm text-nexus-text-secondary">Rotating insights on regional economic developments</p>
+                </div>
+            </div>
+
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h4 className="text-xl font-bold text-nexus-accent-gold">{currentInsight.region}</h4>
+                    <div className="flex gap-1">
+                        {globalInsights.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setCurrentIndex(index)}
+                                title={`View ${globalInsights[index].region} insights`}
+                                className={`w-2 h-2 rounded-full transition-colors ${
+                                    index === currentIndex ? 'bg-nexus-accent-gold' : 'bg-nexus-text-muted'
+                                }`}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                <div className="bg-white/10 p-4 rounded-lg">
+                    <h5 className="font-semibold text-nexus-text-primary mb-2">{currentInsight.title}</h5>
+                    <p className="text-sm text-nexus-text-secondary mb-3">{currentInsight.content}</p>
+                    <div>
+                        <p className="text-xs font-semibold text-nexus-accent-gold mb-2">Key Business Opportunities:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {currentInsight.opportunities.map((opp, index) => (
+                                <span key={index} className="px-2 py-1 bg-nexus-accent-gold/20 text-nexus-accent-gold text-xs rounded-full">
+                                    {opp}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="text-center">
+                    <p className="text-xs text-nexus-text-muted">
+                        Auto-rotating • Click dots to navigate • Discover new markets for your business
+                    </p>
+                </div>
+            </div>
+        </Card>
+    );
+};
+
 interface LiveOpportunitiesProps {
     onAnalyze: (item: LiveOpportunityItem) => void;
     onStartSymbiosis: (context: SymbiosisContext) => void;
@@ -205,6 +303,8 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                     </Card>
                 </header>
                 
+                <RotatingGlobalInsights feed={feed} />
+
                 <PredictiveHorizonScan feed={feed} />
 
                 <Card className="nexus-card-glass p-6 mb-6 animate-fadeIn animation-delay-600">
@@ -219,8 +319,74 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                             Stay informed with a curated feed of relevant geopolitical and economic news impacting key regions.
                         </IntelligenceToolItem>
                         <IntelligenceToolItem icon={<BookmarkIcon className="w-7 h-7" />} title="Build Your Watchlist">
-                           List your own private opportunities or projects to keep them organized and ready for deep-dive analysis.
+                            List your own private opportunities or projects to keep them organized and ready for deep-dive analysis.
                         </IntelligenceToolItem>
+                    </div>
+                </Card>
+
+                <Card className="nexus-card-glass p-6 mb-6 animate-fadeIn animation-delay-700 border-nexus-accent-cyan/50 bg-nexus-accent-cyan/5">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="nexus-icon-circle-accent">
+                            <GlobeIcon className="w-7 h-7" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-nexus-text-primary text-lg">Market Discovery Tools</h3>
+                            <p className="text-sm text-nexus-text-secondary">Find new business markets and regional opportunities</p>
+                        </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                            <h4 className="font-semibold text-nexus-accent-cyan mb-2">🌍 Regional Market Scanner</h4>
+                            <p className="text-sm text-nexus-text-secondary mb-3">Discover emerging markets with growth potential in your industry sector.</p>
+                            <button className="w-full text-sm bg-nexus-accent-cyan/20 hover:bg-nexus-accent-cyan/30 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
+                                Scan Markets
+                            </button>
+                        </div>
+
+                        <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                            <h4 className="font-semibold text-nexus-accent-cyan mb-2">📈 Business Climate Index</h4>
+                            <p className="text-sm text-nexus-text-secondary mb-3">Compare business-friendly regions with tax incentives and regulatory advantages.</p>
+                            <div className="space-y-2">
+                                <div className="text-xs text-nexus-text-secondary">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span>Singapore</span>
+                                        <span className="text-green-400 font-semibold">95/100</span>
+                                    </div>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span>Netherlands</span>
+                                        <span className="text-green-400 font-semibold">92/100</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span>UAE</span>
+                                        <span className="text-yellow-400 font-semibold">88/100</span>
+                                    </div>
+                                </div>
+                                <button className="w-full text-sm bg-nexus-accent-cyan/20 hover:bg-nexus-accent-cyan/30 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
+                                    View Full Rankings
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                            <h4 className="font-semibold text-nexus-accent-cyan mb-2">🔗 Partnership Finder</h4>
+                            <p className="text-sm text-nexus-text-secondary mb-3">Connect with regional partners, distributors, and strategic alliances.</p>
+                            <div className="space-y-2">
+                                <div className="text-xs text-nexus-text-secondary">
+                                    <div className="mb-2">
+                                        <strong className="text-nexus-accent-cyan">Market Entry Guides:</strong>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div>• Southeast Asia Manufacturing</div>
+                                        <div>• East Africa Fintech</div>
+                                        <div>• Latin America Renewable Energy</div>
+                                    </div>
+                                </div>
+                                <button className="w-full text-sm bg-nexus-accent-cyan/20 hover:bg-nexus-accent-cyan/30 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
+                                    Explore Partnerships
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </Card>
 
