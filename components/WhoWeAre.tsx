@@ -21,10 +21,13 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 </div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
-                        The World's First Global Economic Empowerment OS
+                        Welcome to BWGA Nexus AI
                     </h1>
                     <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
-                        We are building a new intelligence paradigm for a multipolar world. BWGA Nexus AI is an operating system designed to unlock the hidden economic potential of every region on Earth, transforming complexity into clarity and connecting ambitious leaders with the opportunities that will define the future.
+                        Unlock the hidden potential of global regions with AI-powered intelligence. Transform complex data into strategic opportunities and build the future of regional development.
+                    </p>
+                    <p className="text-sm md:text-base text-gray-300 max-w-2xl mx-auto leading-relaxed mt-4">
+                        Ready to discover untapped markets, forge strategic partnerships, and create sustainable growth? Let's begin your journey into regional intelligence.
                     </p>
                 </div>
             </section>
