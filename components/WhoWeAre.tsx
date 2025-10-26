@@ -219,9 +219,9 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     <div className="flex justify-center mb-6">
                         <NexusLogo className="w-10 h-10 text-gray-400" />
                     </div>
-                    <p className="font-semibold text-gray-600">BWGA Global Advisory</p>
+                    <p className="font-semibold text-gray-600">BW Global Advisory</p>
                     <p className="text-sm mb-4">ABN 55 978 113 300</p>
-                    <p className="text-xs">&copy; 2024 BWGA Global Advisory. All Rights Reserved.</p>
+                    <p className="text-xs">&copy; 2024 BW Global Advisory. All Rights Reserved.</p>
                 </div>
             </footer>
         </div>
