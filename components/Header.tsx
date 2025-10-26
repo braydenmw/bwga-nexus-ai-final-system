@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { View } from '../types.ts';
-import { RegionalDevelopmentIcon } from './Icons.tsx';
+import { NexusLogo } from './Icons.tsx';
 import { ORIGINAL_NAV_ITEMS } from '../constants.tsx';
 
 interface HeaderProps {
@@ -43,8 +43,8 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => 
                         className="flex items-center gap-3 cursor-pointer"
                         onClick={() => handleNavClick('who-we-are')}
                     >
-                        <RegionalDevelopmentIcon className="w-10 h-10 text-blue-600" />
-                        <h1 className="text-2xl font-bold text-gray-900">
+                        <NexusLogo className="w-10 h-10 text-blue-600" />
+                        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
                             BWGA Nexus AI
                         </h1>
                     </div>

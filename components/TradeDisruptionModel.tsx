@@ -55,6 +55,105 @@ export class TradeDisruptionAnalyzer {
     };
   }
 
+  // Enhanced tariff offset analysis for government-to-government trade
+  static calculateTariffOffsetStrategies(
+    tariffRate: number,
+    tradeVolume: number,
+    countryOfOrigin: string,
+    targetCountry: string
+  ): {
+    offsetMechanisms: Array<{
+      name: string;
+      description: string;
+      potentialSavings: number;
+      feasibility: 'High' | 'Medium' | 'Low';
+      requirements: string[];
+    }>;
+    totalPotentialOffset: number;
+    netEffectiveRate: number;
+  } {
+    const mechanisms = [];
+
+    // Free Trade Agreement benefits
+    if (this.hasFreeTradeAgreement(countryOfOrigin, targetCountry)) {
+      const savings = tradeVolume * (tariffRate / 100) * 0.9; // 90% reduction
+      mechanisms.push({
+        name: 'Free Trade Agreement Utilization',
+        description: 'Leverage existing FTA for tariff elimination or reduction',
+        potentialSavings: savings,
+        feasibility: 'High',
+        requirements: ['FTA ratification', 'Rules of origin compliance', 'Certificate of origin']
+      });
+    }
+
+    // Duty drawback programs
+    const drawbackSavings = tradeVolume * (tariffRate / 100) * 0.85;
+    mechanisms.push({
+      name: 'Duty Drawback Program',
+      description: 'Recover duties paid on imported materials used in export production',
+      potentialSavings: drawbackSavings,
+      feasibility: 'Medium',
+      requirements: ['Export production', 'Material traceability', 'Customs registration']
+    });
+
+    // Temporary importation under bond
+    const tibSavings = tradeVolume * (tariffRate / 100) * 0.95;
+    mechanisms.push({
+      name: 'Temporary Importation Under Bond',
+      description: 'Import goods duty-free for processing and re-export',
+      potentialSavings: tibSavings,
+      feasibility: 'Medium',
+      requirements: ['Re-export commitment', 'Bond posting', 'Processing facility']
+    });
+
+    // Special economic zones
+    const sezSavings = tradeVolume * (tariffRate / 100) * 0.8;
+    mechanisms.push({
+      name: 'Special Economic Zone Benefits',
+      description: 'Utilize SEZ incentives for reduced or eliminated tariffs',
+      potentialSavings: sezSavings,
+      feasibility: 'High',
+      requirements: ['SEZ location', 'Business registration', 'Export orientation']
+    });
+
+    // Export credit facilities
+    const ecfSavings = tradeVolume * (tariffRate / 100) * 0.3;
+    mechanisms.push({
+      name: 'Export Credit Financing',
+      description: 'Access government-backed export financing to offset costs',
+      potentialSavings: ecfSavings,
+      feasibility: 'Medium',
+      requirements: ['Credit application', 'Export contract', 'Bank partnership']
+    });
+
+    const totalPotentialOffset = mechanisms.reduce((sum, mech) => sum + mech.potentialSavings, 0);
+    const netEffectiveRate = Math.max(0, tariffRate - (totalPotentialOffset / tradeVolume * 100));
+
+    return {
+      offsetMechanisms: mechanisms,
+      totalPotentialOffset,
+      netEffectiveRate
+    };
+  }
+
+  // Check for FTA relationships (simplified - would need real database)
+  private static hasFreeTradeAgreement(countryA: string, countryB: string): boolean {
+    // This would be replaced with actual FTA database lookup
+    const majorFTAs = [
+      ['United States', 'Canada', 'Mexico'], // USMCA
+      ['European Union', 'United Kingdom'], // EU-UK TCA
+      ['China', 'Australia'], // China-Australia FTA
+      ['Japan', 'Australia'], // JAEPA
+      ['Singapore', 'Australia'], // SAFTA
+      ['South Korea', 'Australia'], // KAFTA
+      ['China', 'New Zealand'], // China-New Zealand FTA
+      ['Japan', 'New Zealand'], // JP-NZ EPA
+      ['Australia', 'New Zealand'], // ANZCERTA
+    ];
+
+    return majorFTAs.some(fta => fta.includes(countryA) && fta.includes(countryB));
+  }
+
   private static generateRecommendations(
     tariffRate: number,
     diversificationIndex: number,
@@ -97,7 +196,11 @@ export class TradeDisruptionAnalyzer {
   }
 }
 
-export const TradeDisruptionDisplay: React.FC<{ analysis: TradeDisruptionAnalysis }> = ({ analysis }) => {
+export const TradeDisruptionDisplay: React.FC<{
+  analysis: TradeDisruptionAnalysis;
+  showTariffOffsets?: boolean;
+  tariffOffsetData?: any;
+}> = ({ analysis, showTariffOffsets = false, tariffOffsetData }) => {
   const { metrics, recommendations, opportunityScore } = analysis;
 
   return (
@@ -140,6 +243,51 @@ export const TradeDisruptionDisplay: React.FC<{ analysis: TradeDisruptionAnalysi
           </div>
         </div>
       </div>
+
+      {showTariffOffsets && tariffOffsetData && (
+        <div className="mb-6 p-4 bg-nexus-surface-700 rounded-lg border border-nexus-accent-cyan/30">
+          <h4 className="text-lg font-semibold text-nexus-text-primary mb-3 flex items-center gap-2">
+            <span className="text-nexus-accent-cyan">💰</span>
+            Tariff Offset Mechanisms
+          </h4>
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div className="bg-nexus-surface-600 p-3 rounded">
+              <div className="text-sm text-nexus-text-secondary">Total Potential Offset</div>
+              <div className="text-xl font-bold text-green-400">
+                ${(tariffOffsetData.totalPotentialOffset / 1000000).toFixed(1)}M
+              </div>
+            </div>
+            <div className="bg-nexus-surface-600 p-3 rounded">
+              <div className="text-sm text-nexus-text-secondary">Net Effective Rate</div>
+              <div className="text-xl font-bold text-nexus-accent-cyan">
+                {tariffOffsetData.netEffectiveRate.toFixed(1)}%
+              </div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {tariffOffsetData.offsetMechanisms.map((mechanism: any, index: number) => (
+              <div key={index} className="flex justify-between items-center p-2 bg-nexus-surface-600 rounded">
+                <div>
+                  <div className="text-sm font-medium text-nexus-text-primary">{mechanism.name}</div>
+                  <div className="text-xs text-nexus-text-secondary">{mechanism.description}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-bold text-green-400">
+                    ${(mechanism.potentialSavings / 1000000).toFixed(1)}M
+                  </div>
+                  <div className={`text-xs px-2 py-1 rounded ${
+                    mechanism.feasibility === 'High' ? 'bg-green-900 text-green-300' :
+                    mechanism.feasibility === 'Medium' ? 'bg-yellow-900 text-yellow-300' :
+                    'bg-red-900 text-red-300'
+                  }`}>
+                    {mechanism.feasibility}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mb-6">
         <h4 className="text-lg font-semibold text-nexus-text-primary mb-3">Opportunity Assessment</h4>

@@ -8,234 +8,194 @@ interface WhoWeAreProps {
 
 const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
     return (
-        <div className="bg-gray-50 text-gray-800 font-sans">
-
-
+        <div className="bg-gray-50 text-gray-800 font-sans overflow-x-hidden">
             {/* Hero Section */}
-            <section className="relative py-20 md:py-32">
+            <section className="relative py-24 md:py-40">
                 <div className="absolute inset-0">
                     <img
                         className="w-full h-full object-cover"
-                        src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="Asian Village"
+                        src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1968&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        alt="Asian city skyline"
                     />
                     <div className="absolute inset-0 bg-black opacity-60"></div>
                 </div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
-                        Unlocking the Hidden Value of Regions Worldwide
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
+                        The World's First Global Economic Empowerment OS
                     </h1>
-                    <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-                        We empower leaders to see the unseen, to connect the disconnected, and to build thriving futures with a platform that transforms complexity into clarity.
+                    <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                        We are building a new intelligence paradigm for a multipolar world. BWGA Nexus AI is an operating system designed to unlock the hidden economic potential of every region on Earth, transforming complexity into clarity and connecting ambitious leaders with the opportunities that will define the future.
                     </p>
                 </div>
             </section>
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20">
 
-                {/* Founder & BWGA Section */}
-                <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-8 md:gap-12">
-                    <div className="flex-shrink-0">
-                        <img
-                            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                            alt="Melbourne, Australia"
-                            className="w-32 h-32 rounded-lg object-cover shadow-md border-4 border-white"
-                        />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">The Vision of a Connected World</h2>
-                        <p className="text-gray-600 text-lg mb-4 leading-relaxed">
-                            <strong className="text-gray-800">BWGA Global Advisory</strong> was born from a simple observation by founder <strong className="text-gray-800">Brayden Walls</strong>: the world is full of untapped potential, locked away in regional economies that are consistently undervalued and misunderstood. After years on the front lines of global development, a universal truth became clear.
+                {/* Our Vision Section */}
+                <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Our Vision: Solving the Global Understanding Gap</h2>
+                    <p className="text-gray-600 text-base mb-4 leading-relaxed">
+                        Across the world, decision-makers face a critical blind spot. National-level data is plentiful, but it overlooks the heartbeat of real economic growth: the regional cities, provinces, and communities where innovation, production, and opportunity truly begin.
+                    </p>
+                    <p className="text-gray-600 text-base mb-6 leading-relaxed">
+                        This creates what we call the Global Understanding Gap—a silent yet costly divide between global capital and regional potential. The result is a multi-trillion-dollar inefficiency: promising regions remain unseen, investment is misdirected, and partnerships that could transform economies are never realized.
+                    </p>
+                    <div className="bg-gray-100 border-l-4 border-blue-500 p-6 rounded-r-lg mb-6">
+                        <p className="text-gray-700 font-semibold italic text-base leading-relaxed">
+                            "It wasn't a lack of ambition or capital that held regions back. It was a failure of imagination, fueled by a chronic lack of clarity. We're helping the world see what's truly possible when every place gets to prove its worth."
                         </p>
-                        <div className="bg-gray-100 border-l-4 border-gray-400 p-4 rounded-r-lg">
-                            <p className="text-gray-700 font-semibold italic text-lg">
-                                "It wasn't a lack of ambition or capital that held regions back. It was a failure of imagination, fueled by a chronic lack of clarity. We're helping the world see what's truly possible when every place gets to prove its worth."
+                        <p className="text-right mt-2 text-gray-600 font-medium text-sm">— Brayden Walls, Founder</p>
+                    </div>
+                    <p className="text-gray-600 text-base mb-6 leading-relaxed">
+                        BWGA Nexus was engineered to close this gap. Our platform provides an objective, data-driven first look—an initial intelligence layer that gives leaders the confidence to engage, invest, and build.
+                    </p>
+                    <div className="mt-12 grid md:grid-cols-2 gap-8 items-center bg-gray-50 p-6 rounded-xl border border-gray-200">
+                        <div className="order-2 md:order-1">
+                            <p className="font-bold text-gray-800 leading-relaxed">
+                                The BWGA Nexus AI platform is a powerful decision-support tool, designed to augment human expertise, not replace it. The information and analysis provided are generated from publicly available data and sophisticated AI models. While we strive for the highest degree of accuracy, all insights should be independently verified as part of a comprehensive due diligence process before making any final strategic or financial commitments.
                             </p>
                         </div>
-                    </div>
-                </section>
-
-                {/* The Problem Section */}
-                <section className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">The Problem of Overlooked Opportunities</h2>
-                    <p className="text-lg text-gray-600 max-w-4xl mx-auto mb-12">
-                        For too long, major corporations and governments have overlooked regional powerhouses, basing critical decisions on incomplete, outdated, and siloed information. This leads to missed opportunities, wasted investment, and a world where only the most obvious markets get attention.
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="bg-white p-8 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-300">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-3">Fragmented Data</h3>
-                            <p className="text-gray-600">Vital intelligence is a scattered mosaic of disconnected sources. Nexus AI pieces it together, revealing the full picture of a region's strengths, weaknesses, and, most importantly, its trajectory.</p>
-                        </div>
-                        <div className="bg-white p-8 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-300">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-3">Outdated Information</h3>
-                            <p className="text-gray-600">Decisions that shape futures cannot be based on data that is months or years old. Our live data engine ensures your strategy is built on the reality of now, not the memory of then.</p>
-                        </div>
-                        <div className="bg-white p-8 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-300">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-3">Siloed Analysis</h3>
-                            <p className="text-gray-600">When experts work in isolation, they see only a fraction of the ecosystem. Nexus AI breaks down these walls, fostering a unified, multi-perspective understanding that is impossible to achieve alone.</p>
+                        <div className="order-1 md:order-2">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Data analysis charts" className="rounded-lg shadow-md object-cover w-full h-full" />
                         </div>
                     </div>
                 </section>
 
-                {/* The Invention Section */}
+                {/* Our Solution Section */}
                 <section className="bg-white rounded-2xl p-8 md:p-12 shadow-lg">
                     <div className="text-center mb-10">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">The Solution: A Platform for Certainty</h2>
-                        <p className="text-lg text-gray-600 max-w-4xl mx-auto">
-                            BWGA Nexus AI is the dedicated platform for regional intelligence, engineered to unlock the full potential of cities worldwide. We connect governments with corporations, turning uncertainty into opportunity and helping every region build a prosperous future.
+                        <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Our Solution: A Platform for Certainty</h2>
+                        <p className="text-base text-gray-600 max-w-4xl mx-auto">
+                        We bridge the gap between regional potential and global ambition, giving a voice to every city and guiding businesses to their next frontier.
                         </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
                         <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">💡 Empowering Regional Governments</h3>
-                            <p className="text-gray-600">Nexus AI provides local governments with the tools to showcase their region’s unique strengths. We help you attract investment, foster innovation, and create a thriving ecosystem for businesses and communities alike.</p>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">For Regional Governments: A Global Megaphone</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed">We transform your region's raw data into a compelling, evidence-based narrative. Our platform highlights your unique strengths, from infrastructure and workforce to quality of life and investment incentives. We then put this story in front of a global audience of corporations actively seeking new markets, ensuring your voice is heard in the boardrooms that matter.</p>
                         </div>
                         <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">🌍 Connecting Companies to New Markets</h3>
-                            <p className="text-gray-600">In a volatile global economy, Nexus AI offers a lifeline. We guide companies to high-potential regional cities, uncovering new markets and opportunities for growth in places others overlook.</p>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">For Businesses: A Compass to Opportunity</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed">Stop navigating the world with an outdated map. Nexus AI provides a live, multi-dimensional view of the global economic landscape. We help you identify and vet high-potential regional cities that align with your strategic goals, de-risking expansion and uncovering opportunities for growth, resilience, and innovation in markets you may have never considered.</p>
+                        </div>
+                        <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">For Investors & Analysts: Strategic Intelligence</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed">Make informed investment decisions with comprehensive regional analysis. Our platform provides the due diligence intelligence that traditional research firms can't match, helping you identify undervalued opportunities and mitigate regional risks before capital deployment.</p>
                         </div>
                     </div>
                 </section>
 
-                {/* A Global Solution */}
-                <section className="relative text-center">
-                    <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')" }}
-                    ></div>
-                    <div className="absolute inset-0 bg-black opacity-50"></div>
-                    <div className="relative max-w-4xl mx-auto py-16 px-4">
-                        <h2 className="text-3xl font-bold text-white mb-4">Give Every Region a World-Class Voice</h2>
-                        <p className="text-lg text-gray-200 max-w-3xl mx-auto">
-                            From the agricultural heartlands of America to the burgeoning tech hubs of India, every region has a story to tell and value to offer. BWGA Nexus AI is the megaphone. It provides the data-driven narrative to attract investment, foster growth, and prove that they are more than just a place on a map.
-                        </p>
-                    </div>
-                </section>
-
-                <section className="bg-gray-50 py-16">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold text-gray-900">How We Forge Connections and Create Opportunities</h2>
-                            <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">We bridge the gap between regional potential and global ambition, giving a voice to every city and guiding businesses to their next frontier.</p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                            <div className="space-y-8">
-                                <div>
-                                    <h3 className="text-xl font-semibold text-gray-800">For Regional Governments: A Global Megaphone</h3>
-                                    <p className="mt-2 text-gray-600">We transform your region's raw data into a compelling, evidence-based narrative. Our platform highlights your unique strengths, from infrastructure and workforce to quality of life and investment incentives. We then put this story in front of a global audience of corporations actively seeking new markets, ensuring your voice is heard in the boardrooms that matter.</p>
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-semibold text-gray-800">For Businesses: A Compass to Opportunity</h3>
-                                    <p className="mt-2 text-gray-600">Stop navigating the world with an outdated map. Nexus AI provides a live, multi-dimensional view of the global economic landscape. We help you identify and vet high-potential regional cities that align with your strategic goals, de-risking expansion and uncovering opportunities for growth, resilience, and innovation in markets you may have never considered.</p>
-                                </div>
-                            </div>
-                            <div className="text-center">
-                                    <img 
-                                        src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-                                        alt="Global Connections"
-                                        className="w-full h-auto rounded-lg shadow-md"
-                                    />
-                                </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Core Technology Section */}
+                {/* Intelligence Copilot Section */}
                 <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
-                    <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Our Technological Edge</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="border-l-4 border-gray-300 pl-6">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">The Regional Resilience & Opportunity Index (RROI)</h3>
-                            <p className="text-gray-600">This is our diagnostic tool for understanding the true potential of a region. It goes beyond surface-level data to measure the core drivers of growth and resilience, from human capital to infrastructure.</p>
-                        </div>
-                        <div className="border-l-4 border-gray-300 pl-6">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">The Transitional Pathway Theory (TPT) Simulation</h3>
-                            <p className="text-gray-600">Our predictive engine allows you to see the future. By simulating the impact of different strategic interventions, you can make decisions with confidence, knowing you've chosen the optimal path.</p>
-                        </div>
-                        <div className="border-l-4 border-gray-300 pl-6">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">The Symbiotic Ecosystem Architecture Model (SEAM)</h3>
-                            <p className="text-gray-600">This is where strategy meets execution. SEAM designs the ideal network of partners to bring your vision to life, identifying real-world companies that can create a symbiotic ecosystem for growth.</p>
-                        </div>
-                        <div className="border-l-4 border-gray-300 pl-6">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">The Nexus Brain</h3>
-                            <p className="text-gray-600">More than just an AI, it's a council of digital experts. It simulates a multi-disciplinary team to provide holistic, unbiased insights that a single human analyst never could.</p>
-                        </div>
-                        <div className="border-l-4 border-gray-300 pl-6">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">The NSIL Framework</h3>
-                            <p className="text-gray-600">The Nexus Symbiotic Intelligence Language is our secret sauce. It's a proprietary framework for mapping complex regional ecosystems, ensuring every piece of data is understood in its full context.</p>
-                        </div>
-                        <div className="border-l-4 border-gray-300 pl-6">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">The Intelligence Blueprint</h3>
-                            <p className="text-gray-600">This is the output: a dynamic, data-driven strategic report that doesn't just inform, but guides. It’s your action plan for success, tailored to your specific objectives.</p>
-                        </div>
-                        <div className="border-l-4 border-gray-300 pl-6">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-2">The Live Data Engine</h3>
-                            <p className="text-gray-600">In a world that changes by the second, our engine ensures your intelligence is never out of date. It provides the real-time pulse of the global economy, right at your fingertips.</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Who It's For Section */}
-                <section className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">An Intelligence Copilot for Every Leader</h2>
-                    <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-12">
-                        Access the power of a world-class intelligence team without the world-class price tag. BWGA Nexus AI provides two core tools to every user:
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">3. An Intelligence Copilot for Every Leader</h2>
+                    <p className="text-base text-gray-600 max-w-4xl mx-auto mb-12 text-center">
+                        Access the power of a world-class intelligence team without the world-class price tag. BWGA Nexus AI provides two core tools to every user, designed to cover the full spectrum of strategic intelligence needs.
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-                        <div className="bg-white p-8 rounded-xl shadow-md">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-3">Nexus Enquire AI Copilot</h3>
-                            <p className="text-gray-600 leading-relaxed">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3">Nexus Enquire AI Copilot</h3>
+                            <p className="text-gray-600 leading-relaxed text-sm">
                                 Your on-demand AI assistant for regional intelligence. Ask complex questions, get instant clarification, and receive data-driven answers in seconds. It’s like having a team of analysts at your fingertips, 24/7, helping you save time and make smarter decisions, faster.
                             </p>
                         </div>
-                        <div className="bg-white p-8 rounded-xl shadow-md">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-3">Automated Report Generator</h3>
-                            <p className="text-gray-600 leading-relaxed">
-                                Go from question to presentation-ready report in minutes, not months. Our system produces comprehensive, affordable reports that provide clear, actionable intelligence. This information matching and clarification saves countless hours and significant budget, democratizing access to the insights that drive growth.
+                        <div className="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3">Automated Report Generator</h3>
+                            <p className="text-gray-600 leading-relaxed text-sm">
+                                This is the game-changer. Go from a simple question to a presentation-ready Intelligence Blueprint in minutes, not months. Our system provides unparalleled clarity, helping those who hold value in where they live to find the partnerships and strategies needed for growth.
                             </p>
+                        </div>
+                    </div>
+                    <div className="mt-8 pt-8 border-t border-gray-200">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">Powered by The Nexus Engine</h3>
+                        <p className="text-base text-gray-600 max-w-3xl mx-auto mb-8 text-center">
+                            Our reports are not generic summaries. They are built on a foundation of proprietary technologies that deliver unparalleled depth and clarity. This purpose-built engine for regional analysis allows us to:
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                            <div className="bg-gray-50 p-6 rounded-lg">
+                                <h4 className="font-bold text-gray-800">Diagnose (RROI)</h4>
+                                <p className="text-sm text-gray-600 mt-1">Measure the true potential and core drivers of a region's economy with our Regional Resilience & Opportunity Index.</p>
+                            </div>
+                            <div className="bg-gray-50 p-6 rounded-lg">
+                                <h4 className="font-bold text-gray-800">Predict (TPT)</h4>
+                                <p className="text-sm text-gray-600 mt-1">"War-game" the future by modeling the impact of strategic interventions with our Transitional Pathway Theory simulation engine.</p>
+                            </div>
+                            <div className="bg-gray-50 p-6 rounded-lg">
+                                <h4 className="font-bold text-gray-800">Architect (SEAM)</h4>
+                                <p className="text-sm text-gray-600 mt-1">Design the ideal network of real-world partners required to bring your strategic vision to life with the Symbiotic Ecosystem Architecture Model.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-8 pt-8 border-t border-gray-200">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">Generate Game-Changing Intelligence</h3>
+                        <p className="text-base text-gray-600 max-w-3xl mx-auto mb-8 text-center">
+                            The Nexus Engine enables the creation of bespoke reports that provide clarity and drive growth for our key users:
+                        </p>
+                        <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <li className="bg-gray-100 p-4 rounded-lg"><strong>For Governments:</strong> Create investment attraction blueprints, simulate policy impacts, and conduct supply chain gap analyses to foster regional development.</li>
+                            <li className="bg-gray-100 p-4 rounded-lg"><strong>For Businesses:</strong> Generate detailed market entry strategies, perform partner vetting, and build comprehensive supply chain resilience assessments.</li>
+                            <li className="bg-gray-100 p-4 rounded-lg"><strong>For Investors:</strong> Conduct deep-dive due diligence, map regional risks, and identify undervalued assets to make informed, high-impact investments.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                {/* What Makes It Different Section */}
+                <section className="bg-gray-800 text-white p-8 md:p-12 rounded-2xl shadow-lg">
+                    <h2 className="text-2xl font-bold text-center mb-10">5. What Makes BWGA Nexus AI Different?</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                        <div>
+                            <h3 className="text-lg font-bold text-blue-300 mb-2">Low-Cost, High-Value Access</h3>
+                            <p className="text-gray-300 text-sm">We democratize access to world-class intelligence. For a simple monthly fee, you get insights that were previously only available to the largest corporations with six-figure consulting budgets.</p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-blue-300 mb-2">Unparalleled Analytical Depth</h3>
+                            <p className="text-gray-300 text-sm">Our proprietary frameworks (RROI, TPT, SEAM) provide a level of insight no other system can match. We don't just show you data; we reveal the underlying economic DNA of a region and help you model its future.</p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-blue-300 mb-2">Crystal-Clear Understanding of Any Region</h3>
+                            <p className="text-gray-300 text-sm">Our system is built to transform the complexity and ambiguity of regional economies—anywhere in the world—into crystal-clear, actionable intelligence. It gives you the confidence to act on opportunities that others miss because they can't see them.</p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-blue-300 mb-2">A Bridge to Global Opportunity</h3>
+                            <p className="text-gray-300 text-sm">Nexus AI is engineered to bridge the critical gaps overlooked by traditional research. It works seamlessly with your existing processes, providing the intelligence layer that helps you step into new global ventures with confidence and clarity, regardless of your venture's scale or scope.</p>
                         </div>
                     </div>
                 </section>
 
                 {/* Pricing Section with Shared Value Model */}
                 <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg text-center">
-                    <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">Our Shared Value Model – Investing in Communities Together</h3>
-                        <p className="text-gray-600 mb-4">
-                            BW Global Advisory is founded on the principle of creating mutual, sustainable benefit. We are committed to ensuring that our work not only drives business success but also contributes positively to the regions we analyze. Therefore, <strong className="text-green-700">10% of the net fee from every commissioned AI-Human Intelligence Report is directly reinvested into community-identified development initiatives</strong> (such as education, local health programs, or small-scale livelihood support) within the specific region(s) analyzed in your report. Partnering with BWGA means your strategic market intelligence also fosters tangible local impact.
-                        </p>
-                        <div className="flex items-center justify-center">
-                            <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm rounded-lg px-4 py-2 border border-green-300">
-                                <span className="text-2xl">🌱</span>
-                                <div>
-                                    <p className="text-green-800 font-semibold">10% Community Reinvestment</p>
-                                    <p className="text-sm text-gray-600">From every report fee</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
-                    <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Simple, Transparent Pricing & Our Shared Value Model</h2>
+                    <p className="text-base text-gray-600 max-w-2xl mx-auto mb-10">
                         Gain full access to the BWGA Nexus AI platform with unlimited usage. No hidden fees, no complex tiers. Just pure, unadulterated clarity.
                     </p>
-                    <div className="inline-block bg-gray-100 rounded-xl p-8 border border-gray-200">
-                        <p className="text-5xl font-extrabold text-gray-900 mb-2">$89</p>
-                        <p className="text-gray-600 font-semibold mb-6">per month</p>
-                        <ul className="text-left space-y-3 text-gray-700">
-                            <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> Unlimited Intelligence Reports</li>
-                            <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> Real-Time Data Access</li>
-                            <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> Multi-Persona AI Analysis</li>
-                            <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> Flexible subscription terms (1, 3, 6, 12 months)</li>
-                            <li className="flex items-center"><span className="text-green-500 mr-2">✔</span> 10% Community Reinvestment Program</li>
-                        </ul>
+                    <div className="grid md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
+                        <div className="bg-gray-100 rounded-xl p-8 border border-gray-200 text-center">
+                            <p className="text-5xl font-extrabold text-gray-900 mb-2">$59</p>
+                            <p className="text-gray-600 font-semibold mb-4">per month</p>
+                            <p className="text-xs text-gray-500 mb-6">3, 6, or 12-month subscriptions available on request.</p>
+                            <ul className="text-left space-y-3 text-gray-700 text-sm">
+                                <li className="flex items-center gap-2"><span className="text-green-500">✔</span> Unlimited Intelligence Reports</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500">✔</span> Unlimited use of the Nexus Enquire AI Copilot</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500">✔</span> Real-Time Data Access & Analysis</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500">✔</span> Multi-Persona AI Configuration</li>
+                            </ul>
+                        </div>
+                        <div className="bg-green-50 p-8 rounded-xl border-2 border-dashed border-green-300 h-full flex flex-col justify-center">
+                            <h3 className="text-xl font-bold text-green-800 mb-3">Feature: The Shared Value Model</h3>
+                            <p className="text-gray-700 text-sm mb-4">
+                                Your investment in strategic intelligence creates tangible local impact. We are committed to ensuring our work creates mutual, sustainable benefit.
+                            </p>
+                            <div className="bg-white p-4 rounded-lg border border-green-200">
+                                <p className="text-2xl font-extrabold text-green-600">10%</p>
+                                <p className="text-sm font-semibold text-green-800">of your fee is directly reinvested into community-identified development initiatives in the region you analyze.</p>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
                 {/* Call to Action */}
                 <section className="text-center bg-gray-800 text-white rounded-2xl p-12">
-                    <h2 className="text-3xl font-bold mb-4">Stop Guessing. Start Knowing.</h2>
-                    <p className="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+                    <h2 className="text-2xl font-bold mb-4">Stop Guessing. Start Knowing.</h2>
+                    <p className="text-base text-gray-300 mb-8 max-w-3xl mx-auto">
                         Launch the dashboard and experience the power of unified intelligence. Your journey to clarity begins now.
                     </p>
                     <button
