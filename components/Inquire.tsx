@@ -272,6 +272,45 @@ export const Inquire = ({
             return <p>{capabilities?.greeting || "How can I help you build your report?"}</p>;
         }
 
+        // Provide insights based on entered information
+        const provideInitialInsights = () => {
+            const insights = [];
+
+            if (params.userName) {
+                insights.push(`👋 Welcome ${params.userName}!`);
+            }
+
+            if (params.reportName) {
+                insights.push(`📋 Report Focus: "${params.reportName}"`);
+            }
+
+            if (params.region) {
+                insights.push(`📍 Target Region: ${params.region}`);
+            }
+
+            if (params.industry && params.industry.length > 0) {
+                const industries = params.industry.filter(i => i !== 'Custom');
+                if (params.customIndustry) industries.push(params.customIndustry);
+                insights.push(`🏭 Industries: ${industries.join(', ')}`);
+            }
+
+            if (params.idealPartnerProfile) {
+                insights.push(`🤝 Partner Profile: ${params.idealPartnerProfile.substring(0, 50)}${params.idealPartnerProfile.length > 50 ? '...' : ''}`);
+            }
+
+            if (params.problemStatement) {
+                insights.push(`🎯 Core Objective: ${params.problemStatement.substring(0, 60)}${params.problemStatement.length > 60 ? '...' : ''}`);
+            }
+
+            if (params.aiPersona && params.aiPersona.length > 0) {
+                const personas = params.aiPersona.filter(p => p !== 'Custom');
+                if (params.customAiPersona) personas.push(params.customAiPersona);
+                insights.push(`🧠 AI Analyst: ${personas.join(', ')}`);
+            }
+
+            return insights;
+        };
+
         switch (aiInteractionState) {
             case 'idle':
                 return <p>I'm ready to assist. Start by entering your name in the profile section.</p>;
@@ -288,9 +327,32 @@ export const Inquire = ({
                     </div>
                 );
             case 'answeredPrompt':
-                 return <p>Understood. Please complete the required fields to continue.</p>;
+                  return <p>Understood. Please complete the required fields to continue.</p>;
             case 'active':
             default:
+                const insights = provideInitialInsights();
+                if (insights.length > 0) {
+                    return (
+                        <div>
+                            <div className="prose prose-sm max-w-none text-nexus-text-secondary mb-3"
+                                 dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
+                            />
+                            <div className="bg-nexus-accent-cyan/10 border border-nexus-accent-cyan/20 rounded-md p-3 mt-3">
+                                <p className="text-sm font-semibold text-nexus-accent-cyan mb-2">📊 Current Assessment:</p>
+                                <ul className="text-xs text-nexus-text-secondary space-y-1">
+                                    {insights.map((insight, index) => (
+                                        <li key={index}>{insight}</li>
+                                    ))}
+                                </ul>
+                                {insights.length >= 3 && (
+                                    <p className="text-xs text-nexus-accent-cyan mt-2 font-medium">
+                                        💡 Based on your inputs, I can help you build a comprehensive analysis. Try using the "Quick Start Report" below or proceed through the wizard steps.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    );
+                }
                 return (
                     <div className="prose prose-sm max-w-none text-nexus-text-secondary"
                          dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
