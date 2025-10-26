@@ -228,13 +228,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 return <ProfileStep params={params} handleChange={handleChange} inputStyles={inputStyles} labelStyles={labelStyles} />;
             case 2: // Opportunity & Tiers
                 return (
-                    <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-                        <div className="flex items-center gap-4 mb-6">
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 space-y-8">
+                        <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
                             <span className="text-2xl">🎯</span>
                           </div>
                           <div>
-                            <h3 className="text-2xl font-bold text-gray-900">Strategic Opportunity & Analysis Tiers</h3>
+                            <h3 className="text-xl md:text-2xl font-bold text-gray-900">Strategic Opportunity & Analysis Tiers</h3>
                             <p className="text-gray-600 text-sm">Define your market opportunity and analysis frameworks.</p>
                           </div>
                         </div>
@@ -242,7 +242,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         {/* AI-Powered Recommendations */}
                         <div className="mb-6 p-6 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-xl">
                           <div className="flex items-center gap-3 mb-4">
-                            <div className="nexus-icon-circle-accent">
+                            <div className="p-2 bg-nexus-accent-cyan/10 rounded-lg">
                               <NexusLogo className="w-6 h-6" />
                             </div>
                             <div>
@@ -280,17 +280,17 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                           </div>
                         </div>
                         
-                        <div className="mt-8">
-                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                        <div>
+                            <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 mb-4">
                               <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
                                 <span className="text-gray-500">📊</span>
                                 Analysis Tiers (Methodology)
                               </h4>
-                              <p className="text-gray-600 text-base">Select frameworks. The AI will combine selected tiers into a unified blueprint.</p>
+                              <p className="text-gray-600 text-sm md:text-base">Select one or more strategic frameworks for your report. The AI will synthesize the outputs into a single, cohesive intelligence blueprint. Unsure which to choose? Ask the Nexus Inquire AI in the left panel for guidance.</p>
                             </div>
                             <div className="grid md:grid-cols-2 gap-8">
                             {currentTiers.length > 0 ? currentTiers.map((tier) => (
-                                      <label key={tier.id} className={`p-8 rounded-2xl text-left border-2 transition-all duration-300 w-full flex flex-col h-full cursor-pointer bg-white hover:bg-gray-50 shadow-md hover:shadow-lg ${params.tier.includes(tier.id) ? 'border-gray-800 scale-105 shadow-xl ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`}>
+                                      <label key={tier.id} className={`p-6 md:p-8 rounded-2xl text-left border-2 transition-all duration-300 w-full flex flex-col h-full cursor-pointer bg-white hover:bg-gray-50 shadow-md hover:shadow-lg ${params.tier.includes(tier.id) ? 'border-gray-800 scale-105 shadow-xl ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`}>
                                           <div className="flex justify-between items-start mb-4">
                                           <span className="font-bold text-gray-900 text-2xl">{tier.title}</span>
                                               <input
@@ -317,17 +317,17 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                               </div>
                          </div>
 
-                         <div className="mt-8 pt-8 border-t border-gray-200">
-                             <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                         <div className="pt-6 border-t border-gray-200">
+                             <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 mb-4">
                                <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
                                  <span className="text-gray-500">🧠</span>
                                  Advanced Analytical Modules
                                </h4>
-                               <p className="text-gray-600 text-base">Enhance your report with specialized intelligence.</p>
+                               <p className="text-gray-600 text-sm md:text-base">These modules are currently in Enterprise testing and provide deep, specialized intelligence. While not selectable now, they demonstrate the future capabilities of the Nexus platform.</p>
                              </div>
                              <div className="space-y-6">
                                {Object.entries(ANALYTICAL_MODULES).map(([key, group]: [string, any]) => (
-                                 <div key={key} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                 <div key={key} className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
                                    <h5 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
                                      <span className="text-gray-800">⚡</span>
                                      {group.title}
@@ -348,13 +348,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                              </div>
                          </div>
 
-                        <div className="mt-8 pt-8 border-t border-gray-200">
-                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                        <div className="pt-6 border-t border-gray-200">
+                            <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 mb-4">
                               <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
                                 <span className="text-gray-500">📍</span>
                                 Geographic Targeting & Scope
                               </h4>
-                              <p className="text-gray-600 text-base">Define your market focus for hyper-local intelligence.</p>
+                              <p className="text-gray-600 text-sm md:text-base">Define your market focus for hyper-local intelligence. The more specific your location, the more granular the AI's analysis will be.</p>
                             </div>
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
@@ -386,7 +386,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                              </div>
 
                             <div className="mt-8">
-                                <label className={`${labelStyles} text-lg`}>Core Industry Focus (Select one or more) *</label>
+                                <label className={`${labelStyles} text-lg`}>Core Industry Focus *</label>
                                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-3">
                                   <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
                                       {INDUSTRIES.map((industry) => (
@@ -409,7 +409,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                                 </div>
                             )}
                             <div className="mt-8">
-                                <label className={`${labelStyles} text-lg`}>Ideal Partner Profile *</label>
+                                <label className={`${labelStyles} text-lg`}>Describe Your Ideal Partner *</label>
                                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-3">
                                   <textarea value={params.idealPartnerProfile} onChange={e => handleChange('idealPartnerProfile', e.target.value)} rows={5} className={`${inputStyles} text-base resize-none`} placeholder="Describe your ideal strategic partner in detail..." />
                                   <p className="text-sm text-gray-600 mt-3 flex items-center gap-2">
@@ -423,13 +423,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 );
              case 3: // Objective & AI Analyst
                 return (
-                    <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-                        <div className="flex items-center gap-4 mb-6">
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 space-y-8">
+                        <div className="flex items-center gap-4">
                           <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
                             <span className="text-2xl">🎯</span>
                           </div>
                           <div>
-                            <h3 className="text-2xl font-bold text-gray-900">Strategic Objective & AI Intelligence</h3>
+                            <h3 className="text-xl md:text-2xl font-bold text-gray-900">Strategic Objective & AI Intelligence</h3>
                             <p className="text-gray-600 text-sm">Define your mission and configure AI analytical frameworks.</p>
                           </div>
                         </div>
@@ -445,10 +445,10 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                             </div>
                         </div>
 
-                        <div className="mt-8 pt-8 border-t border-gray-200">
-                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
-                              <label className={`${labelStyles} text-lg`}>Configure AI Intelligence Analyst *</label>
-                              <p className="text-gray-600 text-base mt-2">Select AI personas that align with your analytical needs.</p>
+                        <div className="pt-6 border-t border-gray-200">
+                            <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 mb-4">
+                              <label className={`${labelStyles} text-lg`}>Configure Your AI Analyst Team *</label>
+                              <p className="text-gray-600 text-sm md:text-base mt-2">Select one or more AI personas. The AI will synthesize their expertise to provide a multi-faceted analysis. This is a key driver of report quality.</p>
                             </div>
                             <div className="grid grid-cols-4 gap-4">
                                 {AI_PERSONAS.map((persona) => (
@@ -471,7 +471,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                             )}
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-8 mt-8">
+                        <div className="grid md:grid-cols-2 gap-8 pt-6 border-t border-gray-200">
                             <div>
                                 <label className={`${labelStyles} text-lg`}>Analytical Frameworks</label>
                                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-3 space-y-3">
@@ -500,13 +500,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
             case 4: // Review & Generate
                 const isInvalid = (field: keyof ReportParameters, condition?: boolean) => {
                     const value = params[field];
-                    if (condition === false) return false;
+                    if (condition === false) return false; // Explicitly false condition means don't validate
                     if (Array.isArray(value)) return value.length === 0;
                     if (typeof value === 'string') return !value.trim();
                     return false;
                 };
 
-                const summaryItemClasses = (invalid: boolean) =>
+                const summaryItemClasses = (invalid: boolean) => // Keep this function as it is
                     `p-3 rounded-lg transition-colors ${invalid ? 'bg-red-100 border border-red-200' : 'bg-gray-50'}`;
 
                 const SummaryItem: React.FC<{label: string, value: React.ReactNode, invalid?: boolean}> = ({label, value, invalid = false}) => (
@@ -517,13 +517,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 );
 
                 return (
-                      <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-                          <div className="flex items-center gap-4 mb-6">
+                      <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200">
+                          <div className="flex items-center gap-4 mb-8">
                             <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
                               <span className="text-2xl">🚀</span>
                             </div>
                             <div>
-                              <h3 className="text-2xl font-bold text-gray-900">Final Review & Generation</h3>
+                              <h3 className="text-xl md:text-2xl font-bold text-gray-900">Final Review & Generation</h3>
                               <p className="text-gray-600 text-sm">Review the quality assessment and generate your report.</p>
                             </div>
                           </div>
@@ -532,13 +532,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
                         {/* Nexus Brain Integration - Show available analysis */}
                         {step === 4 && (
-                          <div className="my-8 p-6 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-xl">
+                          <div className="my-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
                             <h4 className="text-lg font-semibold text-nexus-accent-cyan mb-4 flex items-center gap-2">
-                              <span className="text-nexus-accent-cyan">🧠</span>
+                              <span className="text-blue-600">🧠</span>
                               Nexus Brain Analysis Available
                             </h4>
-                            <p className="text-sm text-nexus-text-secondary mb-4">
-                              Before generating your final report, you can run advanced AI analysis on your defined region and objectives.
+                            <p className="text-sm text-gray-700 mb-4">
+                              Before generating your final report, you can use the **Nexus Inquire AI** panel on the left to run advanced analysis on your defined region and objectives.
                               The Nexus Brain will provide RROI diagnosis, TPT simulations, and SEAM ecosystem design.
                             </p>
                             <div className="text-xs text-nexus-text-muted">
@@ -547,7 +547,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                           </div>
                         )}
 
-                        <div className="my-8">
+                        <div className="my-6">
                             <h4 className="text-lg font-semibold text-gray-800 mb-4">Global Trade Intelligence</h4>
                             <div className="mb-8">
                                 {(() => {
@@ -567,7 +567,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                             </div>
                         </div>
 
-                        <div className="space-y-6 p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-inner">
+                        <div className="space-y-4 p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-inner">
                             <div className="grid md:grid-cols-2 gap-6">
                               <SummaryItem label="Report Name" value={params.reportName} invalid={isInvalid('reportName')} />
                               <SummaryItem label="Operator" value={`${params.userName || 'N/A'} (${params.organizationType})`} invalid={isInvalid('userName')} />
@@ -576,7 +576,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                               <SummaryItem label="Industry Sectors" value={params.industry.filter(i=>i !== 'Custom').join(', ') || 'N/A'} invalid={isInvalid('industry')} />
                               <SummaryItem label="Custom Sector" value={params.customIndustry || 'Not specified'} invalid={isInvalid('customIndustry', params.industry.includes('Custom'))} />
                             </div>
-                            <div className="border-t border-gray-200 pt-6 space-y-4">
+                            <div className="border-t border-gray-200 pt-4 space-y-4">
                               <SummaryItem label="Strategic Objective" value={<div className="italic text-gray-800 bg-gray-100 p-3 rounded-lg border border-gray-200">"{params.problemStatement}"</div>} invalid={isInvalid('problemStatement')} />
                               <SummaryItem label="AI Personas" value={<ul className="list-disc list-inside space-y-1">{params.aiPersona.filter(p=>p !== 'Custom').map(p => <li key={p} className="text-sm">{p}</li>)}</ul>} invalid={isInvalid('aiPersona')} />
                               <SummaryItem label="Custom Profile" value={params.customAiPersona || 'Not configured'} invalid={isInvalid('customAiPersona', params.aiPersona.includes('Custom'))} />
@@ -596,7 +596,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     return (
         <div className="flex h-screen bg-gray-100 font-sans">
             <div className="w-[28rem] flex-shrink-0 bg-white border-r border-gray-200 shadow-lg">
-                <Inquire
+                <Inquire // The left-hand AI co-pilot panel
                     {...restInquireProps}
                     params={params}
                     wizardStep={step}
@@ -614,7 +614,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
             </div>
             <div ref={scrollPanelRef} className="flex-grow overflow-y-auto bg-gray-50">
                 <div className="max-w-5xl mx-auto px-4 md:px-6 flex flex-col min-h-full">
-                    <header className="py-8 flex-shrink-0">
+                    <header className="py-6 md:py-8 flex-shrink-0">
                         <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2 text-center">
                             Intelligence Blueprint Generator
                         </h2>
@@ -628,41 +628,25 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
                     <main className="flex-grow pb-16 relative">
                         {renderStepContent()}
-
-                        {/* Next Step Button - positioned to the right under region window */}
-                        {step === 1 && (
-                            <div className="absolute bottom-20 right-8 z-10">
-                                <button
-                                    onClick={nextStep}
-                                    disabled={isGenerating}
-                                    className="px-8 py-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                >
-                                    Next Step
-                                </button>
-                            </div>
-                        )}
                     </main>
 
-                    <footer className="flex-shrink-0 py-6 border-t border-gray-200 bg-white/50 backdrop-blur-sm sticky bottom-0">
+                    {/* Footer with navigation buttons */}
+                    <footer className="flex-shrink-0 py-4 border-t border-gray-200 bg-white/80 backdrop-blur-sm sticky bottom-0 z-10">
                         {error && <p className="text-red-600 text-center mb-4 text-sm bg-red-100 p-3 rounded-md border border-red-200">{error}</p>}
 
                         <div className="flex justify-between items-center max-w-5xl mx-auto px-4 md:px-6">
-                            {step > 1 ? (
+                            {step > 1 && (
                                 <button onClick={prevStep} disabled={isGenerating} className="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">Back</button>
-                            ) : <div />}
+                            )}
 
                             {step < WIZARD_STEPS.length ? (
-                                <div className="flex gap-4">
+                                <div className={`flex gap-4 ${step === 1 ? 'w-full justify-end' : ''}`}>
                                     <button
                                         onClick={nextStep}
                                         disabled={isGenerating}
-                                        className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                                        style={{ visibility: 'visible', opacity: 1 }}
+                                        className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                     >
-                                        Next
-                                    </button>
-                                    <button onClick={() => window.location.reload()} className="px-6 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors">
-                                        Reset Workspace
+                                        Next Step
                                     </button>
                                 </div>
                             ) : (

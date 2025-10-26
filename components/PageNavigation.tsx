@@ -11,7 +11,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({ currentIndex, to
     const pageNumber = currentIndex + 1;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 mt-8 border-t border-nexus-border-medium flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 mt-4 border-t border-nexus-border-medium flex justify-between items-center">
             <button
                 onClick={onPrev}
                 disabled={currentIndex === 0}

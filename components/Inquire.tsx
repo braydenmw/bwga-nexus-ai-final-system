@@ -35,10 +35,16 @@ interface InquireProps {
 }
 
 const WIZARD_HELP_TEXT: Record<number, string> = {
-    1: "Define your role and the high-level goal of your report.",
-    2: "Detail the opportunity. Tell me about the region, industry, and ideal partner you have in mind.",
-    3: "Describe your core objective. What problem are you trying to solve? This is crucial for the AI Analyst.",
-    4: "Review your blueprint. You can now use the Nexus Brain to run advanced analysis on your defined region and objective before generating the final report.",
+    1: "Let's start by defining your role and the high-level goal of your report. This helps me understand your perspective.",
+    2: `This is the core of the blueprint.
+        - **Analysis Tiers** define *what* strategic questions the report will answer (e.g., Market Entry vs. Partner Vetting).
+        - **Geographic Targeting** defines *where* we are looking.
+        - **Industry Focus** defines the *sector* of the opportunity.
+        - **Ideal Partner Profile** tells me *who* you want to connect with.
+        <br/><br/>
+        <strong>Feeling stuck?</strong> Ask me to explain a specific tier like "What is a Supply Chain Gap Analysis?" or "What's the difference between Market Entry and Partner Vetting?".`,
+    3: "Now, let's define the 'why'. Your Core Objective is the most important input for the AI. Also, select one or more AI Analyst Personas to shape the report's perspective.",
+    4: "This is your final review. Check the Quality Analysis score for tips on improving your report. You can also use the Nexus Brain Commands below to run advanced, pre-report analysis on your defined opportunity.",
 };
 
 export const Inquire = ({
@@ -285,12 +291,16 @@ export const Inquire = ({
                  return <p>Understood. Please complete the required fields to continue.</p>;
             case 'active':
             default:
-                return <p>{WIZARD_HELP_TEXT[wizardStep]}</p>;
+                return (
+                    <div className="prose prose-sm max-w-none text-nexus-text-secondary"
+                         dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
+                    />
+                );
         }
     };
     
     return (
-        <div className="p-4 h-full flex flex-col max-w-6xl mx-auto">
+        <div className="p-4 h-full flex flex-col max-w-[1341px] mx-auto">
             <header className="flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="bg-nexus-accent-cyan/10 p-2 rounded-lg">
@@ -422,43 +432,6 @@ export const Inquire = ({
                     onDelete={onDeleteReport}
                 />
 
-                {/* Economic Data Upload Section */}
-                {params.userCountry && (
-                    <div className="mt-4 p-3 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-lg">
-                        <h4 className="text-sm font-semibold text-nexus-accent-cyan mb-2 flex items-center gap-2">
-                            <NexusLogo className="w-4 h-4" />
-                            Upload Economic Data for {params.userCountry}
-                        </h4>
-                        <p className="text-xs text-nexus-text-secondary mb-3">
-                            Enhance your AI analysis by uploading economic data, reports, or datasets specific to your region. This will provide more accurate and localized insights.
-                        </p>
-                        <div className="flex items-center justify-between gap-2">
-                            <input
-                                type="file"
-                                ref={economicDataInputRef}
-                                onChange={handleEconomicDataChange}
-                                className="hidden"
-                                accept=".txt,.pdf,.md,.docx,.csv,.xlsx,.json"
-                                aria-label="Upload economic data"
-                            />
-                            <button type="button" onClick={() => economicDataInputRef.current?.click()} className="text-xs font-semibold p-2 rounded-md bg-nexus-accent-cyan/10 border border-nexus-accent-cyan/30 text-nexus-accent-cyan hover:bg-nexus-accent-cyan/20 transition-colors flex-1 text-center" disabled={!!loadingCommand}>
-                                📊 Upload Economic Data
-                            </button>
-                            {economicDataFileName && (
-                                <div className="text-xs text-nexus-text-secondary flex items-center gap-1 flex-shrink-0">
-                                    <span className="truncate max-w-[120px]">{economicDataFileName}</span>
-                                    <button onClick={clearEconomicDataFile} className="text-red-400 hover:text-red-600 flex-shrink-0 ml-1">&times;</button>
-                                </div>
-                            )}
-                        </div>
-                        <div className="mt-3 pt-3 border-t border-nexus-accent-cyan/20">
-                            <p className="text-xs text-nexus-text-secondary mb-2">💡 <strong>Automatic Data Integration:</strong></p>
-                            <p className="text-xs text-nexus-text-secondary">
-                                When you select {params.userCountry} as your location, the system automatically fetches and integrates the latest economic indicators, market data, and regional insights to enhance your AI analysis without manual uploads.
-                            </p>
-                        </div>
-                    </div>
-                )}
 
                 {/* Quick Start Report Form - positioned below */}
                 <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">

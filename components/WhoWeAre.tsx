@@ -159,23 +159,24 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
 
                 {/* What Makes It Different Section */}
                 <section className="bg-gray-800 text-white p-8 md:p-12 rounded-2xl shadow-lg">
-                    <div className="text-center mb-10">
+                    <div className="text-center mb-12">
                         <h2 className="text-3xl font-extrabold tracking-tight">What Makes BWGA Nexus AI Different?</h2>
+                        <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-300">This isn't just another AI tool. It's your strategic advantage in a world of uncertainty, specifically designed for early-stage understanding where clarity is most needed and hardest to find.</p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-                        <div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                        <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
                             <h3 className="text-lg font-bold text-blue-300 mb-2">Low-Cost, High-Value Access</h3>
                             <p className="text-gray-300 text-sm">We democratize access to world-class intelligence. For a simple monthly fee, you get insights that were previously only available to the largest corporations with six-figure consulting budgets.</p>
                         </div>
-                        <div>
+                        <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
                             <h3 className="text-lg font-bold text-blue-300 mb-2">Unparalleled Analytical Depth</h3>
                             <p className="text-gray-300 text-sm">Our proprietary frameworks (RROI, TPT, SEAM) provide a level of insight no other system can match. We don't just show you data; we reveal the underlying economic DNA of a region and help you model its future.</p>
                         </div>
-                        <div>
+                        <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
                             <h3 className="text-lg font-bold text-blue-300 mb-2">Crystal-Clear Understanding of Any Region</h3>
                             <p className="text-gray-300 text-sm">Our system is built to transform the complexity and ambiguity of regional economies—anywhere in the world—into crystal-clear, actionable intelligence. It gives you the confidence to act on opportunities that others miss because they can't see them.</p>
                         </div>
-                        <div>
+                        <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
                             <h3 className="text-lg font-bold text-blue-300 mb-2">A Bridge to Global Opportunity</h3>
                             <p className="text-gray-300 text-sm">Nexus AI is engineered to bridge the critical gaps overlooked by traditional research. It works seamlessly with your existing processes, providing the intelligence layer that helps you step into new global ventures with confidence and clarity, regardless of your venture's scale or scope.</p>
                         </div>
