@@ -95,7 +95,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Generate Game-Changing Intelligence: From Data to Action</h2>
                         <p className="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">
-                            Transform 6 months of market research into a 2-week intelligence report. Access $500K consulting insights for $59/month. Reduce failed market entries by 70% with data-driven regional intelligence.
+                            Transform hours of manual research into comprehensive intelligence reports in minutes. Access $500K consulting insights for $59/month. Reduce failed market entries by 70% with data-driven regional intelligence.
                         </p>
                     </div>
 
@@ -145,6 +145,9 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         <div>
                             <h4 className="text-xl font-bold text-gray-800 mb-4 text-center">3. Changing Perceptions: Breaking the "Ice" of Uncertainty</h4>
                             <p className="text-center text-gray-600 max-w-3xl mx-auto mb-6">An Intelligence Blueprint acts as an "ice-breaker," providing the objective, third-party validation needed to start a meaningful conversation.</p>
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                                <p className="text-sm text-yellow-800 font-medium">💡 <strong>Development Testing Results:</strong> The following examples demonstrate system capabilities during our testing phase and helped guide platform development.</p>
+                            </div>
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="bg-gray-100 p-6 rounded-lg">
                                     <h5 className="font-semibold text-gray-800 mb-2">Example: The "Risky" Frontier Market</h5>
