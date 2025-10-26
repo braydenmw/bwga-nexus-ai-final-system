@@ -14,8 +14,8 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 <div className="absolute inset-0">
                     <img
                         className="w-full h-full object-cover"
-                        src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1968&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="Asian city skyline"
+                        src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        alt="Asian country village"
                     />
                     <div className="absolute inset-0 bg-black opacity-60"></div>
                 </div>

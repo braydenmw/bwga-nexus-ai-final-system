@@ -119,6 +119,7 @@ export const TIERS_BY_ORG_TYPE: Record<string, { id: string, title: string, desc
     { id: 'RegulatoryBenchmarking', title: 'Regulatory Benchmarking', desc: 'Compares your region’s policies against competitors to identify advantages.', features: ['Comparative Policy Matrix', 'Investor "Pain Point" ID', 'Actionable Reform Ideas'] },
     { id: 'SDGAlignment', title: 'SDG Alignment Report', desc: 'Assesses a project’s alignment with UN SDGs to attract impact-focused investment.', features: ['SDG Target Mapping', 'Impact Measurement Framework', '“Green” Finance Potential'] },
     { id: 'InfrastructurePlan', title: 'Infrastructure Master Plan', desc: 'Outlines a strategic plan for critical infrastructure development to support economic growth.', features: ['Infrastructure Gap Analysis', 'Project Prioritization Matrix', 'Investment Phasing Plan'] },
+    { id: 'TradeFacilitation', title: 'Intergovernmental Trade Facilitation', desc: 'Connects governments for trade partnerships, tariff offset strategies, and economic diplomacy.', features: ['Government-to-Government Matchmaking', 'Tariff Offset Mechanisms', 'Trade Agreement Optimization', 'Economic Diplomacy Framework'] },
   ],
   "Private Enterprise": [
     { id: 'Market Entry', title: 'Market Entry Strategy', desc: 'Assesses a new market and outlines a strategic approach for entry.', features: ['Market Size & Growth', 'Competitive Landscape', 'Regulatory Analysis', 'Go-to-Market Plan'] },
@@ -129,6 +130,7 @@ export const TIERS_BY_ORG_TYPE: Record<string, { id: string, title: string, desc
     { id: 'CompetitiveIntel', title: 'Competitive Intelligence', desc: 'Deep-dive on key competitors in a target market to inform strategy.', features: ['Competitor SWOT Analysis', 'Market Positioning Map', 'Implied Strategic Intent'] },
     { id: 'SDGAlignment', title: 'SDG Alignment Report', desc: 'Assesses a project’s alignment with UN SDGs to strengthen ESG credentials.', features: ['SDG Target Mapping', 'Impact Measurement Framework', '“Green” Finance Potential'] },
     { id: 'GeopoliticalRisk', title: 'Geopolitical Risk Assessment', desc: 'Analyzes the geopolitical landscape of a target market to identify risks and mitigation strategies.', features: ['Political Stability Analysis', 'Regulatory Risk Mapping', 'Supply Chain Vulnerability'] },
+    { id: 'TradeOptimization', title: 'Trade Cost Optimization', desc: 'Identifies tariff offset mechanisms and trade cost reduction strategies.', features: ['Tariff Offset Analysis', 'Trade Agreement Utilization', 'Cost Optimization Strategies', 'Regulatory Compliance'] },
   ],
 };
 // Add aliases for different government levels
@@ -192,6 +194,8 @@ export const ANALYTICAL_MODULES: Record<string, AnalyticalModuleGroup> = {
       { id: 'disruptionAnalysis', name: 'Disruption & Opportunity Analysis', description: 'Identifies potential disruptive forces and the opportunities they create.', status: 'Enterprise' },
       { id: 'tradeDisruptionAnalysis', name: 'Global Trade Disruption Analysis', description: 'Mathematical modeling of tariff impacts, supply chain disruptions, and market diversification strategies.', status: 'Enterprise' },
       { id: 'marketDiversificationEngine', name: 'Market Diversification Engine', description: 'Advanced algorithms for identifying alternative markets and optimizing global trade portfolios.', status: 'Enterprise' },
+      { id: 'tariffOffsetAnalysis', name: 'Tariff Offset & Trade Facilitation', description: 'Comprehensive analysis of tariff offset mechanisms, free trade agreements, and government-to-government trade facilitation strategies.', status: 'Enterprise' },
+      { id: 'intergovernmentalTrade', name: 'Intergovernmental Trade Intelligence', description: 'Government-to-government matchmaking, economic diplomacy frameworks, and bilateral trade partnership analysis.', status: 'Enterprise' },
     ],
   },
   governance: {
