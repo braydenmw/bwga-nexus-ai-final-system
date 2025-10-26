@@ -24,7 +24,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         Welcome to BWGA Nexus AI
                     </h1>
                     <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
-                        Unlock the hidden potential of global regions with AI-powered intelligence. Transform complex data into strategic opportunitie. Discover untapped markets, forge strategic partnerships, and create sustainable growth? Let's begin your journey into regional intelligence.
+                        Bridge the Global Understanding Gap with AI-powered regional intelligence. We provide the initial intelligence layer that connects regional potential with global ambition, giving every city a voice in the global marketplace.
                     </p>
                 </div>
             </section>
@@ -43,7 +43,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         Across the world, decision-makers face a critical blind spot. National-level data is plentiful, but it overlooks the heartbeat of real economic growth: the regional cities, provinces, and communities where innovation, production, and opportunity truly begin.
                     </p>
                     <p className="text-gray-600 text-base mb-6 leading-relaxed">
-                        This creates what we call the Global Understanding Gap—a silent yet costly divide between global capital and regional potential. The result is a multi-trillion-dollar inefficiency: promising regions remain unseen, investment is misdirected, and partnerships that could transform economies are never realized.
+                        This creates what we call the Global Understanding Gap—a silent yet costly divide between global capital and regional potential. The result is missed opportunities: promising regions remain unseen, investment decisions are made without complete information, and partnerships that could drive growth are never formed.
                     </p>
                     <div className="bg-gray-100 border-l-4 border-blue-500 p-6 rounded-r-lg mb-6">
                         <p className="text-gray-700 font-semibold italic text-base leading-relaxed">
@@ -71,7 +71,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     <div className="text-center mb-10">
                         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Our Solution: A Platform for Certainty</h2>
                         <p className="text-base text-gray-600 max-w-4xl mx-auto">
-                        We bridge the gap between regional potential and global ambition, giving a voice to every city and guiding businesses to their next frontier.
+                        We provide AI-powered regional intelligence that connects regional potential with global ambition, giving every city a voice in the global marketplace.
                         </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -115,7 +115,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         <div>
                             <h4 className="text-xl font-bold text-gray-800 mb-4 text-center">2. The Transformation Process: How We Create Clarity</h4>
                             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
-                                <p className="text-sm text-blue-800 font-medium">⏱️ <strong>Timeline:</strong> Most reports delivered within 24-48 hours. Complex comprehensive analyses may take up to 72 hours.</p>
+                                <p className="text-sm text-blue-800 font-medium">⏱️ <strong>Timeline:</strong> Most reports delivered within minutes to hours depending on complexity and selected options.</p>
                             </div>
                             <ol className="relative border-l border-gray-300 ml-4">
                                 <li className="mb-6 ml-6">
