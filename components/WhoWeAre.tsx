@@ -24,7 +24,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         Welcome to BWGA Nexus AI
                     </h1>
                     <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
-                        Unlock the hidden potential of global regions with AI-powered intelligence. Transform complex data into strategic opportunities and Discover untapped markets, forge strategic partnerships, and create sustainable growth? Let's begin your journey into regional intelligence.
+                        Unlock the hidden potential of global regions with AI-powered intelligence. Transform complex data into strategic opportunitie. Discover untapped markets, forge strategic partnerships, and create sustainable growth? Let's begin your journey into regional intelligence.
                     </p>
                 </div>
             </section>

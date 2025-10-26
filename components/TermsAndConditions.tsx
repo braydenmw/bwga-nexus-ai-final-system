@@ -17,13 +17,8 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onAccept, onDec
                         Welcome to BWGA Nexus AI
                     </h1>
                     <p className="text-sm md:text-base text-gray-600 leading-snug mb-4">
-                        Unlock the hidden potential of global regions with AI-powered intelligence. Transform complex data into strategic opportunities and build the future of regional development.
+                        Unlock the hidden potential of global regions with AI-powered intelligence. Transform complex data into strategic opportunitie. Discover untapped markets, forge strategic partnerships, and create sustainable growth? Let's begin your journey into regional intelligence.
                     </p>
-                    <div className="bg-gradient-to-r from-nexus-accent-cyan/10 to-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-lg p-3 mb-4">
-                        <p className="text-sm text-gray-800 font-medium">
-                            Ready to discover untapped markets, forge strategic partnerships, and create sustainable growth? Let's begin your journey into regional intelligence.
-                        </p>
-                    </div>
                 </div>
             </header>
 
