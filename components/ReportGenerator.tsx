@@ -595,6 +595,23 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
     return (
         <div className="flex h-screen bg-gray-100 font-sans">
+            <div className="w-[28rem] flex-shrink-0 bg-white border-r border-gray-200 shadow-lg">
+                <Inquire
+                    {...restInquireProps}
+                    params={params}
+                    wizardStep={step}
+                    aiInteractionState={aiInteractionState}
+                    onAiInteractionStateChange={setAiInteractionState}
+                    onScopeComplete={handleScopeComplete}
+                    onReportUpdate={onReportUpdate}
+                    onProfileUpdate={onProfileUpdate}
+                    isGenerating={isGenerating}
+                    onNextStep={nextStep}
+                    onPrevStep={prevStep}
+                    canGoNext={step < WIZARD_STEPS.length}
+                    canGoPrev={step > 1}
+                />
+            </div>
             <div ref={scrollPanelRef} className="flex-grow overflow-y-auto bg-gray-50">
                 <div className="max-w-5xl mx-auto px-4 md:px-6 flex flex-col min-h-full">
                     <header className="py-8 flex-shrink-0">
@@ -656,23 +673,6 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         </div>
                     </footer>
                 </div>
-            </div>
-            <div className="w-[28rem] flex-shrink-0 bg-white border-l border-gray-200 shadow-lg">
-                <Inquire
-                    {...restInquireProps}
-                    params={params}
-                    wizardStep={step}
-                    aiInteractionState={aiInteractionState}
-                    onAiInteractionStateChange={setAiInteractionState}
-                    onScopeComplete={handleScopeComplete}
-                    onReportUpdate={onReportUpdate}
-                    onProfileUpdate={onProfileUpdate}
-                    isGenerating={isGenerating}
-                    onNextStep={nextStep}
-                    onPrevStep={prevStep}
-                    canGoNext={step < WIZARD_STEPS.length}
-                    canGoPrev={step > 1}
-                />
             </div>
 
             {showScroll && (
