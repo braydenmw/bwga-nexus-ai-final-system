@@ -217,17 +217,6 @@ function App() {
           <div className="h-full">
             {isViewingReport ? (
               <div className="intelligence-workspace">
-                <div className="report-panel">
-                  <ReportViewer
-                    content={reportContent}
-                    parameters={reportParams}
-                    isGenerating={isGeneratingReport}
-                    onReset={handleResetReport}
-                    onStartSymbiosis={handleStartSymbiosis}
-                    onGenerateLetter={handleGenerateLetter}
-                    error={reportError}
-                  />
-                </div>
                 <div className="inquire-panel">
                   <Inquire
                     onApplySuggestions={handleApplySuggestions}
@@ -240,6 +229,17 @@ function App() {
                     onReportUpdate={handleReportUpdate}
                     onProfileUpdate={setUserProfile}
                     isGenerating={isGeneratingReport}
+                  />
+                </div>
+                <div className="report-panel">
+                  <ReportViewer
+                    content={reportContent}
+                    parameters={reportParams}
+                    isGenerating={isGeneratingReport}
+                    onReset={handleResetReport}
+                    onStartSymbiosis={handleStartSymbiosis}
+                    onGenerateLetter={handleGenerateLetter}
+                    error={reportError}
                   />
                 </div>
               </div>
