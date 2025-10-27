@@ -337,7 +337,53 @@ export const Inquire = ({
 
         switch (aiInteractionState) {
             case 'idle':
-                return <p>I'm ready to assist. Start by entering your name in the profile section.</p>;
+                return (
+                    <div>
+                        <p>I'm ready to assist. Start by entering your name in the profile section.</p>
+                        {query.trim() && (
+                            <div className="mt-3 p-2 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-md">
+                                <p className="text-xs font-semibold text-nexus-accent-cyan mb-1">📊 Report Readiness Check:</p>
+                                <div className="space-y-0.5 text-xs">
+                                    <div className="flex items-center gap-1">
+                                        <span className={params.userName ? 'text-green-500' : 'text-red-500'}>
+                                            {params.userName ? '✓' : '✗'}
+                                        </span>
+                                        <span className={params.userName ? 'text-nexus-text-secondary' : 'text-red-500'}>
+                                            Your Name {params.userName ? `(${params.userName})` : '(Required)'}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <span className={params.reportName ? 'text-green-500' : 'text-red-500'}>
+                                            {params.reportName ? '✓' : '✗'}
+                                        </span>
+                                        <span className={params.reportName ? 'text-nexus-text-secondary' : 'text-red-500'}>
+                                            Report Name {params.reportName ? `("${params.reportName}")` : '(Required)'}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <span className={params.region ? 'text-green-500' : 'text-yellow-500'}>
+                                            {params.region ? '✓' : '⚠'}
+                                        </span>
+                                        <span className={params.region ? 'text-nexus-text-secondary' : 'text-yellow-600'}>
+                                            Target Region {params.region ? `(${params.region})` : '(Recommended for better accuracy)'}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <span className={params.problemStatement ? 'text-green-500' : 'text-yellow-500'}>
+                                            {params.problemStatement ? '✓' : '⚠'}
+                                        </span>
+                                        <span className={params.problemStatement ? 'text-nexus-text-secondary' : 'text-yellow-600'}>
+                                            Core Objective {params.problemStatement ? '(Defined)' : '(Recommended for focused analysis)'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-nexus-text-secondary mt-1">
+                                    💡 <strong>Pro Tip:</strong> More complete information = more accurate and comprehensive reports. The AI will use all available data to provide the best possible analysis.
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                );
             case 'welcomed':
                 return <p>Hello, <strong>{params.userName}</strong>. What is the primary goal of your report? You can describe it in the 'Report Name' field to get started.</p>;
             case 'prompted':
@@ -359,7 +405,7 @@ export const Inquire = ({
                     return (
                         <div>
                             <div className="prose prose-sm max-w-none text-nexus-text-secondary mb-3"
-                                 dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
+                                  dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
                             />
                             {insights.length >= 3 && (
                                 <div className="bg-nexus-accent-cyan/10 border border-nexus-accent-cyan/20 rounded-md p-3 mt-3">
@@ -379,7 +425,7 @@ export const Inquire = ({
                 }
                 return (
                     <div className="prose prose-sm max-w-none text-nexus-text-secondary"
-                         dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
+                          dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
                     />
                 );
         }
@@ -565,49 +611,6 @@ export const Inquire = ({
                             )}
                         </button>
 
-                        {/* Data completeness indicator */}
-                        {query.trim() && (
-                            <div className="mt-3 p-2 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-md">
-                                <p className="text-xs font-semibold text-nexus-accent-cyan mb-1">📊 Report Readiness Check:</p>
-                                <div className="space-y-0.5 text-xs">
-                                    <div className="flex items-center gap-1">
-                                        <span className={params.userName ? 'text-green-500' : 'text-red-500'}>
-                                            {params.userName ? '✓' : '✗'}
-                                        </span>
-                                        <span className={params.userName ? 'text-nexus-text-secondary' : 'text-red-500'}>
-                                            Your Name {params.userName ? `(${params.userName})` : '(Required)'}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <span className={params.reportName ? 'text-green-500' : 'text-red-500'}>
-                                            {params.reportName ? '✓' : '✗'}
-                                        </span>
-                                        <span className={params.reportName ? 'text-nexus-text-secondary' : 'text-red-500'}>
-                                            Report Name {params.reportName ? `("${params.reportName}")` : '(Required)'}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <span className={params.region ? 'text-green-500' : 'text-yellow-500'}>
-                                            {params.region ? '✓' : '⚠'}
-                                        </span>
-                                        <span className={params.region ? 'text-nexus-text-secondary' : 'text-yellow-600'}>
-                                            Target Region {params.region ? `(${params.region})` : '(Recommended for better accuracy)'}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <span className={params.problemStatement ? 'text-green-500' : 'text-yellow-500'}>
-                                            {params.problemStatement ? '✓' : '⚠'}
-                                        </span>
-                                        <span className={params.problemStatement ? 'text-nexus-text-secondary' : 'text-yellow-600'}>
-                                            Core Objective {params.problemStatement ? '(Defined)' : '(Recommended for focused analysis)'}
-                                        </span>
-                                    </div>
-                                </div>
-                                <p className="text-xs text-nexus-text-secondary mt-1">
-                                    💡 <strong>Pro Tip:</strong> More complete information = more accurate and comprehensive reports. The AI will use all available data to provide the best possible analysis.
-                                </p>
-                            </div>
-                        )}
                     </form>
                 </div>
 
