@@ -542,271 +542,96 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 );
             case 5: // Review & Generate
                 return (
-                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 space-y-8">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
-                            <span className="text-2xl">🎯</span>
-                          </div>
-                          <div>
-                            <h3 className="text-xl md:text-2xl font-bold text-gray-900">Strategic Opportunity & Analysis Tiers</h3>
-                            <p className="text-gray-600 text-sm">Define your market opportunity and analysis frameworks.</p>
-                          </div>
-                        </div>
-
-                        {/* AI-Powered Recommendations */}
-                        <div className="mb-6 p-6 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-xl">
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-nexus-accent-cyan/10 rounded-lg">
-                              <NexusLogo className="w-6 h-6" />
+                      <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200">
+                          <div className="flex items-center gap-4 mb-8">
+                            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
+                              <span className="text-2xl">🚀</span>
                             </div>
                             <div>
-                              <h4 className="text-lg font-semibold text-nexus-accent-cyan">🤖 Nexus AI Recommendations</h4>
-                              <p className="text-sm text-nexus-text-secondary">AI-powered suggestions based on your profile</p>
+                              <h3 className="text-xl md:text-2xl font-bold text-gray-900">Final Review & Generation</h3>
+                              <p className="text-gray-600 text-sm">Review the quality assessment and generate your report.</p>
                             </div>
                           </div>
 
-                          <div className="space-y-4">
-                            <div className="bg-white/50 p-4 rounded-lg border border-nexus-accent-cyan/30">
-                              <h5 className="font-semibold text-nexus-text-primary mb-2">Recommended Analysis Tiers for {params.organizationType}</h5>
-                              <div className="text-sm text-nexus-text-secondary mb-3">
-                                Based on your {params.organizationType} profile, Nexus AI suggests these analysis frameworks:
-                              </div>
-                              <div className="flex flex-wrap gap-2">
-                                {currentTiers.slice(0, 3).map((tier) => (
-                                  <span key={tier.id} className="px-3 py-1 bg-nexus-accent-cyan/20 text-nexus-accent-cyan text-xs rounded-full border border-nexus-accent-cyan/30">
-                                    ⭐ {tier.title}
-                                  </span>
-                                ))}
-                              </div>
-                              <p className="text-xs text-nexus-text-muted mt-2 italic">
-                                💡 These are AI recommendations - you can select any combination that fits your needs
-                              </p>
-                            </div>
+                        <QualityAnalysis params={params} />
 
-                            {params.region && (
-                              <div className="bg-white/50 p-4 rounded-lg border border-nexus-accent-cyan/30">
-                                <h5 className="font-semibold text-nexus-text-primary mb-2">Regional Intelligence Focus</h5>
-                                <p className="text-sm text-nexus-text-secondary">
-                                  For <strong>{params.region}</strong>, consider adding regional economic analysis and market entry strategies to your report.
-                                </p>
-                              </div>
-                            )}
+                        {/* Nexus Brain Integration - Show available analysis */}
+                        {step === 5 && (
+                          <div className="my-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                            <h4 className="text-lg font-semibold text-nexus-accent-cyan mb-4 flex items-center gap-2">
+                              <span className="text-blue-600">🧠</span>
+                              Nexus Brain Analysis Available
+                            </h4>
+                            <p className="text-sm text-gray-700 mb-4">
+                              Before generating your final report, you can use the **Nexus Inquire AI** panel on the left to run advanced analysis on your defined region and objectives.
+                              The Nexus Brain will provide RROI diagnosis, TPT simulations, and SEAM ecosystem design.
+                            </p>
+                            <div className="text-xs text-nexus-text-muted">
+                              Note: This analysis will be automatically included in your final report generation.
+                            </div>
                           </div>
+                        )}
+
+                        <div className="my-6">
+                            <h4 className="text-lg font-semibold text-gray-800 mb-4">Global Trade Intelligence</h4>
+                            <div className="mb-8">
+                                {(() => {
+                                    const sampleTradeVolume = 2500000000;
+                                    const sampleTariffRate = 15;
+                                    const sampleMarkets = ['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia'];
+                                    const analysis = TradeDisruptionAnalyzer.calculateDisruptionImpact(sampleTradeVolume, sampleTariffRate, sampleMarkets, 35);
+                                    return <TradeDisruptionDisplay analysis={analysis} />;
+                                })()}
+                            </div>
+                            <div className="mb-8">
+                                <MarketDiversificationDashboard
+                                    currentMarkets={{ 'United States': 45, 'China': 25, 'European Union': 20, 'Japan': 10 }}
+                                    potentialMarkets={['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia', 'Turkey', 'South Africa', 'Thailand']}
+                                    tradeDisruptionRisk={0.6}
+                                />
+                            </div>
                         </div>
-                        
-                        <div>
-                            <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 mb-4">
-                              <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
-                                <span className="text-gray-500">📊</span>
-                                Analysis Tiers (Methodology)
-                              </h4>
-                              <p className="text-gray-600 text-sm md:text-base">Select one or more strategic frameworks for your report. The AI will synthesize the outputs into a single, cohesive intelligence blueprint. Unsure which to choose? Ask the Nexus Inquire AI in the left panel for guidance.</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-8">
-                            {currentTiers.length > 0 ? currentTiers.map((tier) => (
-                                      <label key={tier.id} className={`p-6 md:p-8 rounded-2xl text-left border-2 transition-all duration-300 w-full flex flex-col h-full cursor-pointer bg-white hover:bg-gray-50 shadow-md hover:shadow-lg ${params.tier.includes(tier.id) ? 'border-gray-800 scale-105 shadow-xl ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`}>
-                                          <div className="flex justify-between items-start mb-4">
-                                          <span className="font-bold text-gray-900 text-2xl">{tier.title}</span>
-                                              <input
-                                                  type="checkbox"
-                                                  checked={params.tier.includes(tier.id)}
-                                                  onChange={() => handleMultiSelectToggle('tier', tier.id)}
-                                                  className="h-6 w-6 rounded border-gray-300 text-gray-800 focus:ring-gray-800 focus:ring-2"
-                                              />
-                                          </div>
-                                          <p className="text-base text-gray-600 mb-6 flex-grow">{tier.desc}</p>
-                                          <div className="border-t border-gray-200 pt-4">
-                                              <p className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">Capabilities</p>
-                                              <ul className="text-sm text-gray-600 space-y-2">
-                                                  {tier.features.map(f => <li key={f} className="flex items-center gap-3"><span className="w-2 h-2 bg-gray-800 rounded-full"></span> {f}</li>)}
-                                              </ul>
-                                          </div>
-                                      </label>
-                              )) : (
-                                <div className="col-span-2 p-8 text-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl">
-                                  <p className="text-gray-500">No tiers available for the selected organization type.</p>
-                                  <p className="text-sm text-gray-400 mt-2">Please select a different organization type or contact support.</p>
-                                </div>
-                              )}
-                              </div>
-                         </div>
 
-                         <div className="pt-6 border-t border-gray-200">
-                             <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 mb-4">
-                               <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
-                                 <span className="text-gray-500">🧠</span>
-                                 Advanced Analytical Modules
-                               </h4>
-                               <p className="text-gray-600 text-sm md:text-base">These modules are currently in Enterprise testing and provide deep, specialized intelligence. While not selectable now, they demonstrate the future capabilities of the Nexus platform.</p>
-                             </div>
-                             <div className="space-y-6">
-                               {Object.entries(ANALYTICAL_MODULES).map(([key, group]: [string, any]) => (
-                                 <div key={key} className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm">
-                                   <h5 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-                                     <span className="text-gray-800">⚡</span>
-                                     {group.title}
-                                   </h5>
-                                   <div className="grid md:grid-cols-2 gap-4">
-                                     {group.modules.map((module: any) => (
-                                       <div key={module.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                         <div className="flex items-start justify-between mb-2">
-                                           <h6 className="font-semibold text-gray-800 text-sm">{module.name}</h6>
-                                           <span className={`text-xs px-2 py-1 rounded-full ${module.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700'}`}>{module.status}</span>
-                                         </div>
-                                         <p className="text-xs text-gray-600">{module.description}</p>
-                                       </div>
-                                     ))}
-                                   </div>
-                                 </div>
-                               ))}
-                             </div>
-                         </div>
-
-                        <div className="pt-6 border-t border-gray-200">
-                            <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 mb-4">
-                              <h4 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-3">
-                                <span className="text-gray-500">📍</span>
-                                Geographic Targeting & Scope
-                              </h4>
-                              <p className="text-gray-600 text-sm md:text-base">Define your market focus for hyper-local intelligence. The more specific your location, the more granular the AI's analysis will be.</p>
-                            </div>
+                        <div className="space-y-4 p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-inner">
                             <div className="grid md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className={labelStyles}>Target Region *</label>
-                                    <select value={targetRegion} onChange={e => { setTargetRegion(e.target.value); setTargetCountry(''); setTargetCity(''); }} className={`${inputStyles} text-base`} aria-label="Target Region">
-                                        <option value="">Select Global Region</option>
-                                        {REGIONS_AND_COUNTRIES.map(region => <option key={region.name} value={region.name}>{region.name}</option>)}
-                                    </select>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className={labelStyles}>Target Country *</label>
-                                      <select value={targetCountry} onChange={e => setTargetCountry(e.target.value)} disabled={!targetRegion} className={`${inputStyles} disabled:bg-gray-100 disabled:text-gray-500 text-base`} aria-label="Target Country">
-                                        <option value="">Select Country</option>
-                                        {REGIONS_AND_COUNTRIES.find(r => r.name === targetRegion)?.countries.map(country => <option key={country} value={country}>{country}</option>)}
-                                    </select>
-                                </div>
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">Report Name</div>
+                                  <div className="text-gray-900 pl-2 mt-1">{params.reportName || <span className="text-red-600 italic">Not Provided</span>}</div>
+                              </div>
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">Operator</div>
+                                  <div className="text-gray-900 pl-2 mt-1">{`${params.userName || 'N/A'} (${params.organizationType})`}</div>
+                              </div>
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">Analysis Tiers</div>
+                                  <div className="text-gray-900 pl-2 mt-1"><ul className="list-disc list-inside space-y-1">{params.tier.map(t => <li key={t} className="text-sm">{currentTiers.find(tier => tier.id === t)?.title || t}</li>)}</ul></div>
+                              </div>
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">Geographic Focus</div>
+                                  <div className="text-gray-900 pl-2 mt-1">{`${params.region || 'N/A'}`}</div>
+                              </div>
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">Industry Sectors</div>
+                                  <div className="text-gray-900 pl-2 mt-1">{params.industry.filter(i=>i !== 'Custom').join(', ') || 'N/A'}</div>
+                              </div>
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">Custom Sector</div>
+                                  <div className="text-gray-900 pl-2 mt-1">{params.customIndustry || 'Not specified'}</div>
+                              </div>
                             </div>
-                            <div className="grid md:grid-cols-2 gap-6 mt-6">
-                               <div className="space-y-2">
-                                     <label className={labelStyles}>Target City / Area</label>
-                                     <input type="text" value={targetCity} onChange={e => setTargetCity(e.target.value)} className={`${inputStyles} text-base`} placeholder="e.g., Davao City, Metro Manila" />
-                                 </div>
-                                 <div className="space-y-2">
-                                     <label className={labelStyles}>Analysis Timeframe</label>
-                                     <select value={params.analysisTimeframe} onChange={e => handleChange('analysisTimeframe', e.target.value)} className={`${inputStyles} text-base`} aria-label="Analysis Timeframe">
-                                         <option>Any Time</option><option>Last 6 Months</option><option>Last 12 Months</option><option>Last 2 Years</option>
-                                     </select>
-                                 </div>
-                             </div>
-
-                            <div className="mt-8">
-                                <label className={`${labelStyles} text-lg`}>Core Industry Focus *</label>
-                                <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-3">
-                                  <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
-                                      {INDUSTRIES.map((industry) => (
-                                          <button key={industry.id} onClick={() => handleMultiSelectToggle('industry', industry.id)} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.industry.includes(industry.id) ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`}>
-                                              <industry.icon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.industry.includes(industry.id) ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
-                                              <span className="font-semibold text-gray-800 text-xs leading-tight">{industry.title}</span>
-                                          </button>
-                                      ))}
-                                      <button onClick={() => handleMultiSelectToggle('industry', 'Custom')} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.industry.includes('Custom') ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`} title="Define a custom industry">
-                                          <CustomIndustryIcon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.industry.includes('Custom') ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
-                                          <span className="font-semibold text-gray-800 text-xs leading-tight">Custom</span>
-                                      </button>
-                                  </div>
-                                </div>
-                            </div>
-                            {params.industry.includes('Custom') && (
-                                <div className="mt-4">
-                                    <label className={labelStyles}>Custom Industry Definition *</label>
-                                    <textarea value={params.customIndustry} onChange={e => handleChange('customIndustry', e.target.value)} rows={2} className={inputStyles} placeholder="Describe the custom industry or niche sector..." />
-                                </div>
-                            )}
-                            <div className="mt-8">
-                                <label className={`${labelStyles} text-lg`}>Describe Your Ideal Partner *</label>
-                                <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-3">
-                                  <textarea value={params.idealPartnerProfile} onChange={e => handleChange('idealPartnerProfile', e.target.value)} rows={5} className={`${inputStyles} text-base resize-none`} placeholder="Describe your ideal strategic partner in detail..." />
-                                  <p className="text-sm text-gray-600 mt-3 flex items-center gap-2">
-                                    <span className="text-gray-800">💡</span>
-                                    Specificity enables precise matching algorithms.
-                                  </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-             case 3: // Objective & AI Analyst
-                return (
-                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 space-y-8">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
-                            <span className="text-2xl">🎯</span>
-                          </div>
-                          <div>
-                            <h3 className="text-xl md:text-2xl font-bold text-gray-900">Strategic Objective & AI Intelligence</h3>
-                            <p className="text-gray-600 text-sm">Define your mission and configure AI analytical frameworks.</p>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-8">
-                            <label className={`${labelStyles} text-lg`}>Define Core Strategic Objective (The 'Why') *</label>
-                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-3">
-                              <textarea value={params.problemStatement} onChange={e => handleChange('problemStatement', e.target.value)} rows={6} className={`${inputStyles} text-base resize-none`} placeholder="Articulate your strategic objective. What challenge are you addressing? What opportunity are you pursuing?" />
-                              <p className="text-sm text-gray-600 mt-3 flex items-center gap-2">
-                                <span className="text-gray-800">🎯</span>
-                                Clear objectives enable targeted, actionable intelligence.
-                              </p>
-                            </div>
-                        </div>
-
-                        <div className="pt-6 border-t border-gray-200">
-                            <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 mb-4">
-                              <label className={`${labelStyles} text-lg`}>Configure Your AI Analyst Team *</label>
-                              <p className="text-gray-600 text-sm md:text-base mt-2">Select one or more AI personas. The AI will synthesize their expertise to provide a multi-faceted analysis. This is a key driver of report quality.</p>
-                            </div>
-                            <div className="grid grid-cols-4 gap-4">
-                                {AI_PERSONAS.map((persona) => (
-                                    <button key={persona.id} onClick={() => handleMultiSelectToggle('aiPersona', persona.id)} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.aiPersona.includes(persona.id) ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`} title={persona.description}>
-                                        <persona.icon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.aiPersona.includes(persona.id) ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
-                                        <span className="font-semibold text-gray-800 text-xs leading-tight">{persona.title}</span>
-                                    </button>
-                                ))}
-                                <button onClick={() => handleMultiSelectToggle('aiPersona', 'Custom')} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.aiPersona.includes('Custom') ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`} title="Define a custom persona">
-                                    <CustomPersonaIcon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.aiPersona.includes('Custom') ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
-                                    <span className="font-semibold text-gray-800 text-xs leading-tight">Custom</span>
-                                </button>
-                            </div>
-
-                            {params.aiPersona.includes('Custom') && (
-                                <div className="mt-4">
-                                    <label className={labelStyles}>Custom Persona Definition *</label>
-                                    <textarea value={params.customAiPersona} onChange={e => handleChange('customAiPersona', e.target.value)} rows={3} className={inputStyles} placeholder="Describe the persona's expertise, focus, and tone..." />
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-8 pt-6 border-t border-gray-200">
-                            <div>
-                                <label className={`${labelStyles} text-lg`}>Analytical Frameworks</label>
-                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-3 space-y-3">
-                                    {ANALYTICAL_LENSES.map(lens => (
-                                        <label key={lens} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.analyticalLens?.includes(lens) ? 'border-gray-800 bg-gray-100 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
-                                            <input type="checkbox" checked={params.analyticalLens?.includes(lens)} onChange={() => handleMultiSelectToggle('analyticalLens', lens)} className="h-5 w-5 rounded border-gray-300 text-gray-800 focus:ring-gray-800 focus:ring-2" />
-                                            <span className="text-base font-medium text-gray-800">{lens}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                            <div>
-                                <label className={`${labelStyles} text-lg`}>Communication Styles</label>
-                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-3 space-y-3">
-                                    {TONES_AND_STYLES.map(style => (
-                                        <label key={style} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.toneAndStyle?.includes(style) ? 'border-gray-800 bg-gray-100 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
-                                            <input type="checkbox" checked={params.toneAndStyle?.includes(style)} onChange={() => handleMultiSelectToggle('toneAndStyle', style)} className="h-5 w-5 rounded border-gray-300 text-gray-800 focus:ring-gray-800 focus:ring-2"/>
-                                            <span className="text-base font-medium text-gray-800">{style}</span>
-                                        </label>
-                                    ))}
-                                </div>
+                            <div className="border-t border-gray-200 pt-4 space-y-4">
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">Strategic Objective</div>
+                                  <div className="text-gray-900 pl-2 mt-1"><div className="italic text-gray-800 bg-gray-100 p-3 rounded-lg border border-gray-200">"{params.problemStatement}"</div></div>
+                              </div>
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">AI Personas</div>
+                                  <div className="text-gray-900 pl-2 mt-1"><ul className="list-disc list-inside space-y-1">{params.aiPersona.filter(p=>p !== 'Custom').map(p => <li key={p} className="text-sm">{p}</li>)}</ul></div>
+                              </div>
+                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
+                                  <div className="text-sm font-semibold text-gray-600">Custom Profile</div>
+                                  <div className="text-gray-900 pl-2 mt-1">{params.customAiPersona || 'Not configured'}</div>
+                              </div>
                             </div>
                         </div>
                     </div>
