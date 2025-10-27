@@ -26,7 +26,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </main>
             <footer className="bg-gray-800">
                 <div className="container mx-auto px-6 py-4 text-center text-gray-400">
-                    <p>&copy; 2024 BWGA Global Advisory. All Rights Reserved.</p>
+                    <p>&copy; 2024 BW Global Advisory. All Rights Reserved.</p>
                 </div>
             </footer>
         </div>

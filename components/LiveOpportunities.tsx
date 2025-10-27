@@ -447,10 +447,10 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                 <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
                     <div className="space-y-2">
                         <p className="text-sm text-nexus-text-secondary">
-                            BWGA Global Advisory operates under Australian Business Number <strong className="text-nexus-text-primary">ABN 55 978 113 300</strong>
+                            BW Global Advisory operates under Australian Business Number <strong className="text-nexus-text-primary">ABN 55 978 113 300</strong>
                         </p>
                         <p className="text-xs text-nexus-text-muted">
-                            © 2024 BWGA Global Advisory. All rights reserved.
+                            © 2024 BW Global Advisory. All rights reserved.
                         </p>
                     </div>
                 </div>

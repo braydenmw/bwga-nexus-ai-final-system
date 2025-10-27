@@ -47,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => 
                             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
                                 BWGA Nexus AI
                             </h1>
-                            <p className="text-xs text-gray-600 leading-tight">A BWGA Global Advisory Initiative</p>
+                            <p className="text-xs text-gray-600 leading-tight">A BW Global Advisory Initiative</p>
                         </div>
                     </div>
 
