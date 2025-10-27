@@ -2,12 +2,7 @@ import React from 'react';
 import { MissionIcon, OpportunitiesIcon, ReportIcon, ComplianceIcon, VentureCapitalistIcon, EconomistIcon, GeopoliticalStrategistIcon, EsgAnalystIcon, InfrastructurePlannerIcon, SupplyChainAnalystIcon, WorkforceSpecialistIcon, TechnologyIcon, RenewableEnergyIcon, InfrastructureIcon, HealthcareIcon, ManufacturingIcon, AgricultureIcon, FinanceIcon, MiningIcon, LogisticsIcon, TourismIcon, EducationIcon, MatchMakerIcon, ManualIcon } from './components/Icons.tsx';
 import type { View, ReportParameters, AnalyticalModule, AnalyticalModuleGroup } from './types.ts';
 
-export const ORIGINAL_NAV_ITEMS: { id: View, title: string, description: string, icon: React.FC<any> }[] = [
-    { id: 'who-we-are', title: 'Who Why & Need', description: 'About BWGA', icon: ManualIcon },
-    { id: 'opportunities', title: 'Data Hub', description: 'Live Intelligence', icon: OpportunitiesIcon },
-    { id: 'report', title: 'Workspace', description: 'Inquire & Report', icon: ReportIcon },
-    { id: 'compliance', title: 'Compliance', description: 'Data & Security', icon: ComplianceIcon },
-];
+export const ORIGINAL_NAV_ITEMS: { id: View, title: string, description: string, icon: React.FC<any> }[] = [ { id: 'who-we-are', title: 'Who Why & Need', description: 'About BWGA', icon: ManualIcon }, { id: 'opportunities', title: 'Data Hub', description: 'Live Intelligence', icon: OpportunitiesIcon }, { id: 'report', title: 'Workspace', description: 'Inquire & Report', icon: ReportIcon }, { id: 'compliance', title: 'Compliance', description: 'Data & Security', icon: ComplianceIcon }, ];
 
 export const AI_PERSONAS: { id: string, title: string, description: string, icon: React.FC<any> }[] = [
     { id: 'Regional Economist', title: 'Regional Economist', description: 'Focuses on macroeconomic trends, supply chains, workforce analytics, and sustainable development impacts.', icon: EconomistIcon },

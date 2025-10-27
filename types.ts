@@ -14,6 +14,9 @@ export interface AnalyticalModuleGroup {
   modules: AnalyticalModule[];
 }
 
+export type ReportLength = 'snapshot' | 'brief' | 'standard' | 'comprehensive';
+export type OutputFormat = 'report' | 'letter' | 'both';
+
 export interface ReportParameters {
   reportName: string;
   tier: string[];
@@ -32,6 +35,8 @@ export interface ReportParameters {
   problemStatement: string;
   analysisTimeframe: string;
   analyticalModules: string[];
+  reportLength: ReportLength;
+  outputFormat: OutputFormat;
 }
 
 export type ReportSuggestions = Partial<Pick<ReportParameters, 'reportName' | 'region' | 'problemStatement' | 'idealPartnerProfile' | 'tier' | 'aiPersona'>> & {
