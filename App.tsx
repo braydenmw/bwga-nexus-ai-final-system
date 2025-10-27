@@ -37,6 +37,8 @@ const initialReportParams: ReportParameters = {
     problemStatement: '',
     analysisTimeframe: 'Any Time',
     analyticalModules: [],
+    reportLength: 'standard',
+    outputFormat: 'report',
 };
 
 function App() {
@@ -138,6 +140,8 @@ function App() {
         setHasAcceptedTerms(localStorage.getItem('bwga-nexus-terms-accepted') === 'true');
     }
     setCurrentView(view);
+    // Auto-scroll to top when changing views
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleAcceptTerms = () => {
