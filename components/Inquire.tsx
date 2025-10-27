@@ -386,7 +386,7 @@ export const Inquire = ({
     };
     
     return (
-        <div className="p-4 h-full flex flex-col max-w-[1341px] mx-auto">
+        <div className="p-4 h-full flex flex-col max-w-full mx-auto">
             <header className="flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="bg-nexus-accent-cyan/10 p-2 rounded-lg">
@@ -399,7 +399,7 @@ export const Inquire = ({
                 </div>
             </header>
 
-            <div className="mt-4 flex-grow overflow-y-auto pr-2 -mr-2 space-y-4 max-w-full">
+            <div className="mt-4 flex-grow overflow-y-auto pr-2 -mr-2 space-y-4 max-w-full min-h-0">
                  {wizardStep === 4 && (
                      <div className="p-3 bg-white/5 rounded-lg border border-white/10 space-y-3 animate-fadeIn">
                           <h3 className="font-semibold text-nexus-text-primary text-md flex items-center gap-2">
