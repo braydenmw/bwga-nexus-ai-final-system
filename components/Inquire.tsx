@@ -567,10 +567,10 @@ export const Inquire = ({
 
                         {/* Data completeness indicator */}
                         {query.trim() && (
-                            <div className="mt-3 p-3 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-md">
-                                <p className="text-sm font-semibold text-nexus-accent-cyan mb-2">📊 Report Readiness Check:</p>
-                                <div className="space-y-1 text-xs">
-                                    <div className="flex items-center gap-2">
+                            <div className="mt-3 p-2 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-md">
+                                <p className="text-xs font-semibold text-nexus-accent-cyan mb-1">📊 Report Readiness Check:</p>
+                                <div className="space-y-0.5 text-xs">
+                                    <div className="flex items-center gap-1">
                                         <span className={params.userName ? 'text-green-500' : 'text-red-500'}>
                                             {params.userName ? '✓' : '✗'}
                                         </span>
@@ -578,7 +578,7 @@ export const Inquire = ({
                                             Your Name {params.userName ? `(${params.userName})` : '(Required)'}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
                                         <span className={params.reportName ? 'text-green-500' : 'text-red-500'}>
                                             {params.reportName ? '✓' : '✗'}
                                         </span>
@@ -586,7 +586,7 @@ export const Inquire = ({
                                             Report Name {params.reportName ? `("${params.reportName}")` : '(Required)'}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
                                         <span className={params.region ? 'text-green-500' : 'text-yellow-500'}>
                                             {params.region ? '✓' : '⚠'}
                                         </span>
@@ -594,7 +594,7 @@ export const Inquire = ({
                                             Target Region {params.region ? `(${params.region})` : '(Recommended for better accuracy)'}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
                                         <span className={params.problemStatement ? 'text-green-500' : 'text-yellow-500'}>
                                             {params.problemStatement ? '✓' : '⚠'}
                                         </span>
@@ -603,8 +603,8 @@ export const Inquire = ({
                                         </span>
                                     </div>
                                 </div>
-                                <p className="text-xs text-nexus-text-secondary mt-2">
-                                    💡 <strong>Pro Tip:</strong> More complete information = more accurate and comprehensive reports. The AI will use all available data to provide the best possible analysis.
+                                <p className="text-xs text-nexus-text-secondary mt-1">
+                                    💡 <strong>Pro Tip:</strong> More complete information = more accurate and comprehensive reports.
                                 </p>
                             </div>
                         )}
