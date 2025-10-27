@@ -21,7 +21,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 </div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
-                        BWGA Nexus AI: Illuminating Opportunity, Connecting Worlds.
+                        BWGA Nexus AI
                     </h1>
                     <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
                         We built Nexus AI to bridge the gap between global ambition and regional potential. It's an intelligence platform for everyone—from local leaders in emerging cities to strategic planners in global boardrooms—designed to provide clarity in minutes, not months, and to help the world see what's truly possible.
