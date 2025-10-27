@@ -249,62 +249,96 @@ app.get('/api/capabilities', async (req, res) => {
   }
 });
 
-// Economic data endpoint
+// Helper function to fetch data from World Bank API
+async function fetchWorldBankData(countryCode, indicator) {
+  try {
+    const response = await fetch(`https://api.worldbank.org/v2/country/${countryCode}/indicator/${indicator}?format=json&date=2023:2025&per_page=1`);
+    const data = await response.json();
+    if (data[1] && data[1][0] && data[1][0].value !== null) {
+      return {
+        value: data[1][0].value,
+        year: data[1][0].date.toString()
+      };
+    }
+  } catch (error) {
+    console.error(`World Bank API error for ${indicator}:`, error);
+  }
+  return null;
+}
+
+// Helper function to fetch data from IMF API
+async function fetchIMFData(countryCode, indicator) {
+  try {
+    // IMF API endpoints for economic data
+    const response = await fetch(`https://www.imf.org/external/datamapper/api/v1/${indicator}/${countryCode}`);
+    const data = await response.json();
+    // Process IMF data format
+    if (data && data.values && data.values[countryCode]) {
+      const latestYear = Math.max(...Object.keys(data.values[countryCode]).filter(year => data.values[countryCode][year] !== null));
+      if (latestYear && data.values[countryCode][latestYear]) {
+        return {
+          value: data.values[countryCode][latestYear],
+          year: latestYear.toString()
+        };
+      }
+    }
+  } catch (error) {
+    console.error(`IMF API error for ${indicator}:`, error);
+  }
+  return null;
+}
+
+// Helper function to fetch data from OECD API
+async function fetchOECDData(countryCode, indicator) {
+  try {
+    const response = await fetch(`https://stats.oecd.org/SDMX-JSON/data/${indicator}/${countryCode}.all?startTime=2023&endTime=2025`);
+    const data = await response.json();
+    if (data && data.dataSets && data.dataSets[0]) {
+      const observations = data.dataSets[0].observations;
+      const latestKey = Object.keys(observations).sort().reverse()[0];
+      if (latestKey && observations[latestKey] && observations[latestKey][0] !== null) {
+        return {
+          value: observations[latestKey][0],
+          year: latestKey.split(':')[0]
+        };
+      }
+    }
+  } catch (error) {
+    console.error(`OECD API error for ${indicator}:`, error);
+  }
+  return null;
+}
+
+// Country code mapping
+const countryCodes = {
+  "Israel": { wb: "ISR", imf: "IL", oecd: "ISR" },
+  "Singapore": { wb: "SGP", imf: "SG", oecd: "SGP" },
+  "Netherlands": { wb: "NLD", imf: "NL", oecd: "NLD" },
+  "UAE": { wb: "ARE", imf: "AE", oecd: "ARE" },
+  "Philippines": { wb: "PHL", imf: "PH", oecd: "PHL" }
+};
+
+// Economic data endpoint with live API integration
 app.get('/api/economic-data', async (req, res) => {
   try {
     const { country } = req.query;
+    const codes = countryCodes[country];
 
-    // Enhanced mock economic data with country-specific information (updated to 2025 projections)
-    const countryData = {
-      "Israel": {
-        gdp: { value: 522000000000, year: "2025" },
-        population: { value: 9500000, year: "2025" },
-        inflation: { value: 2.4, year: "2025" },
-        fdi: { value: 18000000000, year: "2025" },
-        unemployment: { value: 3.7, year: "2025" },
-        exports: { value: 65000000000, year: "2025" },
-        techSectorGDP: { value: 45000000000, year: "2025" }
-      },
-      "Singapore": {
-        gdp: { value: 515000000000, year: "2025" },
-        population: { value: 6000000, year: "2025" },
-        inflation: { value: 3.2, year: "2025" },
-        fdi: { value: 120000000000, year: "2025" },
-        unemployment: { value: 2.1, year: "2025" },
-        exports: { value: 850000000000, year: "2025" },
-        techSectorGDP: { value: 180000000000, year: "2025" }
-      },
-      "Netherlands": {
-        gdp: { value: 1010000000000, year: "2025" },
-        population: { value: 18000000, year: "2025" },
-        inflation: { value: 3.1, year: "2025" },
-        fdi: { value: 35000000000, year: "2025" },
-        unemployment: { value: 3.5, year: "2025" },
-        exports: { value: 750000000000, year: "2025" },
-        techSectorGDP: { value: 120000000000, year: "2025" }
-      },
-      "UAE": {
-        gdp: { value: 507000000000, year: "2025" },
-        population: { value: 10000000, year: "2025" },
-        inflation: { value: 2.8, year: "2025" },
-        fdi: { value: 25000000000, year: "2025" },
-        unemployment: { value: 2.6, year: "2025" },
-        exports: { value: 400000000000, year: "2025" },
-        techSectorGDP: { value: 15000000000, year: "2025" }
-      },
-      "Philippines": {
-        gdp: { value: 450000000000, year: "2025" },
-        population: { value: 110000000, year: "2025" },
-        inflation: { value: 2.8, year: "2025" },
-        fdi: { value: 25000000000, year: "2025" },
-        unemployment: { value: 4.2, year: "2025" },
-        exports: { value: 200000000000, year: "2025" },
-        techSectorGDP: { value: 25000000000, year: "2025" }
-      }
-    };
+    if (!codes) {
+      return res.status(400).json({ error: 'Country not supported' });
+    }
 
-    // Use country-specific data if available, otherwise fallback to generic data
-    const mockData = countryData[country] || {
+    // Fetch data from multiple APIs concurrently
+    const [gdpWB, populationWB, inflationWB, fdiIMF, unemploymentOECD] = await Promise.all([
+      fetchWorldBankData(codes.wb, 'NY.GDP.MKTP.CD'), // GDP
+      fetchWorldBankData(codes.wb, 'SP.POP.TOTL'), // Population
+      fetchWorldBankData(codes.wb, 'FP.CPI.TOTL.ZG'), // Inflation
+      fetchIMFData(codes.imf, 'FDI'), // FDI
+      fetchOECDData(codes.oecd, 'STLABOUR') // Unemployment
+    ]);
+
+    // Fallback data if APIs fail
+    const fallbackData = {
       gdp: { value: 450000000000, year: "2025" },
       population: { value: 110000000, year: "2025" },
       inflation: { value: 2.8, year: "2025" },
@@ -314,7 +348,18 @@ app.get('/api/economic-data', async (req, res) => {
       techSectorGDP: { value: 25000000000, year: "2025" }
     };
 
-    res.json(mockData);
+    // Combine live data with fallbacks
+    const liveData = {
+      gdp: gdpWB || fallbackData.gdp,
+      population: populationWB || fallbackData.population,
+      inflation: inflationWB || fallbackData.inflation,
+      fdi: fdiIMF || fallbackData.fdi,
+      unemployment: unemploymentOECD || fallbackData.unemployment,
+      exports: fallbackData.exports, // No live API for exports yet
+      techSectorGDP: fallbackData.techSectorGDP // No live API for tech sector yet
+    };
+
+    res.json(liveData);
   } catch (error) {
     console.error('Economic data error:', error);
     res.status(500).json({ error: 'Failed to fetch economic data' });
