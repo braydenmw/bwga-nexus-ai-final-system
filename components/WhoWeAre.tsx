@@ -37,22 +37,22 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                             <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">The Current Landscape: A World of Misalignment</h2>
                             <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600">The global economy is in a period of rapid transformation. For decades, investment has flowed to a handful of global megacities, but those same hubs are now facing congestion, rising costs, and diminishing returns.</p>
                         </div>
-                        <div className="grid md:grid-cols-2 gap-12 items-center">
-                            <img src="https://images.unsplash.com/photo-1570641963303-3b719580450a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="A map focusing on the Asia-Pacific region." className="rounded-xl shadow-lg object-cover w-full h-full" />
-                            <div>
+                        <div className="max-w-4xl mx-auto">
                             <p className="text-gray-700 leading-relaxed">A great realignment is underway. Supply chains are being redrawn as nations de-risk from over-concentration. Industries are searching for new regions to grow, seeking lower costs and stronger partnerships. The next wave of of growth will not come from where it always has; it will come from the emerging regional economies in Southeast Asia, Africa, and Latin America.</p>
                             <p className="mt-4 text-gray-700 leading-relaxed">Yet, when decision-makers look beyond the traditional hubs, they find a fog of uncertainty. This is the **Global Understanding Gap** — a systemic failure where immense potential remains invisible, fueled by poor information, outdated perceptions, and prohibitive costs.</p>
                             <div className="mt-6 p-4 bg-gray-100 border-l-4 border-gray-800 rounded-r-lg">
                                 <p className="text-gray-800 font-bold italic">BWGA Nexus AI provides the precise clarification needed to see these regions not for what they were, but for what they can become.</p>
                             </div>
                         </div>
-                        </div>
-                        <div className="text-center bg-gray-100 p-8 md:p-12 rounded-2xl shadow-inner border border-gray-200">
-                            <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight mb-8">A Message from the Founder</h3>
-                            <blockquote className="max-w-4xl mx-auto text-xl md:text-2xl italic font-medium text-gray-800 leading-relaxed">
-                                “I built BWGA Nexus AI after years of working directly with local governments and development leaders who had the will, the people, and the resources—but not the platform to show it. This system was born from that frustration, and from a belief that technology can be the equalizer between big and small. My hope is simple: that Nexus AI helps the world rediscover the value of places—and the people—that have long been underestimated.”
-                            </blockquote>
-                            <p className="mt-6 font-semibold text-gray-700">— Brayden Walls, Founder, BW Global Advisory</p>
+                        <div className="grid md:grid-cols-2 gap-12 items-center pt-12 border-t border-gray-200">
+                            <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="A person working on a laptop with data visualizations, representing the intersection of technology and human insight." className="rounded-xl shadow-lg object-cover w-full h-full max-h-96" />
+                            <div className="text-center md:text-left">
+                                <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight mb-4">A Message from the Founder</h3>
+                                <blockquote className="text-lg italic font-medium text-gray-700 leading-relaxed">
+                                    “I built BWGA Nexus AI after years of working directly with local governments and development leaders who had the will, the people, and the resources—but not the platform to show it. This system was born from that frustration, and from a belief that technology can be the equalizer between big and small. My hope is simple: that Nexus AI helps the world rediscover the value of places—and the people—that have long been underestimated.”
+                                </blockquote>
+                                <p className="mt-6 font-semibold text-gray-800">— The Founder, BW Global Advisory</p>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -205,7 +205,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         <div className="text-center">
                             <p className="text-5xl font-extrabold text-white mb-2">$15</p>
                             <p className="text-gray-300 font-semibold mb-4">for 7 day access</p>
-                            <p className="text-lg font-bold text-white mb-2">Subscription Available: 3 months $175 • 6 months $395 • 12 months $595</p>
+                            <p className="text-lg font-bold text-white mb-2">3 months subscription $175 • 6 months subscription $395 • 12 months subscription $595</p>
                         </div>
                     </div>
                     <button
