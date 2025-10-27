@@ -149,30 +149,54 @@ export const Inquire = ({
         setError(null);
         setResearchSummary(null);
         try {
-            // First apply suggestions from scoping
+            // Enhanced validation with better messaging
+            const coreErrors = [
+                !params.userName.trim() ? "Your Name is required for personalization." : "",
+                !params.reportName.trim() ? "Report Name is required to identify your analysis." : "",
+            ].filter(Boolean);
+
+            const recommendedWarnings = [
+                !params.region.trim() ? "Target Region will improve regional accuracy." : "",
+                !params.problemStatement.trim() ? "Core Objective will focus the analysis better." : "",
+            ].filter(Boolean);
+
+            // Allow Quick Start with minimal data but show warnings
+            if (coreErrors.length > 0) {
+                throw new Error("Required information missing: " + coreErrors.join(', '));
+            }
+
+            // Show informational message about data completeness
+            if (recommendedWarnings.length > 0) {
+                console.info("Quick Start proceeding with limited data. Consider adding:", recommendedWarnings.join(', '));
+            }
+
+            // First apply suggestions from scoping with all available data
             const result = await fetchResearchAndScope(inquiry, fileContent, params);
             onApplySuggestions(result.suggestions);
             setResearchSummary(result.summary);
 
-            // Then trigger full report generation with validation
-            const allErrors = [
-                !params.userName.trim() ? "Your Name is required." : "",
-                !params.reportName.trim() ? "Report Name is required." : "",
+            // Enhanced validation for full report generation
+            const fullReportErrors = [
                 params.tier.length === 0 ? "At least one Report Tier must be selected." : "",
-                !params.region.trim() ? "A target location is required." : "",
+                !params.region.trim() ? "A target location is required for regional analysis." : "",
                 params.industry.length === 0 ? "At least one Core Industry must be selected." : "",
                 params.industry.includes('Custom') && !params.customIndustry?.trim() ? "Custom Industry Definition is required when 'Custom' is selected." : "",
-                !params.idealPartnerProfile.trim() ? "Ideal Partner Profile is required." : "",
-                !params.problemStatement.trim() ? "Core Objective is required." : "",
+                !params.idealPartnerProfile.trim() ? "Ideal Partner Profile is required for partnership recommendations." : "",
+                !params.problemStatement.trim() ? "Core Objective is required for focused analysis." : "",
                 params.aiPersona.length === 0 ? "At least one AI Analyst persona must be selected." : "",
                 params.aiPersona.includes('Custom') && !params.customAiPersona?.trim() ? "Custom Persona Definition is required when 'Custom' is selected." : "",
             ].filter(Boolean);
 
-            if (allErrors.length > 0) {
-                throw new Error("Validation failed: " + allErrors.join(', '));
+            if (fullReportErrors.length > 0) {
+                // Instead of failing, provide a scoping-only result with guidance
+                setError(`Quick analysis completed, but full report requires: ${fullReportErrors.join(', ')}`);
+                onReportUpdate(params, '', `Quick analysis completed, but full report requires: ${fullReportErrors.join(', ')}`, false);
+                setQuery('');
+                clearFile();
+                return;
             }
 
-            // Update profile and start report generation
+            // Update profile and start full report generation
             onProfileUpdate({ userName: params.userName, userDepartment: params.userDepartment, organizationType: params.organizationType, userCountry: params.userCountry });
             onReportUpdate(params, '', null, true);
 
@@ -539,6 +563,50 @@ export const Inquire = ({
                                 'Start Report'
                             )}
                         </button>
+
+                        {/* Data completeness indicator */}
+                        {query.trim() && (
+                            <div className="mt-3 p-3 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-md">
+                                <p className="text-sm font-semibold text-nexus-accent-cyan mb-2">📊 Report Readiness Check:</p>
+                                <div className="space-y-1 text-xs">
+                                    <div className="flex items-center gap-2">
+                                        <span className={params.userName ? 'text-green-500' : 'text-red-500'}>
+                                            {params.userName ? '✓' : '✗'}
+                                        </span>
+                                        <span className={params.userName ? 'text-nexus-text-secondary' : 'text-red-500'}>
+                                            Your Name {params.userName ? `(${params.userName})` : '(Required)'}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className={params.reportName ? 'text-green-500' : 'text-red-500'}>
+                                            {params.reportName ? '✓' : '✗'}
+                                        </span>
+                                        <span className={params.reportName ? 'text-nexus-text-secondary' : 'text-red-500'}>
+                                            Report Name {params.reportName ? `("${params.reportName}")` : '(Required)'}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className={params.region ? 'text-green-500' : 'text-yellow-500'}>
+                                            {params.region ? '✓' : '⚠'}
+                                        </span>
+                                        <span className={params.region ? 'text-nexus-text-secondary' : 'text-yellow-600'}>
+                                            Target Region {params.region ? `(${params.region})` : '(Recommended for better accuracy)'}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className={params.problemStatement ? 'text-green-500' : 'text-yellow-500'}>
+                                            {params.problemStatement ? '✓' : '⚠'}
+                                        </span>
+                                        <span className={params.problemStatement ? 'text-nexus-text-secondary' : 'text-yellow-600'}>
+                                            Core Objective {params.problemStatement ? '(Defined)' : '(Recommended for focused analysis)'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-nexus-text-secondary mt-2">
+                                    💡 <strong>Pro Tip:</strong> More complete information = more accurate and comprehensive reports. The AI will use all available data to provide the best possible analysis.
+                                </p>
+                            </div>
+                        )}
                     </form>
                 </div>
 
