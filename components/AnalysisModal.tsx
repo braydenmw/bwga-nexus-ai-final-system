@@ -169,7 +169,7 @@ export const AnalysisModal: React.FC<AnalysisModalProps> = ({ item, region, onCl
               </main>
 
               <footer className="mt-12 pt-4 border-t border-gray-300 text-center text-xs text-gray-500">
-                  <p>BWGA Nexus AI | Confidential Analysis Document</p>
+                  <p>BW Nexus AI | Confidential Analysis Document</p>
               </footer>
           </div>
       );

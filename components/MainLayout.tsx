@@ -12,7 +12,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
                     <div className="flex items-center">
                         <NexusLogo className="w-10 h-10 mr-4" />
-                        <h1 className="text-2xl font-bold">BWGA Nexus AI</h1>
+                        <h1 className="text-2xl font-bold">BW Nexus AI</h1>
                     </div>
                     <div>
                         <a href="#" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>

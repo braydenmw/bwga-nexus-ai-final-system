@@ -14,7 +14,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onAccept, onDec
             <header className="text-center py-8 px-4 bg-white border-b border-gray-200">
                 <div className="max-w-4xl mx-auto">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-3">
-                        Welcome to BWGA Nexus AI
+                        Welcome to BW Nexus AI
                     </h1>
                     <p className="text-sm md:text-base text-gray-600 leading-snug mb-4">
                         Unlock the hidden potential of global regions with AI-powered intelligence. Transform complex data into strategic opportunities. Discover untapped markets, forge strategic partnerships, and create sustainable growth? Let's begin your journey into regional intelligence.
@@ -26,28 +26,28 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onAccept, onDec
                 <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 md:p-6">
                     <div className="text-center mb-6 pb-4 border-b border-gray-200">
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">Terms & Conditions</h2>
-                        <p className="text-sm text-gray-600">BWGA Nexus AI Platform Agreement</p>
+                        <p className="text-sm text-gray-600">BW Nexus AI Platform Agreement</p>
                     </div>
                     <div className="prose max-w-none text-gray-700 text-xs leading-tight prose-p:mb-2 prose-strong:font-semibold prose-strong:text-gray-900">
                         <section className="mb-3">
                             <h3 className="text-xs font-bold text-gray-900 mb-1">1. Acceptance of Terms</h3>
-                            <p>By accessing and using the BWGA Nexus AI platform, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+                            <p>By accessing and using the BW Nexus AI platform, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
                         </section>
 
                         <section className="mb-3">
                             <h3 className="text-xs font-bold text-gray-900 mb-1">2. Use License</h3>
-                            <p className="mb-1">Permission is granted to temporarily access the materials (information or software) on BWGA Nexus AI's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+                            <p className="mb-1">Permission is granted to temporarily access the materials (information or software) on BW Nexus AI's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
                             <ul className="list-disc list-inside ml-3 space-y-0.5">
                                 <li>modify or copy the materials</li>
                                 <li>use the materials for any commercial purpose or for any public display (commercial or non-commercial)</li>
-                                <li>attempt to decompile or reverse engineer any software contained on BWGA Nexus AI's website</li>
+                                <li>attempt to decompile or reverse engineer any software contained on BW Nexus AI's website</li>
                                 <li>remove any copyright or other proprietary notations from the materials</li>
                             </ul>
                         </section>
 
                         <section className="mb-3">
                             <h3 className="text-xs font-bold text-gray-900 mb-1">3. Service Description</h3>
-                            <p className="mb-1">BWGA Nexus AI provides regional intelligence analysis tools including:</p>
+                            <p className="mb-1">BW Nexus AI provides regional intelligence analysis tools including:</p>
                             <ul className="list-disc list-inside ml-3 space-y-0.5">
                                 <li>Regional Resilience & Opportunity Index (RROI) diagnostics</li>
                                 <li>Transitional Pathway Theory (TPT) simulations</li>
@@ -58,17 +58,17 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onAccept, onDec
 
                         <section className="mb-3">
                             <h3 className="text-xs font-bold text-gray-900 mb-1">4. Data Privacy & Security</h3>
-                            <p>Your privacy is important to us. BWGA Nexus AI is committed to protecting your personal information and being transparent about the data we collect and how we use it. All analysis and reports generated are processed securely and confidentially.</p>
+                            <p>Your privacy is important to us. BW Nexus AI is committed to protecting your personal information and being transparent about the data we collect and how we use it. All analysis and reports generated are processed securely and confidentially.</p>
                         </section>
 
                         <section className="mb-3">
                             <h3 className="text-xs font-bold text-gray-900 mb-1">5. Accuracy of Information</h3>
-                            <p>While we strive for accuracy, BWGA Nexus AI cannot guarantee that all information provided is complete, accurate, or current. Users should verify critical information through independent sources before making business decisions.</p>
+                            <p>While we strive for accuracy, BW Nexus AI cannot guarantee that all information provided is complete, accurate, or current. Users should verify critical information through independent sources before making business decisions.</p>
                         </section>
 
                         <section className="mb-3">
                             <h3 className="text-xs font-bold text-gray-900 mb-1">6. Limitation of Liability</h3>
-                            <p>In no event shall BWGA Nexus AI or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on BWGA Nexus AI's website.</p>
+                            <p>In no event shall BW Nexus AI or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on BW Nexus AI's website.</p>
                         </section>
 
                         <section className="mb-3">
@@ -83,7 +83,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onAccept, onDec
 
                         <section className="mb-3">
                             <h3 className="text-xs font-bold text-gray-900 mb-1">9. Changes to Terms</h3>
-                            <p>BWGA Nexus AI reserves the right, at its sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.</p>
+                            <p>BW Nexus AI reserves the right, at its sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.</p>
                         </section>
                     </div>
                 </div>

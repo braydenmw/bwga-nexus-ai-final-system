@@ -120,7 +120,7 @@ export const TechnicalManual: React.FC<TechnicalManualProps> = ({ onGetStarted }
                     
                     <Section subtitle="Part VI: Enterprise & Government" title="Platform Integration & Licensing">
                         <p>
-                            BWGA Nexus AI is engineered not just as a standalone tool, but as an embeddable intelligence layer designed to integrate directly into your existing workflows. We understand that government departments and large enterprises have unique data security, compliance, and operational requirements.
+                            BW Nexus AI is engineered not just as a standalone tool, but as an embeddable intelligence layer designed to integrate directly into your existing workflows. We understand that government departments and large enterprises have unique data security, compliance, and operational requirements.
                         </p>
                         <p>
                             For organizations seeking to leverage the full power of the Nexus engine within their own environment, we offer <strong>full platform licensing options</strong>. This provides:

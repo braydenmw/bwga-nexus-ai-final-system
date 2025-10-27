@@ -45,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange }) => 
                     >
                         <div className="flex flex-col">
                             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-                                BWGA Nexus AI
+                                BW Nexus AI
                             </h1>
                             <p className="text-xs text-gray-600 leading-tight">A BW Global Advisory Initiative</p>
                         </div>

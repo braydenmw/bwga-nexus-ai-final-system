@@ -25,7 +25,7 @@ export const AnnotatedSampleReport: React.FC = () => {
                 <div className="lg:col-span-2 bg-nexus-surface-800 border border-nexus-border-medium rounded-xl shadow-lg p-8 sm:p-12 text-nexus-text-secondary">
                     <header className="flex justify-between items-start mb-8">
                         <div>
-                            <p className="font-semibold text-nexus-text-primary">BWGA Nexus AI</p>
+                            <p className="font-semibold text-nexus-text-primary">BW Nexus AI</p>
                             <p className="text-sm text-nexus-text-muted">Global Economic Empowerment OS</p>
                         </div>
                         <NexusLogo className="w-16 h-16 text-nexus-text-primary" />

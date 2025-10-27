@@ -28,7 +28,7 @@ const Invitation: React.FC = () => {
                 <div className="text-center mb-10">
                     <h2 className="text-4xl font-extrabold text-nexus-text-primary tracking-tighter">The Path to Partnership</h2>
                     <p className="mt-4 text-lg text-nexus-text-secondary max-w-3xl mx-auto">
-                        BWGA Nexus AI is a strategic matchmaking service. Follow this process to identify and analyze ideal foreign partners for your regional development goals.
+                        BW Nexus AI is a strategic matchmaking service. Follow this process to identify and analyze ideal foreign partners for your regional development goals.
                     </p>
                 </div>
 

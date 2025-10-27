@@ -23,7 +23,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         A New Language for Global Opportunity
                     </h1>
                     <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
-                        The world is changing, but understanding hasn't kept up. BWGA Nexus AI was built to bridge the critical gap between global ambition and regional potential, providing the precise clarity needed to build the partnerships of tomorrow.
+                        The world is changing, but understanding hasn't kept up. BW Nexus AI was built to bridge the critical gap between global ambition and regional potential, providing the precise clarity needed to build the partnerships of tomorrow.
                     </p>
                 </div>
             </section>
@@ -41,7 +41,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                             <p className="text-gray-700 leading-relaxed">A great realignment is underway. Supply chains are being redrawn as nations de-risk from over-concentration. Industries are searching for new regions to grow, seeking lower costs and stronger partnerships. The next wave of of growth will not come from where it always has; it will come from the emerging regional economies in Southeast Asia, Africa, and Latin America.</p>
                             <p className="mt-4 text-gray-700 leading-relaxed">Yet, when decision-makers look beyond the traditional hubs, they find a fog of uncertainty. This is the **Global Understanding Gap** — a systemic failure where immense potential remains invisible, fueled by poor information, outdated perceptions, and prohibitive costs.</p>
                             <div className="mt-6 p-4 bg-gray-100 border-l-4 border-gray-800 rounded-r-lg">
-                                <p className="text-gray-800 font-bold italic">BWGA Nexus AI provides the precise clarification needed to see these regions not for what they were, but for what they can become.</p>
+                                <p className="text-gray-800 font-bold italic">BW Nexus AI provides the precise clarification needed to see these regions not for what they were, but for what they can become.</p>
                             </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-12 items-center pt-12 border-t border-gray-200">
@@ -49,7 +49,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                             <div className="text-center md:text-left">
                                 <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight mb-4">A Message from the Founder</h3>
                                 <blockquote className="text-lg italic font-medium text-gray-700 leading-relaxed">
-                                    “I built BWGA Nexus AI after years of working directly with local governments and development leaders who had the will, the people, and the resources—but not the platform to show it. This system was born from that frustration, and from a belief that technology can be the equalizer between big and small. My hope is simple: that Nexus AI helps the world rediscover the value of places—and the people—that have long been underestimated.”
+                                    "I built BW Nexus AI after years of working directly with local governments and development leaders who had the will, the people, and the resources—but not the platform to show it. This system was born from that frustration, and from a belief that technology can be the equalizer between big and small. My hope is simple: that Nexus AI helps the world rediscover the value of places—and the people—that have long been underestimated."
                                 </blockquote>
                                 <p className="mt-6 font-semibold text-gray-800">— The Founder, BW Global Advisory</p>
                             </div>
@@ -197,11 +197,11 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 <section className="text-center bg-gray-800 text-white rounded-2xl p-12">
                     <h2 className="text-3xl font-bold mb-4">The World's First Strategic Symbiosis System</h2>
                     <p className="text-lg text-gray-300 mb-6 max-w-3xl mx-auto">
-                        BWGA Nexus AI is not another AI platform. It is the world’s first Strategic Symbiosis System—designed to connect vision with reality, ambition with opportunity, and people with purpose. It takes a single idea—what if we could see the world clearly, region by region—and turns it into a living intelligence engine that makes understanding accessible to everyone. Because the first spark of understanding—that moment of curiosity and confidence—is where every partnership begins.
+                        BW Nexus AI is not another AI platform. It is the world’s first Strategic Symbiosis System—designed to connect vision with reality, ambition with opportunity, and people with purpose. It takes a single idea—what if we could see the world clearly, region by region—and turns it into a living intelligence engine that makes understanding accessible to everyone. Because the first spark of understanding—that moment of curiosity and confidence—is where every partnership begins.
                     </p>
                     <div className="my-8 py-6 border-t border-b border-gray-700 max-w-2xl mx-auto">
                         <h3 className="text-2xl font-bold text-white mb-4">Simple, Transparent Access</h3>
-                        <p className="text-gray-300 mb-2">Gain full access to the BWGA Nexus AI platform with unlimited usage.</p>
+                        <p className="text-gray-300 mb-2">Gain full access to the BW Nexus AI platform with unlimited usage.</p>
                         <div className="text-center">
                             <p className="text-5xl font-extrabold text-white mb-2">$15</p>
                             <p className="text-gray-300 font-semibold mb-4">for 7 day access</p>
