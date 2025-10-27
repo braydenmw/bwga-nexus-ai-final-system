@@ -109,93 +109,76 @@ Format as JSON with 'summary' and 'suggestions' fields.`;
   }
 });
 
-// Nexus Brain endpoints
+// Nexus Brain endpoints - Now with actual AI analysis
 app.post('/api/nexus-brain', async (req, res) => {
   try {
     const { action, payload } = req.body;
-    const model = genAI.models;
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     let prompt = '';
     let responseStructure = {};
 
     switch (action) {
       case 'diagnose':
-        prompt = `Perform a comprehensive Regional Readiness and Opportunity Index (RROI) analysis for:
+        prompt = `You are BWGA Nexus AI's Regional Readiness & Opportunity Index (RROI) analyzer. Analyze the following region and objective, then provide a comprehensive diagnosis that demonstrates you understand the specific context and requirements.
 
-Region: ${payload.region}
-Objective: ${payload.objective}
+REGION: ${payload.region}
+OBJECTIVE: ${payload.objective}
 
-Provide a detailed economic diagnosis including:
-- Human Capital assessment
-- Infrastructure evaluation
-- Agglomeration effects
-- Economic composition analysis
-- Governance quality
-- Quality of life indicators
+Based on this specific region and objective, provide a detailed RROI analysis that shows you understand:
+- What makes this region unique for this objective
+- Key strengths and challenges specific to this context
+- How the objective aligns with regional characteristics
+- Realistic opportunities and constraints
 
-Format as JSON with overallScore and components object.`;
-        responseStructure = {
-          overallScore: 75,
-          summary: "Strong economic foundation with growth potential",
-          components: {
-            humanCapital: { name: "Human Capital", score: 80, analysis: "Well-educated workforce with growing skills" },
-            infrastructure: { name: "Infrastructure", score: 70, analysis: "Good basic infrastructure, needs modernization" },
-            agglomeration: { name: "Agglomeration", score: 75, analysis: "Growing business ecosystem" },
-            economicComposition: { name: "Economic Composition", score: 78, analysis: "Diversified economy with innovation focus" },
-            governance: { name: "Governance", score: 72, analysis: "Stable governance with reform initiatives" },
-            qualityOfLife: { name: "Quality of Life", score: 76, analysis: "High quality of life attracting talent" }
-          }
-        };
+Format your response as a JSON object with:
+- overallScore (0-100 based on fit for objective)
+- summary (2-3 sentences showing understanding of region-objective fit)
+- components object with 6 components, each having name, score (0-100), and analysis (2-3 sentences showing specific understanding)
+
+Make the analysis specific to the region and objective provided - don't use generic responses.`;
         break;
 
       case 'simulate':
-        prompt = `Simulate the economic impact of this intervention: "${payload.intervention}"
+        prompt = `You are BWGA Nexus AI's Trajectory Prediction Tool (TPT). Analyze this intervention in the context of the specific region and objective.
 
-Based on this RROI diagnosis: ${JSON.stringify(payload.rroi)}
+REGION/OBJECTIVE CONTEXT: ${payload.rroi ? JSON.stringify(payload.rroi) : 'Not provided'}
+INTERVENTION: "${payload.intervention}"
 
-Provide a detailed simulation including:
-- Scenario description
-- Timeline projections
-- Predicted economic outcomes
-- Impact analysis
+Provide a simulation that demonstrates understanding of:
+- How this intervention specifically addresses the region's challenges
+- Realistic timeline based on regional context
+- Measurable outcomes relevant to the stated objectives
+- Potential risks or challenges specific to this region
 
-Format as JSON with scenario, intervention, timeline, impactAnalysis, and predictedOutcomes.`;
-        responseStructure = {
-          scenario: "Technology Park Development",
-          intervention: payload.intervention,
-          timeline: "5-7 years",
-          impactAnalysis: "Significant economic multiplier effects expected",
-          predictedOutcomes: [
-            { metric: "GDP Growth", startValue: 3.2, endValue: 4.8 },
-            { metric: "Job Creation", startValue: 0, endValue: 2500 },
-            { metric: "FDI Attraction", startValue: 50, endValue: 150 }
-          ]
-        };
+Format as JSON with:
+- scenario (brief description showing understanding)
+- intervention (echo the intervention)
+- timeline (realistic timeframe)
+- impactAnalysis (3-4 sentences showing specific understanding)
+- predictedOutcomes (3-5 specific, measurable outcomes)
+
+Make this analysis specific to the context provided.`;
         break;
 
       case 'architect':
-        prompt = `Design an ecosystem architecture for this objective: "${payload.objective}"
+        prompt = `You are BWGA Nexus AI's Strategic Ecosystem Architecture Model (SEAM). Design a partner ecosystem for this specific objective and region.
 
-Based on this RROI diagnosis: ${JSON.stringify(payload.rroi)}
+RROI CONTEXT: ${payload.rroi ? JSON.stringify(payload.rroi) : 'Not provided'}
+OBJECTIVE: "${payload.objective}"
 
-Provide a comprehensive partner ecosystem including:
-- Strategic objective
-- Ecosystem summary
-- Key partners by type (Anchor, Infrastructure, Innovation, Capital, Government, Community)
+Design an ecosystem that demonstrates understanding of:
+- The specific regional context and needs
+- How partners complement each other's strengths
+- Realistic partnerships for this objective
+- Why each partner type is needed for success
 
-Format as JSON with strategicObjective, ecosystemSummary, and partners array.`;
-        responseStructure = {
-          strategicObjective: payload.objective,
-          ecosystemSummary: "Comprehensive partner ecosystem for sustainable growth",
-          partners: [
-            { type: "Anchor", entity: "Technology University", rationale: "Research and talent development" },
-            { type: "Infrastructure", entity: "Regional Development Authority", rationale: "Infrastructure development" },
-            { type: "Innovation", entity: "Innovation Hub", rationale: "Technology commercialization" },
-            { type: "Capital", entity: "Venture Capital Network", rationale: "Investment and funding" },
-            { type: "Government", entity: "Economic Development Ministry", rationale: "Policy and regulatory support" },
-            { type: "Community", entity: "Business Chamber", rationale: "Local business network" }
-          ]
-        };
+Format as JSON with:
+- strategicObjective (restate showing understanding)
+- ecosystemSummary (2-3 sentences explaining the ecosystem design)
+- partners array with 6 partners, each having type, entity (realistic for region), rationale (specific to objective)
+
+Ensure the ecosystem design shows deep understanding of the regional context and objective requirements.`;
         break;
 
       default:
@@ -203,9 +186,22 @@ Format as JSON with strategicObjective, ecosystemSummary, and partners array.`;
     }
 
     const result = await model.generateContent({ contents: [{ parts: [{ text: prompt }] }] });
-    const content = result.candidates[0].content.parts[0].text;
+    const responseText = result.response.text();
 
-    // Return structured response
+    // Try to parse the AI response as JSON
+    try {
+      responseStructure = JSON.parse(responseText);
+    } catch (parseError) {
+      // If AI doesn't return valid JSON, create a structured response
+      console.error('AI response parsing error:', parseError);
+      responseStructure = {
+        error: 'AI response format issue',
+        rawResponse: responseText.substring(0, 500) + '...',
+        fallback: true
+      };
+    }
+
+    // Return the AI-generated response
     res.json(responseStructure);
   } catch (error) {
     console.error('Nexus Brain error:', error);
