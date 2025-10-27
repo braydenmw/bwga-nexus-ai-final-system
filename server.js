@@ -254,55 +254,64 @@ app.get('/api/economic-data', async (req, res) => {
   try {
     const { country } = req.query;
 
-    // Enhanced mock economic data with country-specific information
+    // Enhanced mock economic data with country-specific information (updated to 2025 projections)
     const countryData = {
       "Israel": {
-        gdp: { value: 522000000000, year: "2023" },
-        population: { value: 9500000, year: "2023" },
-        inflation: { value: 2.4, year: "2023" },
-        fdi: { value: 18000000000, year: "2023" },
-        unemployment: { value: 3.7, year: "2023" },
-        exports: { value: 65000000000, year: "2023" },
-        techSectorGDP: { value: 45000000000, year: "2023" }
+        gdp: { value: 522000000000, year: "2025" },
+        population: { value: 9500000, year: "2025" },
+        inflation: { value: 2.4, year: "2025" },
+        fdi: { value: 18000000000, year: "2025" },
+        unemployment: { value: 3.7, year: "2025" },
+        exports: { value: 65000000000, year: "2025" },
+        techSectorGDP: { value: 45000000000, year: "2025" }
       },
       "Singapore": {
-        gdp: { value: 515000000000, year: "2023" },
-        population: { value: 6000000, year: "2023" },
-        inflation: { value: 3.2, year: "2023" },
-        fdi: { value: 120000000000, year: "2023" },
-        unemployment: { value: 2.1, year: "2023" },
-        exports: { value: 850000000000, year: "2023" },
-        techSectorGDP: { value: 180000000000, year: "2023" }
+        gdp: { value: 515000000000, year: "2025" },
+        population: { value: 6000000, year: "2025" },
+        inflation: { value: 3.2, year: "2025" },
+        fdi: { value: 120000000000, year: "2025" },
+        unemployment: { value: 2.1, year: "2025" },
+        exports: { value: 850000000000, year: "2025" },
+        techSectorGDP: { value: 180000000000, year: "2025" }
       },
       "Netherlands": {
-        gdp: { value: 1010000000000, year: "2023" },
-        population: { value: 18000000, year: "2023" },
-        inflation: { value: 3.1, year: "2023" },
-        fdi: { value: 35000000000, year: "2023" },
-        unemployment: { value: 3.5, year: "2023" },
-        exports: { value: 750000000000, year: "2023" },
-        techSectorGDP: { value: 120000000000, year: "2023" }
+        gdp: { value: 1010000000000, year: "2025" },
+        population: { value: 18000000, year: "2025" },
+        inflation: { value: 3.1, year: "2025" },
+        fdi: { value: 35000000000, year: "2025" },
+        unemployment: { value: 3.5, year: "2025" },
+        exports: { value: 750000000000, year: "2025" },
+        techSectorGDP: { value: 120000000000, year: "2025" }
       },
       "UAE": {
-        gdp: { value: 507000000000, year: "2023" },
-        population: { value: 10000000, year: "2023" },
-        inflation: { value: 2.8, year: "2023" },
-        fdi: { value: 25000000000, year: "2023" },
-        unemployment: { value: 2.6, year: "2023" },
-        exports: { value: 400000000000, year: "2023" },
-        techSectorGDP: { value: 15000000000, year: "2023" }
+        gdp: { value: 507000000000, year: "2025" },
+        population: { value: 10000000, year: "2025" },
+        inflation: { value: 2.8, year: "2025" },
+        fdi: { value: 25000000000, year: "2025" },
+        unemployment: { value: 2.6, year: "2025" },
+        exports: { value: 400000000000, year: "2025" },
+        techSectorGDP: { value: 15000000000, year: "2025" }
+      },
+      "Philippines": {
+        gdp: { value: 450000000000, year: "2025" },
+        population: { value: 110000000, year: "2025" },
+        inflation: { value: 2.8, year: "2025" },
+        fdi: { value: 25000000000, year: "2025" },
+        unemployment: { value: 4.2, year: "2025" },
+        exports: { value: 200000000000, year: "2025" },
+        techSectorGDP: { value: 25000000000, year: "2025" }
       }
     };
 
     // Use country-specific data if available, otherwise fallback to generic data
     const mockData = countryData[country] || {
-      gdp: { value: 450000000000, year: "2023" },
-      population: { value: 110000000, year: "2023" },
-      inflation: { value: 2.8, year: "2023" },
-      fdi: { value: 25000000000, year: "2023" },
-      unemployment: { value: 4.2, year: "2023" },
-      exports: { value: 200000000000, year: "2023" },
-      techSectorGDP: { value: 25000000000, year: "2023" }
+      gdp: { value: 450000000000, year: "2025" },
+      population: { value: 110000000, year: "2025" },
+      inflation: { value: 2.8, year: "2025" },
+      fdi: { value: 25000000000, year: "2025" },
+      unemployment: { value: 4.2, year: "2025" },
+      exports: { value: 200000000000, year: "2025" },
+      techSectorGDP: { value: 25000000000, year: "2025" }
     };
 
     res.json(mockData);
