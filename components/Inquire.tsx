@@ -361,19 +361,19 @@ export const Inquire = ({
                             <div className="prose prose-sm max-w-none text-nexus-text-secondary mb-3"
                                  dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
                             />
-                            <div className="bg-nexus-accent-cyan/10 border border-nexus-accent-cyan/20 rounded-md p-3 mt-3">
-                                <p className="text-sm font-semibold text-nexus-accent-cyan mb-2">📊 Current Assessment:</p>
-                                <ul className="text-xs text-nexus-text-secondary space-y-1">
-                                    {insights.map((insight, index) => (
-                                        <li key={index}>{insight}</li>
-                                    ))}
-                                </ul>
-                                {insights.length >= 3 && (
+                            {insights.length >= 3 && (
+                                <div className="bg-nexus-accent-cyan/10 border border-nexus-accent-cyan/20 rounded-md p-3 mt-3">
+                                    <p className="text-sm font-semibold text-nexus-accent-cyan mb-2">📊 Current Assessment:</p>
+                                    <ul className="text-xs text-nexus-text-secondary space-y-1">
+                                        {insights.map((insight, index) => (
+                                            <li key={index}>{insight}</li>
+                                        ))}
+                                    </ul>
                                     <p className="text-xs text-nexus-accent-cyan mt-2 font-medium">
                                         💡 Based on your inputs, I can help you build a comprehensive analysis. Try using the "Quick Start Report" below or proceed through the wizard steps.
                                     </p>
-                                )}
-                            </div>
+                                </div>
+                            )}
                         </div>
                     );
                 }
@@ -604,7 +604,7 @@ export const Inquire = ({
                                     </div>
                                 </div>
                                 <p className="text-xs text-nexus-text-secondary mt-1">
-                                    💡 <strong>Pro Tip:</strong> More complete information = more accurate and comprehensive reports.
+                                    💡 <strong>Pro Tip:</strong> More complete information = more accurate and comprehensive reports. The AI will use all available data to provide the best possible analysis.
                                 </p>
                             </div>
                         )}
