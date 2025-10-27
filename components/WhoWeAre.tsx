@@ -39,13 +39,24 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                             I am an independent developer and strategist with a deep commitment to innovation, problem-solving, and sustainable growth. Over the past several years, I have worked extensively with government, business, and community stakeholders, observing firsthand the inefficiencies and barriers that slow down regional development and business expansion. This experience inspired me to create a tool that brings clarity, efficiency, and actionable intelligence to leaders and organizations working in complex environments.
                         </p>
                     </div>
-                    <p className="text-gray-600 text-base mb-6 leading-relaxed">
-                        The most significant barrier I observed is what I call the **"Global Understanding Gap"** — a systemic failure fueled by fragmented information, outdated perceptions, and the prohibitive cost of traditional due diligence. This gap systematically hinders equitable development and national prosperity in countless regional cities worldwide. While global capital and opportunity exist, and regional assets abound, a crucial piece of intelligent, proactive, and ethically grounded facilitation was missing.
-                    </p>
-                    <div className="bg-gray-100 border-l-4 border-blue-500 p-6 rounded-r-lg mb-6">
-                        <p className="text-gray-700 font-semibold italic text-base leading-relaxed">
-                            Our mission is to fundamentally transform regional economic development by creating a globally intelligent, adaptive AI-Human system. BWGA Nexus™ proactively identifies, validates, and facilitates symbiotic partnerships between regional governments, international investors, and relevant solution providers, fostering sustainable growth and directly addressing poverty and inequality in "forgotten communities."
-                        </p>
+                    <div className="flex flex-col md:flex-row gap-8 items-start mb-6">
+                        <div className="flex-1">
+                            <p className="text-gray-600 text-base mb-6 leading-relaxed">
+                                The most significant barrier I observed is what I call the **"Global Understanding Gap"** — a systemic failure fueled by fragmented information, outdated perceptions, and the prohibitive cost of traditional due diligence. This gap systematically hinders equitable development and national prosperity in countless regional cities worldwide. While global capital and opportunity exist, and regional assets abound, a crucial piece of intelligent, proactive, and ethically grounded facilitation was missing.
+                            </p>
+                            <div className="bg-gray-100 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                                <p className="text-gray-700 font-semibold italic text-base leading-relaxed">
+                                    Our mission is to fundamentally transform regional economic development by creating a globally intelligent, adaptive AI-Human system. BWGA Nexus™ proactively identifies, validates, and facilitates symbiotic partnerships between regional governments, international investors, and relevant solution providers, fostering sustainable growth and directly addressing poverty and inequality in "forgotten communities."
+                                </p>
+                            </div>
+                        </div>
+                        <div className="md:w-1/3">
+                            <img
+                                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                alt="Global economic development and partnership facilitation"
+                                className="w-full h-64 object-cover rounded-lg shadow-md"
+                            />
+                        </div>
                     </div>
                     <p className="text-gray-600 text-base mb-6 leading-relaxed">The BWGA Nexus™ platform is not created to simply compete; it is created to contribute. It is the system we wish had existed during our time on the ground. It is for the development agency working to uplift its community, for the company deterred by uncertainty, and for the regional communities themselves waiting to be seen. Our goal is to provide the "spark"—the initial layer of clarity that empowers a local official or a company manager to champion a project, armed with a credible, data-backed report.</p>
 
