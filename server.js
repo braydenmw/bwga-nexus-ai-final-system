@@ -314,53 +314,163 @@ const countryCodes = {
   "Philippines": { wb: "PHL", imf: "PH", oecd: "PHL" }
 };
 
-// Economic data endpoint with live API integration
+// Helper function to analyze objective and determine relevant indicators
+async function analyzeObjectiveForIndicators(objective, region) {
+  const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+
+  const prompt = `Analyze this business objective and region to determine the most relevant economic indicators for decision-making.
+
+OBJECTIVE: "${objective}"
+REGION: ${region}
+
+Based on this objective, identify the 6-8 most important economic indicators that would be critical for evaluating this opportunity. Consider:
+- Sector-specific metrics (manufacturing, tech, services, etc.)
+- Risk factors relevant to the objective
+- Competitive advantages to assess
+- Growth potential indicators
+- Operational feasibility metrics
+
+Return a JSON array of indicator objects, each with:
+- name: The indicator name
+- code: World Bank/OECD indicator code if available
+- relevance: Why this matters for the objective (1-2 sentences)
+- priority: "high", "medium", or "low"
+
+Focus on indicators that would actually influence the decision to pursue this objective in this region.`;
+
+  try {
+    const result = await model.generateContent({ contents: [{ parts: [{ text: prompt }] }] });
+    const response = result.response.text();
+
+    // Try to parse as JSON, fallback to default indicators if parsing fails
+    try {
+      return JSON.parse(response);
+    } catch (parseError) {
+      console.error('Objective analysis parsing error:', parseError);
+      return getDefaultIndicators(objective);
+    }
+  } catch (error) {
+    console.error('Objective analysis error:', error);
+    return getDefaultIndicators(objective);
+  }
+}
+
+// Default indicators based on objective keywords
+function getDefaultIndicators(objective) {
+  const obj = objective.toLowerCase();
+
+  if (obj.includes('manufactur') || obj.includes('production') || obj.includes('factory')) {
+    return [
+      { name: "GDP per capita", code: "NY.GDP.PCAP.CD", relevance: "Indicates workforce productivity and cost competitiveness", priority: "high" },
+      { name: "Labor force participation", code: "SL.TLF.ACTI.ZS", relevance: "Shows available workforce for manufacturing operations", priority: "high" },
+      { name: "Infrastructure quality", code: "IQ.WEF.PORT.XQ", relevance: "Critical for manufacturing supply chain efficiency", priority: "high" },
+      { name: "Electricity access", code: "EG.ELC.ACCS.ZS", relevance: "Essential for industrial operations", priority: "high" },
+      { name: "Trade logistics performance", code: "LP.LPI.LOGS.XQ", relevance: "Affects export competitiveness", priority: "medium" },
+      { name: "Business environment", code: "IC.BUS.EASE.XQ", relevance: "Ease of setting up manufacturing operations", priority: "high" }
+    ];
+  } else if (obj.includes('technology') || obj.includes('innovation') || obj.includes('startup')) {
+    return [
+      { name: "GDP per capita", code: "NY.GDP.PCAP.CD", relevance: "Indicates market purchasing power for tech products", priority: "high" },
+      { name: "Internet penetration", code: "IT.NET.USER.ZS", relevance: "Critical for technology adoption and digital services", priority: "high" },
+      { name: "Education expenditure", code: "SE.XPD.TOTL.GD.ZS", relevance: "Shows investment in human capital for tech workforce", priority: "high" },
+      { name: "R&D expenditure", code: "GB.XPD.RSDV.GD.ZS", relevance: "Indicates innovation ecosystem strength", priority: "high" },
+      { name: "Mobile subscriptions", code: "IT.CEL.SETS.P2", relevance: "Technology infrastructure and market size", priority: "medium" },
+      { name: "Business environment", code: "IC.BUS.EASE.XQ", relevance: "Ease of establishing tech companies", priority: "high" }
+    ];
+  } else {
+    // General business indicators
+    return [
+      { name: "GDP growth", code: "NY.GDP.MKTP.KD.ZG", relevance: "Overall economic momentum and market potential", priority: "high" },
+      { name: "GDP per capita", code: "NY.GDP.PCAP.CD", relevance: "Market purchasing power and cost structure", priority: "high" },
+      { name: "Inflation rate", code: "FP.CPI.TOTL.ZG", relevance: "Economic stability and cost predictability", priority: "medium" },
+      { name: "FDI inflows", code: "BX.KLT.DINV.WD.GD.ZS", relevance: "Foreign investment attractiveness", priority: "medium" },
+      { name: "Business environment", code: "IC.BUS.EASE.XQ", relevance: "Ease of doing business and regulatory framework", priority: "high" },
+      { name: "Infrastructure quality", code: "IQ.WEF.OVRL.XQ", relevance: "Overall infrastructure supporting business operations", priority: "high" }
+    ];
+  }
+}
+
+// Enhanced economic data endpoint with contextual analysis
 app.get('/api/economic-data', async (req, res) => {
   try {
-    const { country } = req.query;
+    const { country, objective } = req.query;
     const codes = countryCodes[country];
 
     if (!codes) {
       return res.status(400).json({ error: 'Country not supported' });
     }
 
-    // Fetch data from multiple APIs concurrently
-    const [gdpWB, populationWB, inflationWB, fdiIMF, unemploymentOECD] = await Promise.all([
-      fetchWorldBankData(codes.wb, 'NY.GDP.MKTP.CD'), // GDP
-      fetchWorldBankData(codes.wb, 'SP.POP.TOTL'), // Population
-      fetchWorldBankData(codes.wb, 'FP.CPI.TOTL.ZG'), // Inflation
-      fetchIMFData(codes.imf, 'FDI'), // FDI
-      fetchOECDData(codes.oecd, 'STLABOUR') // Unemployment
-    ]);
+    // Analyze objective to determine relevant indicators
+    const relevantIndicators = objective ?
+      await analyzeObjectiveForIndicators(objective, country) :
+      getDefaultIndicators('general business');
 
-    // Fallback data if APIs fail
-    const fallbackData = {
-      gdp: { value: 450000000000, year: "2025" },
-      population: { value: 110000000, year: "2025" },
-      inflation: { value: 2.8, year: "2025" },
-      fdi: { value: 25000000000, year: "2025" },
-      unemployment: { value: 4.2, year: "2025" },
-      exports: { value: 200000000000, year: "2025" },
-      techSectorGDP: { value: 25000000000, year: "2025" }
-    };
+    // Fetch data for relevant indicators
+    const dataPromises = relevantIndicators.map(async (indicator) => {
+      let value = null;
 
-    // Combine live data with fallbacks
-    const liveData = {
-      gdp: gdpWB || fallbackData.gdp,
-      population: populationWB || fallbackData.population,
-      inflation: inflationWB || fallbackData.inflation,
-      fdi: fdiIMF || fallbackData.fdi,
-      unemployment: unemploymentOECD || fallbackData.unemployment,
-      exports: fallbackData.exports, // No live API for exports yet
-      techSectorGDP: fallbackData.techSectorGDP // No live API for tech sector yet
-    };
+      // Try World Bank first
+      if (indicator.code) {
+        value = await fetchWorldBankData(codes.wb, indicator.code);
+      }
 
-    res.json(liveData);
+      // Try IMF if WB fails
+      if (!value && indicator.code) {
+        value = await fetchIMFData(codes.imf, indicator.name.toLowerCase().replace(/\s+/g, ''));
+      }
+
+      // Try OECD if others fail
+      if (!value && indicator.code) {
+        value = await fetchOECDData(codes.oecd, indicator.code);
+      }
+
+      return {
+        name: indicator.name,
+        value: value || { value: 'Data not available', year: 'N/A' },
+        relevance: indicator.relevance,
+        priority: indicator.priority
+      };
+    });
+
+    const economicData = await Promise.all(dataPromises);
+
+    // Add regional context comparison
+    const regionalContext = await getRegionalComparison(country, relevantIndicators);
+
+    res.json({
+      country: country,
+      objective: objective || 'General analysis',
+      indicators: economicData,
+      regionalContext: regionalContext,
+      analysisDate: new Date().toISOString()
+    });
+
   } catch (error) {
     console.error('Economic data error:', error);
     res.status(500).json({ error: 'Failed to fetch economic data' });
   }
 });
+
+// Helper function for regional comparisons
+async function getRegionalComparison(country, indicators) {
+  // This would compare the country to regional averages
+  // For now, return a placeholder structure
+  return {
+    region: getRegionForCountry(country),
+    comparison: "Regional comparison data would be calculated here based on similar countries"
+  };
+}
+
+function getRegionForCountry(country) {
+  const regions = {
+    "Israel": "Middle East",
+    "Singapore": "Southeast Asia",
+    "Netherlands": "Europe",
+    "UAE": "Middle East",
+    "Philippines": "Southeast Asia"
+  };
+  return regions[country] || "Global";
+}
 
 // Cities endpoint
 app.get('/api/cities', async (req, res) => {
