@@ -52,9 +52,10 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         </div>
                         <div className="md:w-1/3">
                             <img
-                                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                                alt="Global economic development and partnership facilitation"
-                                className="w-full h-64 object-cover rounded-lg shadow-md"
+                                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                alt="World map with colorful location pins showing global connectivity"
+                                className="w-full h-auto object-cover rounded-lg shadow-md"
+                                style={{ height: 'auto', minHeight: '200px' }}
                             />
                         </div>
                     </div>
@@ -187,9 +188,9 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     </p>
                     <div className="grid md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
                         <div className="bg-gray-100 rounded-xl p-8 border border-gray-200 text-center">
-                            <p className="text-5xl font-extrabold text-gray-900 mb-2">$59</p>
-                            <p className="text-gray-600 font-semibold mb-4">per month</p>
-                            <p className="text-xs text-gray-500 mb-6">3, 6, or 12-month subscriptions available on request.</p>
+                            <p className="text-5xl font-extrabold text-gray-900 mb-2">$15</p>
+                            <p className="text-gray-600 font-semibold mb-4">for 7 day access</p>
+                            <p className="text-xs text-gray-500 mb-6">3 month $175 • 6 months $365 • 12 months $595</p>
                             <ul className="text-left space-y-3 text-gray-700 text-sm">
                                 <li className="flex items-center gap-2"><span className="text-green-500">✔</span> Unlimited Intelligence Reports</li>
                                 <li className="flex items-center gap-2"><span className="text-green-500">✔</span> Unlimited use of the Nexus Enquire AI Copilot</li>
