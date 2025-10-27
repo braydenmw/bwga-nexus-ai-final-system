@@ -236,7 +236,7 @@ body {
 /* Intelligence Workspace Layout */
 .intelligence-workspace {
   display: grid;
-  grid-template-columns: 450px 1fr;
+  grid-template-columns: 600px 1fr;
   height: 100%;
   overflow: hidden;
 }
