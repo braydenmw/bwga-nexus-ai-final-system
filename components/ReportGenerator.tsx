@@ -909,7 +909,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
     return (
         <div className="flex h-screen bg-gray-100 font-sans">
-            <div className="w-[28rem] flex-shrink-0 bg-white border-r border-gray-200 shadow-lg">
+            <div className="w-[35rem] flex-shrink-0 bg-white border-r border-gray-200 shadow-lg">
                 <Inquire // The left-hand AI co-pilot panel
                     {...restInquireProps}
                     params={params}
