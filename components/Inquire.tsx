@@ -399,7 +399,7 @@ export const Inquire = ({
                 </div>
             </header>
 
-            <div className="mt-4 flex-grow overflow-y-auto pr-2 -mr-2 space-y-4">
+            <div className="mt-4 flex-grow overflow-y-auto pr-2 -mr-2 space-y-4 max-w-full">
                  {wizardStep === 4 && (
                      <div className="p-3 bg-white/5 rounded-lg border border-white/10 space-y-3 animate-fadeIn">
                           <h3 className="font-semibold text-nexus-text-primary text-md flex items-center gap-2">
@@ -503,8 +503,9 @@ export const Inquire = ({
                 )}
 
                 {params.userCountry && (
-                    <EconomicSnapshot 
+                    <EconomicSnapshot
                         country={params.userCountry}
+                        objective={params.problemStatement}
                         isRefining={isRefining}
                         onRefineObjective={handleRefineObjective}
                     />
