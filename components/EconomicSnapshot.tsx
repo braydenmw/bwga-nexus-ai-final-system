@@ -5,8 +5,22 @@ import Spinner from './Spinner.tsx';
 
 interface EconomicSnapshotProps {
     country: string;
+    objective?: string;
     isRefining: boolean;
-    onRefineObjective: (data: EconomicData) => void;
+    onRefineObjective: (data: any) => void;
+}
+
+interface SmartEconomicData {
+    country: string;
+    objective: string;
+    indicators: Array<{
+        name: string;
+        value: { value: any; year: string } | string;
+        relevance: string;
+        priority: string;
+    }>;
+    regionalContext: any;
+    analysisDate: string;
 }
 
 const formatValue = (data: { value: number; year: string } | undefined, type: 'currency' | 'number' | 'percent') => {
@@ -53,11 +67,49 @@ const DataPoint: React.FC<{ label: string; data: { value: number; year: string }
     );
 };
 
+const SmartDataPoint: React.FC<{ indicator: any }> = ({ indicator }) => {
+    const data = typeof indicator.value === 'object' && indicator.value.value !== undefined ?
+        indicator.value : { value: indicator.value, year: 'N/A' };
 
-export const EconomicSnapshot: React.FC<EconomicSnapshotProps> = ({ country, isRefining, onRefineObjective }) => {
-    const [data, setData] = useState<EconomicData | null>(null);
+    let type: 'currency' | 'number' | 'percent' = 'number';
+    if (indicator.name.toLowerCase().includes('gdp') || indicator.name.toLowerCase().includes('fdi') || indicator.name.toLowerCase().includes('export')) {
+        type = 'currency';
+    } else if (indicator.name.toLowerCase().includes('inflation') || indicator.name.toLowerCase().includes('growth')) {
+        type = 'percent';
+    }
+
+    const { value, year } = formatValue(data, type);
+
+    return (
+        <div className="border border-gray-200 rounded-md p-3 mb-2">
+            <div className="flex justify-between items-start mb-1">
+                <span className="text-sm font-medium text-nexus-text-primary">{indicator.name}</span>
+                <span className={`text-xs px-2 py-1 rounded-full ${
+                    indicator.priority === 'high' ? 'bg-red-100 text-red-800' :
+                    indicator.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-gray-100 text-gray-800'
+                }`}>
+                    {indicator.priority}
+                </span>
+            </div>
+            <div className="flex justify-between items-baseline text-sm mb-2">
+                <span className="text-nexus-text-secondary">Value</span>
+                <div className="text-right">
+                    <span className="font-semibold text-nexus-text-primary">{value}</span>
+                    <span className="ml-1 text-xs text-nexus-text-muted">{year}</span>
+                </div>
+            </div>
+            <p className="text-xs text-nexus-text-secondary italic">{indicator.relevance}</p>
+        </div>
+    );
+};
+
+
+export const EconomicSnapshot: React.FC<EconomicSnapshotProps> = ({ country, objective, isRefining, onRefineObjective }) => {
+    const [data, setData] = useState<SmartEconomicData | EconomicData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isSmartData, setIsSmartData] = useState(false);
 
     useEffect(() => {
         if (!country) return;
@@ -67,8 +119,18 @@ export const EconomicSnapshot: React.FC<EconomicSnapshotProps> = ({ country, isR
             setError(null);
             setData(null);
             try {
-                const result = await fetchEconomicDataForCountry(country);
-                setData(result);
+                // Try to fetch smart economic data first (with objective context)
+                const smartResponse = await fetch(`/api/economic-data?country=${encodeURIComponent(country)}${objective ? `&objective=${encodeURIComponent(objective)}` : ''}`);
+                if (smartResponse.ok) {
+                    const smartData = await smartResponse.json();
+                    setData(smartData);
+                    setIsSmartData(true);
+                } else {
+                    // Fallback to old format
+                    const result = await fetchEconomicDataForCountry(country);
+                    setData(result);
+                    setIsSmartData(false);
+                }
             } catch (err) {
                 const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
                 setError(errorMessage);
@@ -78,7 +140,7 @@ export const EconomicSnapshot: React.FC<EconomicSnapshotProps> = ({ country, isR
         };
 
         fetchData();
-    }, [country]);
+    }, [country, objective]);
 
     if (!country) return null;
 
@@ -96,10 +158,23 @@ export const EconomicSnapshot: React.FC<EconomicSnapshotProps> = ({ country, isR
             {error && <p className="text-xs text-red-500 bg-red-100 p-2 rounded-md">Could not load economic data.</p>}
             {!isLoading && !error && data && (
                 <div className="space-y-2">
-                    <DataPoint label="GDP (current USD)" data={data.gdp} type="currency" />
-                    <DataPoint label="Population" data={data.population} type="number" />
-                    <DataPoint label="Inflation (annual %)" data={data.inflation} type="percent" />
-                    <DataPoint label="FDI, net inflows (USD)" data={data.fdi} type="currency" />
+                    {isSmartData && (data as SmartEconomicData).indicators ? (
+                        <>
+                            <p className="text-xs text-nexus-text-secondary mb-3">
+                                Analysis for: <span className="font-medium text-nexus-accent-cyan">{(data as SmartEconomicData).objective}</span>
+                            </p>
+                            {(data as SmartEconomicData).indicators.map((indicator, index) => (
+                                <SmartDataPoint key={index} indicator={indicator} />
+                            ))}
+                        </>
+                    ) : (
+                        <>
+                            <DataPoint label="GDP (current USD)" data={(data as EconomicData).gdp} type="currency" />
+                            <DataPoint label="Population" data={(data as EconomicData).population} type="number" />
+                            <DataPoint label="Inflation (annual %)" data={(data as EconomicData).inflation} type="percent" />
+                            <DataPoint label="FDI, net inflows (USD)" data={(data as EconomicData).fdi} type="currency" />
+                        </>
+                    )}
                     <button
                         onClick={() => onRefineObjective(data)}
                         disabled={isRefining}
