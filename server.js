@@ -585,6 +585,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Nexus AI Backend Server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
   console.log(`🤖 AI Status: ${process.env.GOOGLE_GENAI_API_KEY ? '✅ Configured' : '❌ Missing API Key'}`);
+  console.log(`🌐 Production URL: https://bwga-nexus-ai-server.vercel.app`);
 });
 
 export default app;
