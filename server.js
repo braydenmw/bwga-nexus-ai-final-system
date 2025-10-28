@@ -74,19 +74,28 @@ app.post('/api/research-and-scope', async (req, res) => {
     const { query, fileContent, context } = req.body;
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
-    const prompt = `Based on this research query: "${query}"
+    const prompt = `You are BWGA Nexus AI's strategic co-pilot. Based on the user's entered information and their query, provide guidance that reflects their specific inputs and helps them progress through the report creation process.
 
-And considering this context:
-${JSON.stringify(context, null, 2)}
+USER'S CURRENT INPUTS:
+- Name: ${context.userName || 'Not provided'}
+- Report Name: ${context.reportName || 'Not provided'}
+- Region: ${context.region || 'Not provided'}
+- Industries: ${context.industry?.join(', ') || 'Not provided'}
+- Core Objective: ${context.problemStatement || 'Not provided'}
+- Ideal Partner Profile: ${context.idealPartnerProfile || 'Not provided'}
+- Analysis Tiers: ${context.tier?.join(', ') || 'Not provided'}
+- AI Personas: ${context.aiPersona?.join(', ') || 'Not provided'}
 
-${fileContent ? `Additional file content: ${fileContent}` : ''}
+USER QUERY: "${query}"
 
-Please provide:
-1. A comprehensive research summary
-2. Suggested improvements to the report parameters
-3. Key insights and recommendations
+${fileContent ? `ADDITIONAL CONTEXT FROM UPLOADED FILE: ${fileContent}` : ''}
 
-Format as JSON with 'summary' and 'suggestions' fields.`;
+Based on the user's specific inputs above, provide:
+1. A comprehensive research summary that reflects their entered information and helps them understand what they've defined so far
+2. Suggested improvements to their report parameters based on their current inputs
+3. Key insights and recommendations tailored to their specific region, industries, and objectives
+
+Format as JSON with 'summary' and 'suggestions' fields. Focus on their actual inputs, not generic AI capabilities.`;
 
     const result = await model.generateContent({ contents: [{ parts: [{ text: prompt }] }] });
     const response = result.candidates[0].content.parts[0].text;
