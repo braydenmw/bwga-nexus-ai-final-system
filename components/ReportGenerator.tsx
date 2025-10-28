@@ -541,102 +541,6 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                     </div>
                 );
             case 5: // Review & Generate
-                return (
-                      <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200">
-                          <div className="flex items-center gap-4 mb-8">
-                            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-md border border-gray-200">
-                              <span className="text-2xl">🚀</span>
-                            </div>
-                            <div>
-                              <h3 className="text-xl md:text-2xl font-bold text-gray-900">Final Review & Generation</h3>
-                              <p className="text-gray-600 text-sm">Review the quality assessment and generate your report.</p>
-                            </div>
-                          </div>
-
-                        <QualityAnalysis params={params} />
-
-                        {/* Nexus Brain Integration - Show available analysis */}
-                        {step === 5 && (
-                          <div className="my-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
-                            <h4 className="text-lg font-semibold text-nexus-accent-cyan mb-4 flex items-center gap-2">
-                              <span className="text-blue-600">🧠</span>
-                              Nexus Brain Analysis Available
-                            </h4>
-                            <p className="text-sm text-gray-700 mb-4">
-                              Before generating your final report, you can use the **Nexus Inquire AI** panel on the left to run advanced analysis on your defined region and objectives.
-                              The Nexus Brain will provide RROI diagnosis, TPT simulations, and SEAM ecosystem design.
-                            </p>
-                            <div className="text-xs text-nexus-text-muted">
-                              Note: This analysis will be automatically included in your final report generation.
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="my-6">
-                            <h4 className="text-lg font-semibold text-gray-800 mb-4">Global Trade Intelligence</h4>
-                            <div className="mb-8">
-                                {(() => {
-                                    const sampleTradeVolume = 2500000000;
-                                    const sampleTariffRate = 15;
-                                    const sampleMarkets = ['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia'];
-                                    const analysis = TradeDisruptionAnalyzer.calculateDisruptionImpact(sampleTradeVolume, sampleTariffRate, sampleMarkets, 35);
-                                    return <TradeDisruptionDisplay analysis={analysis} />;
-                                })()}
-                            </div>
-                            <div className="mb-8">
-                                <MarketDiversificationDashboard
-                                    currentMarkets={{ 'United States': 45, 'China': 25, 'European Union': 20, 'Japan': 10 }}
-                                    potentialMarkets={['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia', 'Turkey', 'South Africa', 'Thailand']}
-                                    tradeDisruptionRisk={0.6}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-4 p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-inner">
-                            <div className="grid md:grid-cols-2 gap-6">
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">Report Name</div>
-                                  <div className="text-gray-900 pl-2 mt-1">{params.reportName || <span className="text-red-600 italic">Not Provided</span>}</div>
-                              </div>
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">Operator</div>
-                                  <div className="text-gray-900 pl-2 mt-1">{`${params.userName || 'N/A'} (${params.organizationType})`}</div>
-                              </div>
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">Analysis Tiers</div>
-                                  <div className="text-gray-900 pl-2 mt-1"><ul className="list-disc list-inside space-y-1">{params.tier.map(t => <li key={t} className="text-sm">{currentTiers.find(tier => tier.id === t)?.title || t}</li>)}</ul></div>
-                              </div>
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">Geographic Focus</div>
-                                  <div className="text-gray-900 pl-2 mt-1">{`${params.region || 'N/A'}`}</div>
-                              </div>
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">Industry Sectors</div>
-                                  <div className="text-gray-900 pl-2 mt-1">{params.industry.filter(i=>i !== 'Custom').join(', ') || 'N/A'}</div>
-                              </div>
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">Custom Sector</div>
-                                  <div className="text-gray-900 pl-2 mt-1">{params.customIndustry || 'Not specified'}</div>
-                              </div>
-                            </div>
-                            <div className="border-t border-gray-200 pt-4 space-y-4">
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">Strategic Objective</div>
-                                  <div className="text-gray-900 pl-2 mt-1"><div className="italic text-gray-800 bg-gray-100 p-3 rounded-lg border border-gray-200">"{params.problemStatement}"</div></div>
-                              </div>
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">AI Personas</div>
-                                  <div className="text-gray-900 pl-2 mt-1"><ul className="list-disc list-inside space-y-1">{params.aiPersona.filter(p=>p !== 'Custom').map(p => <li key={p} className="text-sm">{p}</li>)}</ul></div>
-                              </div>
-                              <div className="p-3 rounded-lg transition-colors bg-gray-50">
-                                  <div className="text-sm font-semibold text-gray-600">Custom Profile</div>
-                                  <div className="text-gray-900 pl-2 mt-1">{params.customAiPersona || 'Not configured'}</div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            case 5: // Review & Generate
                 const isInvalid = (field: keyof ReportParameters, condition?: boolean) => {
                     const value = params[field];
                     if (condition === false) return false; // Explicitly false condition means don't validate
@@ -645,7 +549,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                     return false;
                 };
 
-                const summaryItemClasses = (invalid: boolean) => // Keep this function as it is
+                const summaryItemClasses = (invalid: boolean) =>
                     `p-3 rounded-lg transition-colors ${invalid ? 'bg-red-100 border border-red-200' : 'bg-gray-50'}`;
 
                 const SummaryItem: React.FC<{label: string, value: React.ReactNode, invalid?: boolean}> = ({label, value, invalid = false}) => (
