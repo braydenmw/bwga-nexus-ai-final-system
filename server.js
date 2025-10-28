@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { GoogleGenAI } from '@google/genai';
+import OpenAI from 'openai';
 import dotenv from 'dotenv';
 
 // Load environment variables
@@ -13,8 +13,10 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Initialize Google Gemini AI
-const genAI = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+// Initialize OpenAI
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Helper function to generate report content
 function generateReportPrompt(params) {
@@ -54,11 +56,16 @@ Format the response as a well-structured business report with clear sections and
 app.post('/api/report', async (req, res) => {
   try {
     const params = req.body;
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     const prompt = generateReportPrompt(params);
-    const result = await model.generateContent(prompt);
-    const content = result.response.text();
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 4000,
+      temperature: 0.7,
+    });
+
+    const content = completion.choices[0].message.content;
 
     // Simulate streaming by sending the content
     res.json({ content });
@@ -72,7 +79,6 @@ app.post('/api/report', async (req, res) => {
 app.post('/api/research-and-scope', async (req, res) => {
   try {
     const { query, fileContent, context } = req.body;
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     const prompt = `You are BWGA Nexus AI's strategic co-pilot. Based on the user's entered information and their query, provide guidance that reflects their specific inputs and helps them progress through the report creation process.
 
@@ -97,8 +103,14 @@ Based on the user's specific inputs above, provide:
 
 Format as JSON with 'summary' and 'suggestions' fields. Focus on their actual inputs, not generic AI capabilities.`;
 
-    const result = await model.generateContent({ contents: [{ parts: [{ text: prompt }] }] });
-    const response = result.candidates[0].content.parts[0].text;
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 2000,
+      temperature: 0.7,
+    });
+
+    const response = completion.choices[0].message.content;
 
     // Parse and structure the response
     const summary = response;
@@ -122,7 +134,6 @@ Format as JSON with 'summary' and 'suggestions' fields. Focus on their actual in
 app.post('/api/nexus-brain', async (req, res) => {
   try {
     const { action, payload } = req.body;
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     let prompt = '';
     let responseStructure = {};
@@ -194,8 +205,14 @@ Ensure the ecosystem design shows deep understanding of the regional context and
         return res.status(400).json({ error: 'Invalid action' });
     }
 
-    const result = await model.generateContent({ contents: [{ parts: [{ text: prompt }] }] });
-    const responseText = result.response.text();
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 2000,
+      temperature: 0.7,
+    });
+
+    const responseText = completion.choices[0].message.content;
 
     // Try to parse the AI response as JSON
     try {
@@ -325,8 +342,6 @@ const countryCodes = {
 
 // Helper function to analyze objective and determine relevant indicators
 async function analyzeObjectiveForIndicators(objective, region) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
   const prompt = `Analyze this business objective and region to determine the most relevant economic indicators for decision-making.
 
 OBJECTIVE: "${objective}"
@@ -348,8 +363,14 @@ Return a JSON array of indicator objects, each with:
 Focus on indicators that would actually influence the decision to pursue this objective in this region.`;
 
   try {
-    const result = await model.generateContent({ contents: [{ parts: [{ text: prompt }] }] });
-    const response = result.response.text();
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 1500,
+      temperature: 0.7,
+    });
+
+    const response = completion.choices[0].message.content;
 
     // Try to parse as JSON, fallback to default indicators if parsing fails
     try {
@@ -506,7 +527,6 @@ app.get('/api/cities', async (req, res) => {
 app.post('/api/refine-objective', async (req, res) => {
   try {
     const { question, answer } = req.body;
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     const prompt = `Given this original objective: "${question}"
 
@@ -516,8 +536,14 @@ Please refine and improve the objective to be more specific, actionable, and ali
 
 Return only the refined objective text.`;
 
-    const result = await model.generateContent({ contents: [{ parts: [{ text: prompt }] }] });
-    const refinedObjective = result.candidates[0].content.parts[0].text;
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 500,
+      temperature: 0.7,
+    });
+
+    const refinedObjective = completion.choices[0].message.content;
 
     res.json({ refinedObjective: refinedObjective.trim() });
   } catch (error) {
@@ -584,7 +610,7 @@ app.use((error, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`🚀 Nexus AI Backend Server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`🤖 AI Status: ${process.env.GOOGLE_GENAI_API_KEY ? '✅ Configured' : '❌ Missing API Key'}`);
+  console.log(`🤖 AI Status: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing API Key'}`);
   console.log(`🌐 Production URL: https://bwga-nexus-ai-server.vercel.app`);
 });
 
