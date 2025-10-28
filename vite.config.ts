@@ -5,7 +5,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: 'dist',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -16,7 +15,6 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000
   },
-  base: './',
   css: {
     postcss: {
       // The postcss plugins are now managed by Tailwind CSS itself
