@@ -45,7 +45,7 @@ Please generate a detailed, professional intelligence report that includes:
 5. Risk Assessment
 6. Implementation Roadmap
 
-Format the response as a well-structured business report.`;
+Format the response as a well-structured business report with clear sections and actionable insights.`;
 }
 
 // API Routes
