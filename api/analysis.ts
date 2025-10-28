@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from 'openai';
 
 export const config = {
   runtime: 'edge',
@@ -32,14 +32,16 @@ export default async function handler(request: Request) {
     return new Response('Method Not Allowed', { status: 405 });
   }
 
-  if (!process.env.GOOGLE_GENAI_API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' }});
   }
 
   try {
     const { item, region } = (await request.json()) as { item: any, region: string };
 
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     const prompt = `
       **Deep-Dive Analysis Request:**
@@ -56,20 +58,22 @@ export default async function handler(request: Request) {
       Generate the NADL v1.0 analysis based on these details.
     `;
 
-    const responseStream = await ai.models.generateContentStream({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          systemInstruction: SYSTEM_PROMPT,
-          tools: [{ googleSearch: {} }],
-        }
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 2000,
+      temperature: 0.7,
+      stream: true,
     });
 
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder();
-        for await (const chunk of responseStream) {
-          const text = chunk.text;
+        for await (const chunk of completion) {
+          const text = chunk.choices[0]?.delta?.content;
           if (text) {
             controller.enqueue(encoder.encode(text));
           }

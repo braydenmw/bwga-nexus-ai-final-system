@@ -1,4 +1,4 @@
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
+import OpenAI from 'openai';
 
 export const config = {
   runtime: 'edge',
@@ -12,11 +12,13 @@ export default async function handler(request: Request) {
     return new Response('Category parameter is required.', { status: 400 });
   }
 
-  if (!process.env.API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response('API key is not configured.', { status: 500 });
   }
-  
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
   const prompt = `
     You are a global intelligence analyst. Your task is to identify recent (last 12 months) and strategically significant global events for an audience of economic developers and investment strategists.
 
@@ -40,22 +42,17 @@ export default async function handler(request: Request) {
   `;
 
   try {
-    const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }],
-        thinkingConfig: { thinkingBudget: 0 },
-      },
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 1000,
+      temperature: 0.7,
+      response_format: { type: "json_object" },
     });
 
-    let jsonStr = response.text.trim();
-    const fenceRegex = /^```(?:json)?\s*\n?(.*)\n?```$/s;
-    const match = jsonStr.match(fenceRegex);
-    if (match && match[1]) {
-        jsonStr = match[1].trim();
-    }
-    
+    const jsonStr = completion.choices[0].message.content;
     const data = JSON.parse(jsonStr);
 
     return new Response(JSON.stringify(data), {

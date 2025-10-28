@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, Modality } from "@google/genai";
+import OpenAI from 'openai';
 
 export const config = {
   runtime: 'edge',
@@ -10,7 +10,7 @@ export default async function handler(request: Request) {
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405 });
   }
 
-  if (!process.env.API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500 });
   }
 
@@ -21,26 +21,18 @@ export default async function handler(request: Request) {
       return new Response(JSON.stringify({ error: 'Text parameter is required.' }), { status: 400 });
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
-    const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-preview-tts",
-        contents: [{ parts: [{ text }] }],
-        config: {
-            responseModalities: [Modality.AUDIO],
-            speechConfig: {
-                voiceConfig: {
-                    prebuiltVoiceConfig: { voiceName: 'Kore' },
-                },
-            },
-        },
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    const mp3 = await openai.audio.speech.create({
+      model: "tts-1",
+      voice: "alloy",
+      input: text,
+    });
 
-    if (!base64Audio) {
-      throw new Error("No audio content was generated.");
-    }
+    const buffer = await mp3.arrayBuffer();
+    const base64Audio = Buffer.from(buffer).toString('base64');
 
     return new Response(JSON.stringify({ audioContent: base64Audio }), {
       status: 200,

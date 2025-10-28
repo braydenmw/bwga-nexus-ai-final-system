@@ -23,7 +23,7 @@ const PROMPT = `
 // OpenAI doesn't need a schema definition like Gemini
 
 export default async function handler(req: Request) {
-    if (!process.env.API_KEY) {
+    if (!process.env.OPENAI_API_KEY) {
         return new Response(JSON.stringify({ error: "API key is not configured." }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 

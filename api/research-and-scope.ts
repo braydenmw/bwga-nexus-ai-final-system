@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import OpenAI from 'openai';
 
 export const config = {
   runtime: 'edge',
@@ -16,23 +16,23 @@ Your response MUST be a valid JSON object matching the provided schema.
 `;
 
 const RESPONSE_SCHEMA = {
-  type: Type.OBJECT,
+  type: "object",
   properties: {
-    summary: { 
-        type: Type.STRING, 
-        description: "A concise summary of your initial research findings based on the user's query. This should be a few paragraphs long, written in a professional, analytical tone, and formatted in Markdown." 
+    summary: {
+        type: "string",
+        description: "A concise summary of your initial research findings based on the user's query. This should be a few paragraphs long, written in a professional, analytical tone, and formatted in Markdown."
     },
     suggestions: {
-      type: Type.OBJECT,
+      type: "object",
       description: "The suggested parameters for the report generator.",
       properties: {
-        reportName: { type: Type.STRING, description: "A concise, descriptive name for the report based on the user's query." },
-        region: { type: Type.STRING, description: "The primary geographical region, city, or country mentioned. Format as 'City, Country' or just 'Country'." },
-        industry: { type: Type.STRING, description: "The single, most relevant core industry or sector from the user's query." },
-        tier: { type: Type.ARRAY, items: { type: Type.STRING }, description: "An array of one or more suggested report tier IDs (e.g., 'FDI Attraction', 'Market Entry') that are most relevant to the user's objective." },
-        aiPersona: { type: Type.ARRAY, items: { type: Type.STRING }, description: "An array of one or more AI Analyst persona IDs (e.g., 'Regional Economist', 'Venture Capitalist') best suited for this analysis." },
-        idealPartnerProfile: { type: Type.STRING, description: "A detailed paragraph describing the ideal partner company, synthesized from the user's query and your research." },
-        problemStatement: { type: Type.STRING, description: "A well-formed problem statement or strategic objective synthesized from the user's query and your research." },
+        reportName: { type: "string", description: "A concise, descriptive name for the report based on the user's query." },
+        region: { type: "string", description: "The primary geographical region, city, or country mentioned. Format as 'City, Country' or just 'Country'." },
+        industry: { type: "string", description: "The single, most relevant core industry or sector from the user's query." },
+        tier: { type: "array", items: { type: "string" }, description: "An array of one or more suggested report tier IDs (e.g., 'FDI Attraction', 'Market Entry') that are most relevant to the user's objective." },
+        aiPersona: { type: "array", items: { type: "string" }, description: "An array of one or more AI Analyst persona IDs (e.g., 'Regional Economist', 'Venture Capitalist') best suited for this analysis." },
+        idealPartnerProfile: { type: "string", description: "A detailed paragraph describing the ideal partner company, synthesized from the user's query and your research." },
+        problemStatement: { type: "string", description: "A well-formed problem statement or strategic objective synthesized from the user's query and your research." },
       },
     }
   },
@@ -45,7 +45,7 @@ export default async function handler(request: Request) {
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405, headers: { 'Content-Type': 'application/json' } });
   }
 
-  if (!process.env.GOOGLE_GENAI_API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 
@@ -56,7 +56,9 @@ export default async function handler(request: Request) {
       return new Response(JSON.stringify({ error: 'Query parameter is required.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     const contextPrompt = context ? `The user providing this query has the following profile:
 - Organization Type: ${context.organizationType || 'Not specified'}
@@ -70,18 +72,18 @@ export default async function handler(request: Request) {
     `;
 
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-        responseSchema: RESPONSE_SCHEMA,
-      },
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: SYSTEM_INSTRUCTION },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 2000,
+      temperature: 0.7,
+      response_format: { type: "json_object" },
     });
 
-    const result = JSON.parse(response.text);
+    const result = JSON.parse(completion.choices[0].message.content);
 
     return new Response(JSON.stringify(result), {
       status: 200,

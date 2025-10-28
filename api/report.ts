@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from 'openai';
 import type { ReportParameters } from '../types.ts';
 
 // Live UN Comtrade API integration for Vercel Edge Functions
@@ -189,11 +189,13 @@ export default async function handler(request: Request) {
   try {
     const params = (await request.json()) as ReportParameters;
 
-    if (!process.env.GOOGLE_GENAI_API_KEY) {
+    if (!process.env.OPENAI_API_KEY) {
         return new Response('API key is not configured.', { status: 500 });
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
     
     // --- Data Grounding Step ---
     let groundingDataPrompt = '';
@@ -296,20 +298,22 @@ export default async function handler(request: Request) {
 
     const systemInstruction = getSystemPrompt(params);
 
-    const response = await ai.models.generateContentStream({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          systemInstruction: systemInstruction,
-          tools: [{ googleSearch: {} }],
-        }
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: systemInstruction },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 4000,
+      temperature: 0.7,
+      stream: true,
     });
 
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder();
-        for await (const chunk of response) {
-          const text = chunk.text;
+        for await (const chunk of completion) {
+          const text = chunk.choices[0]?.delta?.content;
           if (text) {
             controller.enqueue(encoder.encode(text));
           }

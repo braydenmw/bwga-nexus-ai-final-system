@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
+import OpenAI from 'openai';
 import type { SymbiosisContext, ChatMessage } from '../types.ts';
 
 export const config = {
@@ -23,14 +23,16 @@ export default async function handler(request: Request) {
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405, headers: { 'Content-Type': 'application/json' } });
   }
 
-  if (!process.env.GOOGLE_GENAI_API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 
   try {
     const { context, history } = (await request.json()) as { context: SymbiosisContext; history: ChatMessage[] };
 
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     // Construct a focused prompt that includes the context and chat history
     let prompt = `
@@ -52,16 +54,17 @@ export default async function handler(request: Request) {
     prompt += "\nBased on this history, provide the next response as Nexus AI.";
 
 
-    const response: GenerateContentResponse = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-            systemInstruction: SYSTEM_PROMPT_SYMBIOSIS,
-            tools: [{ googleSearch: {} }],
-        }
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT_SYMBIOSIS },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 1000,
+      temperature: 0.7,
     });
 
-    const responseText = response.text;
+    const responseText = completion.choices[0].message.content;
 
     return new Response(JSON.stringify({ response: responseText }), {
       status: 200,

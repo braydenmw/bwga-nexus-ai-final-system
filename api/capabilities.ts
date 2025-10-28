@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import OpenAI from 'openai';
 
 export const config = {
   runtime: 'edge',
@@ -26,24 +26,24 @@ Example Format:
 `;
 
 const RESPONSE_SCHEMA = {
-    type: Type.OBJECT,
-    properties: {
-        greeting: { type: Type.STRING, description: "A brief, welcoming greeting from the AI assistant." },
-        capabilities: {
-            type: Type.ARRAY,
-            description: "A list of the AI's core capabilities.",
-            items: {
-                type: Type.OBJECT,
-                properties: {
-                    title: { type: Type.STRING, description: "The title of the capability." },
-                    description: { type: Type.STRING, description: "A short description of the capability." },
-                    prompt: { type: Type.STRING, description: "An example prompt a user can try." }
-                },
-                required: ['title', 'description', 'prompt']
-            }
-        }
-    },
-    required: ['greeting', 'capabilities']
+  type: "object",
+  properties: {
+    greeting: { type: "string", description: "A brief, welcoming greeting from the AI assistant." },
+    capabilities: {
+      type: "array",
+      description: "A list of the AI's core capabilities.",
+      items: {
+        type: "object",
+        properties: {
+          title: { type: "string", description: "The title of the capability." },
+          description: { type: "string", description: "A short description of the capability." },
+          prompt: { type: "string", description: "An example prompt a user can try." }
+        },
+        required: ['title', 'description', 'prompt']
+      }
+    }
+  },
+  required: ['greeting', 'capabilities']
 };
 
 export default async function handler(request: Request) {
@@ -51,29 +51,27 @@ export default async function handler(request: Request) {
         return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405 });
     }
     
-    if (!process.env.API_KEY) {
+    if (!process.env.OPENAI_API_KEY) {
         return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500 });
     }
 
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: PROMPT,
-            config: {
-                systemInstruction: SYSTEM_INSTRUCTION,
-                responseMimeType: "application/json",
-                responseSchema: RESPONSE_SCHEMA,
-            },
+        const openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY,
         });
 
-        let jsonStr = response.text.trim();
-        const fenceRegex = /^```(?:json)?\s*\n?(.*)\n?```$/s;
-        const match = jsonStr.match(fenceRegex);
-        if (match && match[1]) {
-            jsonStr = match[1].trim();
-        }
-    
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-4',
+          messages: [
+            { role: 'system', content: SYSTEM_INSTRUCTION },
+            { role: 'user', content: PROMPT }
+          ],
+          max_tokens: 1000,
+          temperature: 0.7,
+          response_format: { type: "json_object" },
+        });
+
+        const jsonStr = completion.choices[0].message.content;
         const capabilities = JSON.parse(jsonStr);
 
         return new Response(JSON.stringify(capabilities), {

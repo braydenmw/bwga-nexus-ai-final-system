@@ -1,4 +1,4 @@
-import { GoogleGenAI, GenerateContentResponse, Type } from "@google/genai";
+import OpenAI from 'openai';
 
 export const config = {
   runtime: 'edge',
@@ -12,11 +12,13 @@ export default async function handler(request: Request) {
     return new Response('Country parameter is required.', { status: 400 });
   }
 
-  if (!process.env.API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response('API key is not configured.', { status: 500 });
   }
-  
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
   const prompt = `
     Provide a list of up to 15 major regional cities or key administrative areas for the country: "${country}".
@@ -39,27 +41,17 @@ export default async function handler(request: Request) {
   `;
 
   try {
-    const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-            type: Type.ARRAY,
-            items: {
-                type: Type.STRING,
-            }
-        }
-      },
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 1000,
+      temperature: 0.7,
+      response_format: { type: "json_object" },
     });
 
-    let jsonStr = response.text.trim();
-    // With a strict schema, markdown fences are highly unlikely, but this is a safe fallback.
-    const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
-    const match = jsonStr.match(fenceRegex);
-    if (match && match[2]) {
-        jsonStr = match[2].trim();
-    }
+    const jsonStr = completion.choices[0].message.content;
     const data = JSON.parse(jsonStr);
     
     return new Response(JSON.stringify(data), {

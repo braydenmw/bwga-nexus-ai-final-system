@@ -17,7 +17,7 @@ export default async function handler(request: Request) {
     return new Response('Method Not Allowed', { status: 405 });
   }
 
-  if (!process.env.API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' }});
   }
 
