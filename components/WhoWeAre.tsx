@@ -25,6 +25,9 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
                         The world is changing, but understanding hasn't kept up. BW Nexus AI was built to bridge the critical gap between global ambition and regional potential, providing the precise clarity needed to build the partnerships of tomorrow.
                     </p>
+                    <p className="text-lg md:text-xl text-white font-semibold max-w-3xl mx-auto leading-relaxed mt-4">
+                        BW Nexus AI: Intelligence that doesn't just inform—it transforms. Turning regional potential into global partnerships, one breakthrough at a time.
+                    </p>
                 </div>
             </section>
 
