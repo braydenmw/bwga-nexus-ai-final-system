@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import OpenAI from 'openai';
 import type { LiveOpportunityItem } from '../types.ts';
 
 export const config = {
@@ -7,48 +7,7 @@ export const config = {
 
 const SYSTEM_INSTRUCTION = `You are Nexus Brain, a specialized AI for futurist thinking and strategic foresight. Your task is to analyze a list of current development opportunities and provide a predictive analysis. Identify emerging trends, predict future opportunities that might arise from them, and highlight potential disruptions. Your response MUST be a valid JSON object.`;
 
-const RESPONSE_SCHEMA = {
-  type: Type.OBJECT,
-  properties: {
-    emergingTrends: {
-      type: Type.ARRAY,
-      description: "A list of 2-3 key trends identified from the data.",
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          trend: { type: Type.STRING, description: "A concise name for the identified trend (e.g., 'Decentralized Green Energy Grids')." },
-          justification: { type: Type.STRING, description: "A 1-2 sentence explanation of why this is an emerging trend based on the provided data." }
-        },
-        required: ['trend', 'justification']
-      }
-    },
-    futureOpportunities: {
-      type: Type.ARRAY,
-      description: "A list of 2-3 plausible future opportunities.",
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          opportunity: { type: Type.STRING, description: "A specific, plausible future opportunity that could arise from the trends (e.g., 'Development of AI-powered microgrid management software')." },
-          rationale: { type: Type.STRING, description: "A 1-2 sentence rationale connecting this opportunity to the identified trends." }
-        },
-        required: ['opportunity', 'rationale']
-      }
-    },
-    potentialDisruptions: {
-      type: Type.ARRAY,
-      description: "A list of 1-2 potential disruptive factors.",
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          disruption: { type: Type.STRING, description: "A potential disruptive factor or technology (e.g., 'Breakthroughs in long-duration energy storage')." },
-          impact: { type: Type.STRING, description: "A 1-2 sentence summary of the potential impact of this disruption on the current opportunities." }
-        },
-        required: ['disruption', 'impact']
-      }
-    }
-  },
-  required: ['emergingTrends', 'futureOpportunities', 'potentialDisruptions']
-};
+// OpenAI doesn't need a schema definition like Gemini
 
 export default async function handler(request: Request) {
   if (request.method !== 'POST') {
@@ -66,23 +25,26 @@ export default async function handler(request: Request) {
       return new Response(JSON.stringify({ error: 'Opportunities data is required.' }), { status: 400 });
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
     const context = opportunities.map(o => `- ${o.project_name} (${o.sector}, ${o.country}): ${o.summary}`).join('\n');
 
     const prompt = `Based on this list of current global opportunities, generate a predictive analysis:\n${context}`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        responseMimeType: "application/json",
-        responseSchema: RESPONSE_SCHEMA,
-      },
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: SYSTEM_INSTRUCTION },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 2000,
+      temperature: 0.7,
+      response_format: { type: "json_object" }
     });
 
-    const analysis = JSON.parse(response.text);
+    const analysis = JSON.parse(completion.choices[0].message.content);
 
     return new Response(JSON.stringify(analysis), {
       status: 200,

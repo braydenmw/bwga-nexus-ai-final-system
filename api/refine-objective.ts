@@ -1,4 +1,4 @@
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
+import OpenAI from 'openai';
 
 export const config = {
   runtime: 'edge',
@@ -28,28 +28,32 @@ export default async function handler(request: Request) {
       return new Response(JSON.stringify({ error: 'Question and answer parameters are required.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     const prompt = `
       **User's Initial Question:**
       "${question}"
 
       **AI's Preliminary Answer:**
-      "${answer.substring(0, 1500)}..." 
+      "${answer.substring(0, 1500)}..."
 
       **Your Task:**
       Based on the above, synthesize a refined strategic objective for a deep-dive report.
     `;
-    
-    const response: GenerateContentResponse = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          systemInstruction: SYSTEM_PROMPT,
-        }
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 1000,
+      temperature: 0.7,
     });
 
-    const refinedObjective = response.text;
+    const refinedObjective = completion.choices[0].message.content;
 
     return new Response(JSON.stringify({ refinedObjective }), {
       status: 200,

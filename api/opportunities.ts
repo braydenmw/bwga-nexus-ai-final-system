@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import OpenAI from 'openai';
 import type { LiveOpportunityItem, NewsContent, IndicatorContent, FeedPost } from '../types.ts';
 
 export const config = {
@@ -20,24 +20,7 @@ const PROMPT = `
   Ensure the entire response is a single, valid JSON object with no other text.
 `;
 
-const RESPONSE_SCHEMA = {
-    type: Type.OBJECT,
-    properties: {
-        feed: {
-            type: Type.ARRAY,
-            items: {
-                type: Type.OBJECT,
-                properties: {
-                    id: { type: Type.STRING },
-                    timestamp: { type: Type.STRING },
-                    type: { type: Type.STRING },
-                    content: { type: Type.OBJECT } // Keeping content flexible as its schema varies
-                },
-                required: ['id', 'timestamp', 'type', 'content']
-            }
-        }
-    }
-};
+// OpenAI doesn't need a schema definition like Gemini
 
 export default async function handler(req: Request) {
     if (!process.env.API_KEY) {
@@ -45,18 +28,18 @@ export default async function handler(req: Request) {
     }
 
     try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: PROMPT,
-            config: {
-                tools: [{ googleSearch: {} }],
-                responseMimeType: "application/json",
-                responseSchema: RESPONSE_SCHEMA,
-            }
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: [{ role: 'user', content: PROMPT }],
+            max_tokens: 3000,
+            temperature: 0.7,
+            response_format: { type: "json_object" }
         });
 
-        const data = JSON.parse(response.text);
+        const data = JSON.parse(completion.choices[0].message.content);
 
         return new Response(JSON.stringify(data), {
             status: 200,

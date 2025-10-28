@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from 'openai';
 import type { RROI_Index, TPT_Simulation, SEAM_Blueprint, NexusBrainAction, GenerativeModel, DigitalTwinIntervention } from '../types.ts';
 
 export const config = {
@@ -20,7 +20,7 @@ export default async function handler(request: Request) {
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), { status: 405 });
   }
 
-  if (!process.env.GOOGLE_GENAI_API_KEY) {
+  if (!process.env.OPENAI_API_KEY) {
     return new Response(JSON.stringify({ error: 'API key is not configured' }), { status: 500 });
   }
 
@@ -31,7 +31,9 @@ export default async function handler(request: Request) {
       return new Response(JSON.stringify({ error: 'Action and payload are required.' }), { status: 400 });
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
     const systemInstruction = getSystemPrompt(action);
 
     let prompt = '';
@@ -53,19 +55,20 @@ export default async function handler(request: Request) {
             return new Response(JSON.stringify({ error: 'Invalid action specified.' }), { status: 400 });
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction,
-        tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-      },
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: systemInstruction },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 3000,
+      temperature: 0.7,
+      response_format: { type: "json_object" }
     });
 
-    // The Gemini API with JSON output mode should return valid JSON directly.
+    // The OpenAI API with JSON mode should return valid JSON directly.
     // No need to parse, just pass the text through.
-    const jsonResponse = response.text;
+    const jsonResponse = completion.choices[0].message.content;
 
     return new Response(jsonResponse, {
       status: 200,

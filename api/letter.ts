@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from 'openai';
 import type { ReportParameters } from '../types.ts';
 
 export const config = {
@@ -29,7 +29,9 @@ export default async function handler(request: Request) {
   try {
     const params = (await request.json()) as ReportParameters;
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     // The report generation would have identified a top partner. We simulate that here for the prompt.
     // In a real scenario, the specific partner's name would be passed.
@@ -38,28 +40,31 @@ export default async function handler(request: Request) {
 
       **My Organization:** ${params.userDepartment}, ${params.userCountry}
       **My Goal:** I am trying to achieve the following objective: "${params.problemStatement}"
-      
+
       **The Opportunity:** We have a significant opportunity in our region, ${params.region}, within the ${params.industry.join(', ')} sector.
-      
+
       **The Ideal Partner Profile:** I am writing to a high-potential partner company that matches this profile: "${params.idealPartnerProfile}"
 
       **Your Task:**
       Draft a formal introductory letter to a senior executive (e.g., CEO, Head of Strategy) at this target company. The letter should introduce my organization, briefly mention the synergistic opportunity in our region without being overly detailed, and invite them to a preliminary, confidential discussion. The output should be only the text of the letter.
     `;
 
-    const responseStream = await ai.models.generateContentStream({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          systemInstruction: SYSTEM_PROMPT
-        }
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 2000,
+      temperature: 0.7,
+      stream: true,
     });
 
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder();
-        for await (const chunk of responseStream) {
-          const text = chunk.text;
+        for await (const chunk of completion) {
+          const text = chunk.choices[0]?.delta?.content;
           if (text) {
             controller.enqueue(encoder.encode(text));
           }
