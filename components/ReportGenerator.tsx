@@ -774,25 +774,25 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         {error && <p className="text-red-600 text-center mb-4 text-sm bg-red-100 p-3 rounded-md border border-red-200">{error}</p>}
 
                         <div className="flex justify-between items-center max-w-5xl mx-auto px-4 md:px-6">
-                            {step > 1 && (
-                                <button onClick={prevStep} disabled={isGenerating} className="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">Back</button>
+                            {step > 1 && step < 5 && (
+                                <button onClick={prevStep} disabled={isGenerating} className="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
                             )}
 
-                            {step < WIZARD_STEPS.length ? (
+                            {step < 4 ? (
                                 <div className={`flex gap-4 ${step === 1 ? 'w-full justify-end' : ''}`}>
                                     <button
                                         onClick={nextStep}
                                         disabled={isGenerating}
-                                        className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                        className="px-6 py-2.5 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Next Step
                                     </button>
                                 </div>
-                            ) : (
-                                <button onClick={handleGenerateReport} disabled={isGenerating} className="w-full max-w-xs bg-gray-800 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-800/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3">
+                            ) : step === 4 ? (
+                                <button onClick={handleGenerateReport} disabled={isGenerating} className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                                     {isGenerating ? <><Spinner /> Generating...</> : 'Generate Report'}
                                 </button>
-                            )}
+                            ) : null}
                         </div>
                     </footer>
                 </div>
