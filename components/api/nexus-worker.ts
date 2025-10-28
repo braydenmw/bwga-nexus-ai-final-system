@@ -1,5 +1,5 @@
 import { kv } from '@vercel/kv';
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from 'openai';
 import type { ReportParameters, ReverseNexusQuery, NSIL_Report, AnalysisMode } from '../types';
 
 export const config = {
@@ -55,7 +55,9 @@ export default async function handler(request: Request) {
 
 // --- NSIL v6.0 Report Generation ---
 async function generateNSILReport(params: ReportParameters): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
   // Determine analysis mode
   const mode: AnalysisMode = params.tier.includes('G2G') ? 'g2g_alignment' :
@@ -64,12 +66,14 @@ async function generateNSILReport(params: ReportParameters): Promise<string> {
   // Build comprehensive prompt for NSIL-structured output
   const prompt = buildNSILPrompt(params, mode);
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-1.5-flash',
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 4000,
+    temperature: 0.7,
   });
 
-  const rawContent = response.response.text();
+  const rawContent = completion.choices[0].message.content;
 
   // Parse and structure as NSIL XML
   return structureAsNSIL(rawContent, mode, params);
@@ -77,7 +81,9 @@ async function generateNSILReport(params: ReportParameters): Promise<string> {
 
 // --- Smart Letter Generation ---
 async function generateSmartLetter(reportContent: string, userDetails: any): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
   const prompt = `You are a strategic communications expert. Your task is to draft a compelling outreach letter from the user to the target company. You MUST extract the most powerful points from the provided report content and structure the letter professionally.
 
@@ -91,17 +97,21 @@ Generate a personalized, data-driven outreach letter that:
 3. Includes concrete next steps
 4. Maintains professional tone with compelling call-to-action`;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-1.5-flash',
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 2000,
+    temperature: 0.7,
   });
 
-  return response.response.text();
+  return completion.choices[0].message.content;
 }
 
 // --- Reverse Nexus Search ---
 async function performReverseNexusSearch(query: ReverseNexusQuery): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
   const prompt = `You are the Nexus AI Regional Intelligence System. Perform a reverse search for a company looking for optimal regions to invest in.
 
@@ -116,12 +126,14 @@ Analyze global regions and provide:
 
 Structure your response as a comprehensive regional opportunity analysis.`;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-1.5-flash',
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 3000,
+    temperature: 0.7,
   });
 
-  return response.response.text();
+  return completion.choices[0].message.content;
 }
 
 // --- NSIL Prompt Builder ---
