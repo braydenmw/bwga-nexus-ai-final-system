@@ -778,8 +778,8 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                                 <button onClick={prevStep} disabled={isGenerating} className="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
                             )}
 
-                            {step < 4 ? (
-                                <div className={`flex gap-4 ${step === 1 ? 'w-full justify-end' : ''}`}>
+                            {step >= 2 && step < 4 ? (
+                                <div className="flex gap-4">
                                     <button
                                         onClick={nextStep}
                                         disabled={isGenerating}
