@@ -24,6 +24,6 @@
     }
   ],
   "env": {
-    "GOOGLE_GENAI_API_KEY": "@google-genai-api-key"
+    "GOOGLE_GENAI_API_KEY": "AIzaSyAOXY3ZFF-vykpcsPjnRwhJe7VoMPmnwEg"
   }
 }
