@@ -23,10 +23,10 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                         A New Language for Global Opportunity
                     </h1>
                     <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto leading-relaxed">
-                        The world is changing, but understanding hasn't kept up. BW Nexus AI was built to bridge the critical gap between global ambition and regional potential, providing the precise clarity needed to build the partnerships of tomorrow.
+                        For decades, regional cities have supplied larger cities and global markets with essential trade, resources, and economic value—yet remain invisible to decision-makers. BW Nexus AI changes this by giving regional leaders a cost-effective way to communicate their true worth and attract the partnerships they deserve.
                     </p>
                     <p className="text-lg md:text-xl text-white font-semibold max-w-3xl mx-auto leading-relaxed mt-4">
-                        BW Nexus AI: Intelligence that doesn't just inform—it transforms. Turning regional potential into global partnerships, one breakthrough at a time.
+                        BW Nexus AI: Breaking the visibility barrier. Transforming overlooked regional potential into recognized global opportunities through intelligent, confidence-building communication.
                     </p>
                 </div>
             </section>
@@ -41,11 +41,10 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                             <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600">In our hyper-connected world, opportunity knows no borders. Yet the vast potential of global markets remains largely untapped, not because ambition is lacking, but because understanding often falls short of aspiration.</p>
                         </div>
                         <div className="max-w-4xl mx-auto">
-                            <p className="text-gray-700 leading-relaxed">Every region worldwide possesses unique strengths and opportunities. Traditional economic centers offer established infrastructure and market maturity, while emerging areas provide fresh growth potential and competitive advantages. The challenge isn't choosing between them—it's understanding how they all fit together in a global strategy.</p>
-                            <p className="mt-4 text-gray-700 leading-relaxed">This is the **Global Understanding Gap**: a fundamental disconnect where decision-makers struggle to see the complete picture. Fragmented data, regional complexities, and the sheer scale of global possibilities create barriers that prevent organizations from realizing their full potential.</p>
-                            <p className="mt-4 text-gray-700 leading-relaxed">BWGA Nexus AI exists to bridge this gap. We provide comprehensive intelligence for any region, anywhere in the world, enabling decision-makers to see opportunities clearly and act with confidence. Our platform serves everyone—from multinational corporations to local governments, from investors to entrepreneurs—helping them navigate the global landscape with unprecedented clarity.</p>
+                            <p className="text-gray-700 leading-relaxed">Regional cities produce critical resources, skilled labor, manufacturing capacity, and market access that global companies desperately need. They contribute billions to national economies through exports, taxes, and job creation. Yet only a tiny percentage ever get noticed by international investors or partners.</p>
+                            <p className="mt-4 text-gray-700 leading-relaxed">The problem? Communication barriers. Regional leaders often lack the confidence, data, or presentation tools to effectively showcase their value. Global decision-makers, meanwhile, face information gaps that make regional opportunities seem too risky or uncertain to pursue.</p>
                             <div className="mt-6 p-4 bg-gray-100 border-l-4 border-gray-800 rounded-r-lg">
-                                <p className="text-gray-800 font-bold italic">BW Nexus AI provides the precise clarification needed to see these regions not for what they were, but for what they can become.</p>
+                                <p className="text-gray-800 font-bold italic">BW Nexus AI eliminates these barriers with proprietary technology that builds confidence on both sides, turning "maybe" conversations into "let's work together" partnerships.</p>
                             </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-12 items-center pt-12 border-t border-gray-200">
@@ -53,7 +52,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                             <div className="text-center md:text-left">
                                 <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight mb-4">A Message from the Founder</h3>
                                 <blockquote className="text-lg italic font-medium text-gray-700 leading-relaxed">
-                                    "I built BW Nexus AI after years of working directly with local governments and development leaders who had the will, the people, and the resources—but not the platform to show it. This system was born from that frustration, and from a belief that technology can be the equalizer between big and small. My hope is simple: that Nexus AI helps the world rediscover the value of places—and the people—that have long been underestimated."
+                                    "For years, I've watched brilliant regional leaders struggle to get noticed. They have the resources, the workforce, the strategic location—but lack the communication tools to break through. BW Nexus AI was built specifically for this challenge. It's not generic AI—it's a confidence-building bridge that helps both sides see the mutual value in partnership."
                                 </blockquote>
                                 <p className="mt-6 font-semibold text-gray-800">— The Founder, BW Global Advisory</p>
                             </div>
@@ -64,41 +63,41 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 {/* Section: Our Guiding Principles */}
                 <section className="p-8 md:p-12 bg-white rounded-2xl shadow-lg">
                     <div className="text-center mb-12">
-                        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Our Guiding Principles</h2>
-                        <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Our work is built on a foundation of strong ethical principles and a clear mission to serve humanity.</p>
+                        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">What Makes BW Nexus AI Different</h2>
+                        <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Not generic AI—proprietary technology specifically designed to solve the regional visibility problem.</p>
                     </div>
                     <div className="space-y-16">
-                        {/* Mission & Philosophy */}
+                        {/* What It Actually Does */}
                         <div className="grid md:grid-cols-2 gap-8 items-center">
                             <div className="text-center md:text-left">
-                                <h3 className="text-2xl font-bold mb-3">Our Mission & Philosophy</h3>
-                                <p className="text-gray-600">Our core mission is to bridge the "understanding gap" between regional potential and global capital. We believe AI should augment, not replace, human expertise. This partnership—an **Ethical AI-Human Symbiosis**—ensures the intelligence produced is not only accurate but meaningful and actionable.</p>
+                                <h3 className="text-2xl font-bold mb-3">What BW Nexus AI Actually Does</h3>
+                                <p className="text-gray-600">Creates data-driven intelligence reports that showcase regional value through proprietary frameworks. Generates professional business letters that build confidence. Uses AI personas specifically trained for economic matchmaking. Integrates live global data to validate opportunities.</p>
                                 <blockquote className="mt-6 text-lg italic font-medium text-gray-700 border-l-4 border-gray-300 pl-4">
-                                    “A world where every regional economy’s true potential is recognized, understood, and developed through intelligent partnerships that create lasting prosperity for local communities.”
+                                    "Not summaries—not overviews—actionable intelligence that turns regional assets into partnership opportunities."
                                 </blockquote>
                             </div>
                             <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2130&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Strategic planning session with a global perspective." className="rounded-xl shadow-lg object-cover w-full h-full" />
                         </div>
 
-                        {/* Ethical Framework */}
+                        {/* Proprietary Technology */}
                         <div>
-                            <h3 className="text-2xl font-bold text-center mb-8">A Framework for Ethical Intelligence</h3>
+                            <h3 className="text-2xl font-bold text-center mb-8">Proprietary Technology That Delivers Results</h3>
                             <div className="grid md:grid-cols-2 gap-8">
                                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                                    <h4 className="font-bold text-gray-800 mb-2">Human-Centric & Beneficial</h4>
-                                    <p className="text-sm text-gray-600">The primary objective of our AI is to augment human intelligence and support decisions that lead to positive socio-economic outcomes, particularly for underserved regional communities.</p>
+                                    <h4 className="font-bold text-gray-800 mb-2">Nexus Symbiotic Intelligence Language™</h4>
+                                    <p className="text-sm text-gray-600">Proprietary framework that transforms static data into living, queryable intelligence. Diffuses misunderstandings and builds confidence through precise, context-aware communication.</p>
                                 </div>
                                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                                    <h4 className="font-bold text-gray-800 mb-2">Fairness & Bias Mitigation</h4>
-                                    <p className="text-sm text-gray-600">We acknowledge the potential for biases in data and algorithms and are committed to proactively identifying and mitigating them throughout the AI lifecycle.</p>
+                                    <h4 className="font-bold text-gray-800 mb-2">Regional Readiness & Opportunity Index (RROI)</h4>
+                                    <p className="text-sm text-gray-600">Multi-dimensional assessment revealing a region's true economic DNA. Goes beyond surface metrics to show genuine partnership potential and mutual benefits.</p>
                                 </div>
                                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                                    <h4 className="font-bold text-gray-800 mb-2">Transparency & Explainability</h4>
-                                    <p className="text-sm text-gray-600">We are committed to transparency regarding our data sources and high-level methodology, and clearly communicating the limitations of AI to ensure it is used as a tool for decision support.</p>
+                                    <h4 className="font-bold text-gray-800 mb-2">Strategic Ecosystem Architecture Model (SEAM)</h4>
+                                    <p className="text-sm text-gray-600">Designs real-world partnership networks by matching complementary strengths. Creates sustainable ecosystems where regional assets meet global opportunities.</p>
                                 </div>
                                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                                    <h4 className="font-bold text-gray-800 mb-2">Accountability & Human Oversight</h4>
-                                    <p className="text-sm text-gray-600">Our AI-Human Symbiosis Model ensures that critical recommendations are always subject to review, validation, and contextualization by qualified human experts.</p>
+                                    <h4 className="font-bold text-gray-800 mb-2">AI-Human Confidence Bridge</h4>
+                                    <p className="text-sm text-gray-600">Specialized AI personas trained for economic matchmaking. Generates professional communications that reduce perceived risk and build genuine interest.</p>
                                 </div>
                             </div>
                         </div>
@@ -108,33 +107,33 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 {/* Section: The BWGA Nexus Platform */}
                 <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
                     <div className="text-center mb-12">
-                        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">The BWGA Nexus Platform</h2>
-                        <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600">A unified system for transforming curiosity into clarity, data into roadmaps, and ambition into action.</p>
+                        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">How BW Nexus AI Works</h2>
+                        <p className="mt-4 max-w-3xl mx-auto text-lg text-gray-600">A step-by-step system that turns regional potential into partnership reality.</p>
                     </div>
                     <div className="space-y-16">
                         {/* How It Works */}
                         <div>
-                            <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">How It Works: A New Way to Build Partnerships</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">The Confidence-Building Process</h3>
                             <div className="grid md:grid-cols-3 gap-8 text-center">
                                 <div className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden">
                                     <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=500&h=300&fit=crop" alt="A person defining their intent on a laptop." className="w-full h-40 object-cover"/>
                                     <div className="p-6 flex flex-col items-center flex-grow">
-                                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Define Your Intent</h4>
-                                        <p className="text-sm text-gray-600 flex-grow">The system understands the identity and goals of your city or organization, starting with a simple question or a complex document.</p>
+                                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Input Your Regional Story</h4>
+                                        <p className="text-sm text-gray-600 flex-grow">Tell us what your region produces, contributes to national economies, and why it deserves global attention. Include your unique strengths and partnership goals.</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden">
                                     <img src="https://images.unsplash.com/photo-1552581234-26160f608093?q=80&w=500&h=300&fit=crop" alt="People collaborating to refine their mission." className="w-full h-40 object-cover"/>
                                     <div className="p-6 flex flex-col items-center flex-grow">
-                                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Refine Your Mission</h4>
-                                        <p className="text-sm text-gray-600 flex-grow">It maps your intent against live global data, helping you scope the project, select analysis tiers, and choose AI Analyst Personas.</p>
+                                        <h4 className="font-semibold text-gray-800 text-lg mb-2">AI Generates Intelligence</h4>
+                                        <p className="text-sm text-gray-600 flex-grow">Our proprietary frameworks analyze your data against global opportunities. AI personas create professional communications that highlight mutual benefits and reduce perceived risk.</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden">
                                     <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=500&h=300&fit=crop" alt="Data visualization on a screen, representing a blueprint." className="w-full h-40 object-cover"/>
                                     <div className="p-6 flex flex-col items-center flex-grow">
-                                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Receive Your Blueprint</h4>
-                                        <p className="text-sm text-gray-600 flex-grow">The Nexus Engine analyzes the data and produces a data-backed, interactive blueprint showing why and how collaboration could succeed.</p>
+                                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Receive Actionable Results</h4>
+                                        <p className="text-sm text-gray-600 flex-grow">Get data-driven reports and professional letters that showcase your region's value. Break the ice with confidence-building communications that turn "maybe" into meaningful dialogue.</p>
                                     </div>
                                 </div>
                             </div>
