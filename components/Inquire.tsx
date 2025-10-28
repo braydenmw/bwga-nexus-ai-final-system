@@ -599,17 +599,29 @@ export const Inquire = ({
                             )}
                         </div>
 
-                        <button
-                            type="submit"
-                            disabled={!!loadingCommand || !query.trim()}
-                            className="w-full p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                        >
-                            {loadingCommand === 'quick_scope' ? (
-                                <><SpinnerSmall /> Starting Report...</>
-                            ) : (
-                                'Start Report'
-                            )}
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                type="submit"
+                                disabled={!!loadingCommand || !query.trim()}
+                                className="flex-1 p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            >
+                                {loadingCommand === 'quick_scope' ? (
+                                    <><SpinnerSmall /> Starting Report...</>
+                                ) : (
+                                    'Start Report'
+                                )}
+                            </button>
+
+                            {/* Move to right side in the gap */}
+                            <button
+                                type="button"
+                                onClick={() => onScopeComplete()}
+                                disabled={!!loadingCommand}
+                                className="px-4 py-3 bg-nexus-accent-brown text-white font-bold rounded-lg hover:bg-nexus-accent-brown-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            >
+                                Next Step
+                            </button>
+                        </div>
 
                     </form>
                 </div>
