@@ -2,21 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist/**",
-      "use": "@vercel/static"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://bwga-nexus-ai-server.vercel.app/api/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/index.html"
     }
-  ],
-  "env": {
-    "GOOGLE_GENAI_API_KEY": "AIzaSyAOXY3ZFF-vykpcsPjnRwhJe7VoMPmnwEg"
-  }
+  ]
 }
