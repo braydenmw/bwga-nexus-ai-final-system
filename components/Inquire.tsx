@@ -566,15 +566,15 @@ export const Inquire = ({
                 />
 
 
-                {/* Quick Start Report Form - positioned below */}
+                {/* Nexus AI Support Interface - No step navigation */}
                 <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">
-                    <form onSubmit={handleQuickScope} className="space-y-3">
-                        <label className="text-xs font-semibold text-nexus-text-secondary">Quick Start Report</label>
+                    <div className="space-y-3">
+                        <label className="text-xs font-semibold text-nexus-text-secondary">Nexus AI Support</label>
                         <textarea
                             ref={queryTextAreaRef}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Start with a high-level goal or question..."
+                            placeholder="Ask me anything about your report, get suggestions, or request analysis..."
                             className="w-full p-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-nexus-accent-cyan focus:outline-none transition placeholder:text-nexus-text-muted text-sm"
                             rows={4}
                             disabled={!!loadingCommand}
@@ -599,31 +599,42 @@ export const Inquire = ({
                             )}
                         </div>
 
-                        <div className="flex gap-2">
-                            <button
-                                type="submit"
-                                disabled={!!loadingCommand || !query.trim()}
-                                className="flex-1 p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                            >
-                                {loadingCommand === 'quick_scope' ? (
-                                    <><SpinnerSmall /> Starting Report...</>
-                                ) : (
-                                    'Start Report'
-                                )}
-                            </button>
+                        <button
+                            onClick={() => handleQuickScope()}
+                            disabled={!!loadingCommand || !query.trim()}
+                            className="w-full p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            {loadingCommand === 'quick_scope' ? (
+                                <><SpinnerSmall /> Processing...</>
+                            ) : (
+                                'Ask Nexus AI'
+                            )}
+                        </button>
 
-                            {/* Move to right side in the gap */}
-                            <button
-                                type="button"
-                                onClick={() => onScopeComplete()}
-                                disabled={!!loadingCommand}
-                                className="px-4 py-3 bg-nexus-accent-brown text-white font-bold rounded-lg hover:bg-nexus-accent-brown-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                            >
-                                Next Step
-                            </button>
-                        </div>
-
-                    </form>
+                        {/* AI Suggestions with checkboxes */}
+                        {researchSummary && (
+                            <div className="mt-4 p-3 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-lg">
+                                <h4 className="text-sm font-semibold text-nexus-accent-cyan mb-2">💡 AI Suggestions</h4>
+                                <div className="space-y-2">
+                                    <label className="flex items-center gap-2 text-sm">
+                                        <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
+                                        <span className="text-nexus-text-secondary">Apply suggested report parameters</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                        <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
+                                        <span className="text-nexus-text-secondary">Include regional analysis recommendations</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                        <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
+                                        <span className="text-nexus-text-secondary">Add industry-specific insights</span>
+                                    </label>
+                                </div>
+                                <button className="mt-3 w-full px-3 py-2 bg-nexus-accent-cyan text-white text-sm font-semibold rounded-md hover:bg-nexus-accent-cyan-dark transition-colors">
+                                    Accept Selected Suggestions
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
             </div>
