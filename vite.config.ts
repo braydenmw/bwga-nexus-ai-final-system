@@ -16,6 +16,7 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000
   },
+  base: './',
   css: {
     postcss: {
       // The postcss plugins are now managed by Tailwind CSS itself
