@@ -118,9 +118,9 @@ const ConnectionGuide: React.FC = () => (
           
           <div className="p-3 bg-nexus-primary-900 rounded text-sm font-mono text-nexus-text-secondary">
             <div><strong>Variable Name:</strong> <code className="text-white">API_KEY</code></div>
-            <div className="mt-2"><strong>Variable Value:</strong> <code className="text-white">[Your Google Gemini API Key]</code></div>
+            <div className="mt-2"><strong>Variable Value:</strong> <code className="text-white">[Your OpenAI API Key]</code></div>
             <div className="mt-2 text-xs text-nexus-text-secondary">
-              <strong>Note:</strong> This is the Google Gemini API key that needs to be configured in your Vercel environment variables for the AI features to work properly.
+              <strong>Note:</strong> This is the OpenAI API key that needs to be configured in your Vercel environment variables for the AI features to work properly.
             </div>
           </div>
         </div>

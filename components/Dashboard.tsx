@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { fetchIntelligenceForCategory } from '../services/geminiService.ts';
+import { fetchIntelligenceForCategory } from '../services/openaiService.ts';
 import type { DashboardIntelligence, SymbiosisContext } from '../types.ts';
 import Loader from './common/Loader.tsx';
 import { DASHBOARD_CATEGORIES } from '../constants.tsx';

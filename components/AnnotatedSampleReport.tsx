@@ -140,7 +140,7 @@ export const AnnotatedSampleReport: React.FC = () => {
                         The Executive Summary is not generic. The AI synthesizes the key findings and recommendations that are most relevant to the <strong>'Core Objective'</strong> you defined in <strong>Step 4</strong> of the generation process.
                     </Annotation>
                     <Annotation number="4" title="Core Analytical Methodologies">
-                        This table is a direct output of a core Regional Science model like <strong>Shift-Share Analysis</strong>. The AI uses Google Search to find public data (e.g., employment statistics) and applies the framework to it, providing a rigorous, data-driven foundation for the insights.
+                        This table is a direct output of a core Regional Science model like <strong>Shift-Share Analysis</strong>. The AI uses advanced web search capabilities to find public data (e.g., employment statistics) and applies the framework to it, providing a rigorous, data-driven foundation for the insights.
                     </Annotation>
                     <Annotation number="5" title="Bespoke Partner Search">
                         For matchmaking-focused tiers, the AI uses your detailed <strong>'Ideal Partner Profile'</strong> from <strong>Step 3</strong> to search for and analyze suitable companies, creating a vetted shortlist with a clear rationale for each match.
