@@ -513,21 +513,7 @@ export const Inquire = ({
                      </div>
                  )}
                 
-                {wizardStep === 1 && aiInteractionState === 'idle' && capabilities ? ( // Initial capabilities view
-                    <div className="p-3 text-sm text-nexus-text-secondary bg-white/5 rounded-lg border border-white/10 animate-fadeIn">
-                        <p className="mb-3">{capabilities.greeting}</p>
-                        <h4 className="font-semibold text-nexus-text-primary mb-2">Here are some things I can help with:</h4>
-                        <div className="space-y-2">
-                            {capabilities.capabilities.map((cap: AiCapability) => (
-                                <button key={cap.title} onClick={() => handleCapabilityClick(cap.prompt)} className="w-full text-left p-3 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all">
-                                    <p className="font-semibold text-nexus-text-primary">{cap.title}</p>
-                                    <p className="text-xs text-nexus-text-secondary mt-1">{cap.description}</p>
-                                    <p className="text-xs text-nexus-accent-cyan font-mono mt-2 p-2 bg-black/20 rounded-md">Try: "{cap.prompt}"</p>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                ) : (
+                {wizardStep !== 1 && (
                     <div className="p-3 text-sm text-nexus-text-secondary bg-white/5 rounded-lg border border-white/10">
                         <div className="flex items-start gap-2">
                             <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${aiInteractionState === 'idle' ? 'bg-gray-400' : 'bg-green-400 animate-pulse-green'}`}></div>
@@ -566,76 +552,78 @@ export const Inquire = ({
                 />
 
 
-                {/* Nexus AI Support Interface - No step navigation */}
-                <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">
-                    <div className="space-y-3">
-                        <label className="text-xs font-semibold text-nexus-text-secondary">Nexus AI Support</label>
-                        <textarea
-                            ref={queryTextAreaRef}
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Ask me anything about your report, get suggestions, or request analysis..."
-                            className="w-full p-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-nexus-accent-cyan focus:outline-none transition placeholder:text-nexus-text-muted text-sm"
-                            rows={4}
-                            disabled={!!loadingCommand}
-                        />
-                        <div className="flex items-center justify-between gap-2">
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleFileChange}
-                                className="hidden"
-                                accept=".txt,.pdf,.md,.docx"
-                                aria-label="Attach document"
+                {/* Nexus AI Support Interface - Available from Step 2 onwards */}
+                {wizardStep && wizardStep >= 2 && (
+                    <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">
+                        <div className="space-y-3">
+                            <label className="text-xs font-semibold text-nexus-text-secondary">Nexus AI Support</label>
+                            <textarea
+                                ref={queryTextAreaRef}
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="Ask me anything about your report, get suggestions, or request analysis..."
+                                className="w-full p-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-nexus-accent-cyan focus:outline-none transition placeholder:text-nexus-text-muted text-sm"
+                                rows={4}
+                                disabled={!!loadingCommand}
                             />
-                            <button type="button" onClick={() => fileInputRef.current?.click()} className="text-xs font-semibold p-2 rounded-md bg-white/5 border border-white/10 text-nexus-text-primary hover:bg-white/10 transition-colors flex-1 text-center" disabled={!!loadingCommand}>
-                                Attach Document
+                            <div className="flex items-center justify-between gap-2">
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    className="hidden"
+                                    accept=".txt,.pdf,.md,.docx"
+                                    aria-label="Attach document"
+                                />
+                                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-xs font-semibold p-2 rounded-md bg-white/5 border border-white/10 text-nexus-text-primary hover:bg-white/10 transition-colors flex-1 text-center" disabled={!!loadingCommand}>
+                                    Attach Document
+                                </button>
+                                {fileName && (
+                                    <div className="text-xs text-nexus-text-secondary flex items-center gap-1 flex-shrink-0">
+                                        <span className="truncate max-w-[120px]">{fileName}</span>
+                                        <button onClick={clearFile} className="text-red-400 hover:text-red-600 flex-shrink-0 ml-1">&times;</button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <button
+                                onClick={() => handleQuickScope()}
+                                disabled={!!loadingCommand || !query.trim()}
+                                className="w-full p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            >
+                                {loadingCommand === 'quick_scope' ? (
+                                    <><SpinnerSmall /> Processing...</>
+                                ) : (
+                                    'Ask Nexus AI'
+                                )}
                             </button>
-                            {fileName && (
-                                <div className="text-xs text-nexus-text-secondary flex items-center gap-1 flex-shrink-0">
-                                    <span className="truncate max-w-[120px]">{fileName}</span>
-                                    <button onClick={clearFile} className="text-red-400 hover:text-red-600 flex-shrink-0 ml-1">&times;</button>
+
+                            {/* AI Suggestions with checkboxes */}
+                            {researchSummary && (
+                                <div className="mt-4 p-3 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-lg">
+                                    <h4 className="text-sm font-semibold text-nexus-accent-cyan mb-2">💡 AI Suggestions</h4>
+                                    <div className="space-y-2">
+                                        <label className="flex items-center gap-2 text-sm">
+                                            <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
+                                            <span className="text-nexus-text-secondary">Apply suggested report parameters</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 text-sm">
+                                            <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
+                                            <span className="text-nexus-text-secondary">Include regional analysis recommendations</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 text-sm">
+                                            <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
+                                            <span className="text-nexus-text-secondary">Add industry-specific insights</span>
+                                        </label>
+                                    </div>
+                                    <button className="mt-3 w-full px-3 py-2 bg-nexus-accent-cyan text-white text-sm font-semibold rounded-md hover:bg-nexus-accent-cyan-dark transition-colors">
+                                        Accept Selected Suggestions
+                                    </button>
                                 </div>
                             )}
                         </div>
-
-                        <button
-                            onClick={() => handleQuickScope()}
-                            disabled={!!loadingCommand || !query.trim()}
-                            className="w-full p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                        >
-                            {loadingCommand === 'quick_scope' ? (
-                                <><SpinnerSmall /> Processing...</>
-                            ) : (
-                                'Ask Nexus AI'
-                            )}
-                        </button>
-
-                        {/* AI Suggestions with checkboxes */}
-                        {researchSummary && (
-                            <div className="mt-4 p-3 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-lg">
-                                <h4 className="text-sm font-semibold text-nexus-accent-cyan mb-2">💡 AI Suggestions</h4>
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm">
-                                        <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
-                                        <span className="text-nexus-text-secondary">Apply suggested report parameters</span>
-                                    </label>
-                                    <label className="flex items-center gap-2 text-sm">
-                                        <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
-                                        <span className="text-nexus-text-secondary">Include regional analysis recommendations</span>
-                                    </label>
-                                    <label className="flex items-center gap-2 text-sm">
-                                        <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
-                                        <span className="text-nexus-text-secondary">Add industry-specific insights</span>
-                                    </label>
-                                </div>
-                                <button className="mt-3 w-full px-3 py-2 bg-nexus-accent-cyan text-white text-sm font-semibold rounded-md hover:bg-nexus-accent-cyan-dark transition-colors">
-                                    Accept Selected Suggestions
-                                </button>
-                            </div>
-                        )}
                     </div>
-                </div>
+                )}
 
             </div>
         </div>
