@@ -69,7 +69,7 @@ export const Inquire = ({
     canGoPrev,
 }: InquireProps) => {
     const [query, setQuery] = useState('');
-    const [loadingCommand, setLoadingCommand] = useState<BrainCommand | 'quick_scope' | null>(null);
+    const [loadingCommand, setLoadingCommand] = useState<BrainCommand | 'quick_scope' | 'trade_disruption' | 'market_diversification' | null>(null);
     const [isRefining, setIsRefining] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [capabilities, setCapabilities] = useState<AiCapabilitiesResponse | null>(null);
@@ -658,6 +658,64 @@ export const Inquire = ({
                                     <button className="mt-3 w-full px-3 py-2 bg-blue-600/80 text-white text-sm font-semibold rounded-md hover:bg-blue-700 transition-colors">
                                         Accept Selected Suggestions
                                     </button>
+                                </div>
+                            )}
+
+                            {/* Proactive AI Guidance */}
+                            {wizardStep && wizardStep >= 2 && (
+                                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <h4 className="text-sm font-semibold text-blue-800 mb-2">🎯 Smart Suggestions</h4>
+                                    <div className="space-y-2 text-sm text-blue-700">
+                                        {wizardStep === 2 && !params.region && (
+                                            <p>💡 <strong>Tip:</strong> Select a region to unlock regional intelligence and market data.</p>
+                                        )}
+                                        {wizardStep === 3 && !params.problemStatement && (
+                                            <p>💡 <strong>Tip:</strong> A clear objective helps the AI provide more targeted analysis.</p>
+                                        )}
+                                        {wizardStep === 4 && params.tier.length === 0 && (
+                                            <p>💡 <strong>Tip:</strong> Try selecting "Market Entry Strategy" for comprehensive opportunity assessment.</p>
+                                        )}
+                                        {params.industry.length > 0 && (
+                                            <p>💡 <strong>Industry Insight:</strong> Based on your selections, consider adding supply chain analysis.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Quick Actions */}
+                            {wizardStep && wizardStep >= 2 && (
+                                <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                    <h4 className="text-sm font-semibold text-gray-700 mb-2">⚡ Quick Actions</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <button
+                                            onClick={() => setQuery("What industries are growing fastest in this region?")}
+                                            className="text-xs p-2 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                                            disabled={!!loadingCommand}
+                                        >
+                                            Industry Trends
+                                        </button>
+                                        <button
+                                            onClick={() => setQuery("What are the main challenges for foreign investment here?")}
+                                            className="text-xs p-2 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                                            disabled={!!loadingCommand}
+                                        >
+                                            Investment Risks
+                                        </button>
+                                        <button
+                                            onClick={() => setQuery("Suggest optimal report tiers for my objective")}
+                                            className="text-xs p-2 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                                            disabled={!!loadingCommand}
+                                        >
+                                            Report Tiers
+                                        </button>
+                                        <button
+                                            onClick={() => setQuery("What AI personas would be most helpful?")}
+                                            className="text-xs p-2 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                                            disabled={!!loadingCommand}
+                                        >
+                                            AI Personas
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>
