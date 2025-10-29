@@ -51,9 +51,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     const [targetCity, setTargetCity] = useState('');
 
     const handleStepClick = (stepNumber: number) => {
-        if (stepNumber < step) {
-            setStep(stepNumber);
-        }
+        setStep(stepNumber);
     };
 
     // DEBUG: Force default organization type if missing
@@ -573,26 +571,24 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
                         <QualityAnalysis params={params} />
 
-                        {/* Nexus Brain Integration - Show available analysis */}
-                        {step === 5 && (
-                          <div className="my-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
-                            <h4 className="text-lg font-semibold text-nexus-accent-cyan mb-4 flex items-center gap-2">
-                              <span className="text-blue-600">🧠</span>
-                              Nexus Inquire AI - Analysis & Guidance
-                            </h4>
-                            <p className="text-sm text-gray-700 mb-4">
-                              The Nexus Inquire AI (left panel) is your strategic analysis partner. It provides:
-                            </p>
-                            <ul className="text-sm text-gray-700 mb-4 space-y-2">
-                              <li>• <strong>Summary & Analysis:</strong> Reviews your inputs and provides strategic insights</li>
-                              <li>• <strong>Tier Recommendations:</strong> Suggests optimal analysis frameworks for your objectives</li>
-                              <li>• <strong>Advanced Intelligence:</strong> RROI diagnosis, TPT simulations, SEAM ecosystem design</li>
-                            </ul>
-                            <div className="text-xs text-nexus-text-muted bg-blue-100 p-3 rounded-lg">
-                              💡 <strong>Workflow:</strong> Use Nexus Inquire AI in steps 1-4 for guidance, then proceed to final report generation in step 5.
-                            </div>
+                        {/* Nexus Inquire AI Guidance */}
+                        <div className="my-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                          <h4 className="text-lg font-semibold text-nexus-accent-cyan mb-4 flex items-center gap-2">
+                            <span className="text-blue-600">🧠</span>
+                            Nexus Inquire AI - Your Strategic Analysis Partner
+                          </h4>
+                          <p className="text-sm text-gray-700 mb-4">
+                            The Nexus Inquire AI (left panel) helps guide you through the blueprint creation process:
+                          </p>
+                          <ul className="text-sm text-gray-700 mb-4 space-y-2">
+                            <li>• <strong>Step 1-2:</strong> Provides summary and analysis of your inputs</li>
+                            <li>• <strong>Step 3-4:</strong> Suggests optimal tier selections and analysis frameworks</li>
+                            <li>• <strong>Advanced Intelligence:</strong> Offers RROI diagnosis, TPT simulations, and SEAM ecosystem design</li>
+                          </ul>
+                          <div className="text-xs text-nexus-text-muted bg-blue-100 p-3 rounded-lg">
+                            💡 <strong>Workflow:</strong> Use Nexus Inquire AI throughout steps 1-4 for guidance. The final "🚀 Launch Nexus Report" button appears only when all steps are complete.
                           </div>
-                        )}
+                        </div>
 
                         <div className="my-6">
                             <h4 className="text-lg font-semibold text-gray-800 mb-4">Global Trade Intelligence</h4>
@@ -673,7 +669,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         </div>
                     </header>
 
-                    <main className="flex-grow pb-24 relative">
+                    <main className="flex-grow pb-32 relative">
                         {renderStepContent()}
                     </main>
 
