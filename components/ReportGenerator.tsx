@@ -8,9 +8,7 @@ import { Inquire } from './Inquire.tsx';
 import { CustomPersonaIcon, CustomIndustryIcon, ArrowUpIcon, NexusLogo } from './Icons.tsx';
 import QualityAnalysis from './QualityAnalysis.tsx';
 import { ProfileStep } from './ProfileStep.tsx';
-import { TradeDisruptionDisplay, TradeDisruptionAnalyzer } from './TradeDisruptionModel.tsx';
-import { MarketDiversificationDashboard } from './MarketDiversificationModule.tsx';
-import Stepper from './Stepper';
+import Stepper from './Stepper.tsx';
 
 interface ReportGeneratorProps {
     params: ReportParameters;
@@ -219,7 +217,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     }, [params, onReportUpdate, onProfileUpdate, getValidationErrors]);
 
-    const inputStyles = "w-full p-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-gray-800 outline-none transition-all duration-200 placeholder:text-gray-400 text-gray-800 shadow-sm text-sm";
+    const inputStyles = "w-full p-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all duration-200 placeholder:text-gray-400 text-gray-800 shadow-sm text-sm";
     const labelStyles = "block text-sm font-semibold text-gray-800 mb-2";
     const currentTiers = TIERS_BY_ORG_TYPE[params.organizationType] || TIERS_BY_ORG_TYPE['Default'] || [];
 
@@ -260,7 +258,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                                             { id: 'comprehensive', title: 'Comprehensive Analysis', desc: '20-30 page in-depth analysis with all modules and appendices', pages: '20-30 pages' }
                                         ].map((option) => (
                                             <label key={option.id} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.reportLength === option.id ? 'border-gray-800 bg-gray-100 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
-                                                <input type="radio" name="reportLength" value={option.id} checked={params.reportLength === option.id} onChange={(e) => handleChange('reportLength', e.target.value)} className="h-5 w-5 text-gray-800 focus:ring-gray-800 focus:ring-2" />
+                                                <input type="radio" name="reportLength" value={option.id} checked={params.reportLength === option.id} onChange={(e) => handleChange('reportLength', e.target.value)} className="h-5 w-5 text-blue-600 focus:ring-blue-500 focus:ring-2" />
                                                 <div className="flex-grow">
                                                     <div className="font-semibold text-gray-800">{option.title} <span className="text-sm text-gray-500">({option.pages})</span></div>
                                                     <div className="text-sm text-gray-600">{option.desc}</div>
@@ -279,7 +277,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                                             { id: 'both', title: 'Report + Letter', desc: 'Both report and business letter' }
                                         ].map((option) => (
                                             <label key={option.id} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.outputFormat === option.id ? 'border-gray-800 bg-gray-100 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
-                                                <input type="radio" name="outputFormat" value={option.id} checked={params.outputFormat === option.id} onChange={(e) => handleChange('outputFormat', e.target.value)} className="h-5 w-5 text-gray-800 focus:ring-gray-800 focus:ring-2" />
+                                                <input type="radio" name="outputFormat" value={option.id} checked={params.outputFormat === option.id} onChange={(e) => handleChange('outputFormat', e.target.value)} className="h-5 w-5 text-blue-600 focus:ring-blue-500 focus:ring-2" />
                                                 <div className="flex-grow">
                                                     <div className="font-semibold text-gray-800">{option.title}</div>
                                                     <div className="text-sm text-gray-600">{option.desc}</div>
@@ -459,7 +457,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                             </div>
                             <div className="grid md:grid-cols-2 gap-8">
                             {currentTiers.length > 0 ? currentTiers.map((tier) => (
-                                      <label key={tier.id} className={`p-6 md:p-8 rounded-2xl text-left border-2 transition-all duration-300 w-full flex flex-col h-full cursor-pointer bg-white hover:bg-gray-50 shadow-md hover:shadow-lg ${params.tier.includes(tier.id) ? 'border-gray-800 scale-105 shadow-xl ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`}>
+                                      <label key={tier.id} className={`p-6 md:p-8 rounded-2xl text-left border-2 transition-all duration-300 w-full flex flex-col h-full cursor-pointer bg-white hover:bg-gray-50 shadow-md hover:shadow-lg ${params.tier.includes(tier.id) ? 'border-blue-600 scale-105 shadow-xl ring-2 ring-blue-600/20' : 'border-gray-200 hover:border-gray-400'}`}>
                                           <div className="flex justify-between items-start mb-4">
                                           <span className="font-bold text-gray-900 text-2xl">{tier.title}</span>
                                               <input
@@ -493,13 +491,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                              </div>
                              <div className="grid grid-cols-4 gap-4">
                                  {AI_PERSONAS.map((persona) => (
-                                     <button key={persona.id} onClick={() => handleMultiSelectToggle('aiPersona', persona.id)} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.aiPersona.includes(persona.id) ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`} title={persona.description}>
-                                         <persona.icon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.aiPersona.includes(persona.id) ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
+                                     <button key={persona.id} onClick={() => handleMultiSelectToggle('aiPersona', persona.id)} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.aiPersona.includes(persona.id) ? 'border-blue-600 scale-105 shadow-lg ring-2 ring-blue-600/20' : 'border-gray-200 hover:border-gray-400'}`} title={persona.description}>
+                                         <persona.icon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.aiPersona.includes(persona.id) ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'}`} />
                                          <span className="font-semibold text-gray-800 text-xs leading-tight">{persona.title}</span>
                                      </button>
                                  ))}
-                                 <button onClick={() => handleMultiSelectToggle('aiPersona', 'Custom')} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.aiPersona.includes('Custom') ? 'border-gray-800 scale-105 shadow-lg ring-2 ring-gray-800/20' : 'border-gray-200 hover:border-gray-400'}`} title="Define a custom persona">
-                                     <CustomPersonaIcon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.aiPersona.includes('Custom') ? 'text-gray-800' : 'text-gray-500 group-hover:text-gray-700'}`} />
+                                 <button onClick={() => handleMultiSelectToggle('aiPersona', 'Custom')} className={`p-5 rounded-xl border-2 transition-all duration-300 flex flex-col items-center justify-center text-center h-full group bg-white hover:bg-gray-50 shadow-sm hover:shadow-md ${params.aiPersona.includes('Custom') ? 'border-blue-600 scale-105 shadow-lg ring-2 ring-blue-600/20' : 'border-gray-200 hover:border-gray-400'}`} title="Define a custom persona">
+                                     <CustomPersonaIcon className={`w-10 h-10 mb-3 transition-colors duration-200 ${params.aiPersona.includes('Custom') ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'}`} />
                                      <span className="font-semibold text-gray-800 text-xs leading-tight">Custom</span>
                                  </button>
                              </div>
@@ -517,8 +515,8 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                                  <label className={`${labelStyles} text-lg`}>Analytical Frameworks</label>
                                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-3 space-y-3">
                                      {ANALYTICAL_LENSES.map(lens => (
-                                         <label key={lens} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.analyticalLens?.includes(lens) ? 'border-gray-800 bg-gray-100 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
-                                             <input type="checkbox" checked={params.analyticalLens?.includes(lens)} onChange={() => handleMultiSelectToggle('analyticalLens', lens)} className="h-5 w-5 rounded border-gray-300 text-gray-800 focus:ring-gray-800 focus:ring-2" />
+                                         <label key={lens} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.analyticalLens?.includes(lens) ? 'border-blue-600 bg-blue-50 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
+                                             <input type="checkbox" checked={params.analyticalLens?.includes(lens)} onChange={() => handleMultiSelectToggle('analyticalLens', lens)} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2" />
                                              <span className="text-base font-medium text-gray-800">{lens}</span>
                                          </label>
                                      ))}
@@ -528,8 +526,8 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                                  <label className={`${labelStyles} text-lg`}>Communication Styles</label>
                                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-3 space-y-3">
                                      {TONES_AND_STYLES.map(style => (
-                                         <label key={style} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.toneAndStyle?.includes(style) ? 'border-gray-800 bg-gray-100 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
-                                             <input type="checkbox" checked={params.toneAndStyle?.includes(style)} onChange={() => handleMultiSelectToggle('toneAndStyle', style)} className="h-5 w-5 rounded border-gray-300 text-gray-800 focus:ring-gray-800 focus:ring-2"/>
+                                         <label key={style} className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${params.toneAndStyle?.includes(style) ? 'border-blue-600 bg-blue-50 shadow-sm' : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'}`}>
+                                             <input type="checkbox" checked={params.toneAndStyle?.includes(style)} onChange={() => handleMultiSelectToggle('toneAndStyle', style)} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"/>
                                              <span className="text-base font-medium text-gray-800">{style}</span>
                                          </label>
                                      ))}
@@ -539,24 +537,6 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                     </div>
                 );
             case 5: // Review & Generate
-                const isInvalid = (field: keyof ReportParameters, condition?: boolean) => {
-                    const value = params[field];
-                    if (condition === false) return false; // Explicitly false condition means don't validate
-                    if (Array.isArray(value)) return value.length === 0;
-                    if (typeof value === 'string') return !value.trim();
-                    return false;
-                };
-
-                const summaryItemClasses = (invalid: boolean) =>
-                    `p-3 rounded-lg transition-colors ${invalid ? 'bg-red-100 border border-red-200' : 'bg-gray-50'}`;
-
-                const SummaryItem: React.FC<{label: string, value: React.ReactNode, invalid?: boolean}> = ({label, value, invalid = false}) => (
-                    <div className={summaryItemClasses(invalid)}>
-                        <div className="text-sm font-semibold text-gray-600">{label}</div>
-                        <div className="text-gray-900 pl-2 mt-1">{value || <span className="text-red-600 italic">Not Provided</span>}</div>
-                    </div>
-                );
-
                 return (
                       <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200">
                           <div className="flex items-center gap-4 mb-8">
@@ -571,59 +551,41 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
                         <QualityAnalysis params={params} />
 
-                        {/* Nexus Inquire AI Guidance */}
-                        <div className="my-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
-                          <h4 className="text-lg font-semibold text-nexus-accent-cyan mb-4 flex items-center gap-2">
-                            <span className="text-blue-600">🧠</span>
-                            Nexus Inquire AI - Your Strategic Analysis Partner
-                          </h4>
-                          <p className="text-sm text-gray-700 mb-4">
-                            The Nexus Inquire AI (left panel) helps guide you through the blueprint creation process:
-                          </p>
-                          <ul className="text-sm text-gray-700 mb-4 space-y-2">
-                            <li>• <strong>Step 1-2:</strong> Provides summary and analysis of your inputs</li>
-                            <li>• <strong>Step 3-4:</strong> Suggests optimal tier selections and analysis frameworks</li>
-                            <li>• <strong>Advanced Intelligence:</strong> Offers RROI diagnosis, TPT simulations, and SEAM ecosystem design</li>
-                          </ul>
-                          <div className="text-xs text-nexus-text-muted bg-blue-100 p-3 rounded-lg">
-                            💡 <strong>Workflow:</strong> Use Nexus Inquire AI throughout steps 1-4 for guidance. The final "🚀 Launch Nexus Report" button appears only when all steps are complete.
-                          </div>
-                        </div>
-
-                        <div className="my-6">
-                            <h4 className="text-lg font-semibold text-gray-800 mb-4">Global Trade Intelligence</h4>
-                            <div className="mb-8">
-                                {(() => {
-                                    const sampleTradeVolume = 2500000000;
-                                    const sampleTariffRate = 15;
-                                    const sampleMarkets = ['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia'];
-                                    const analysis = TradeDisruptionAnalyzer.calculateDisruptionImpact(sampleTradeVolume, sampleTariffRate, sampleMarkets, 35);
-                                    return <TradeDisruptionDisplay analysis={analysis} />;
-                                })()}
-                            </div>
-                            <div className="mb-8">
-                                <MarketDiversificationDashboard
-                                    currentMarkets={{ 'United States': 45, 'China': 25, 'European Union': 20, 'Japan': 10 }}
-                                    potentialMarkets={['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia', 'Turkey', 'South Africa', 'Thailand']}
-                                    tradeDisruptionRisk={0.6}
-                                />
-                            </div>
-                        </div>
-
                         <div className="space-y-4 p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-inner">
+                            {(() => {
+                        const isInvalid = (field: keyof ReportParameters, condition?: boolean) => {
+                            const value = params[field];
+                            if (condition === false) return false;
+                            if (Array.isArray(value)) return value.length === 0;
+                            if (typeof value === 'string') return !value.trim();
+                            return false;
+                        };
+
+                        const summaryItemClasses = (invalid: boolean) =>
+                            `p-3 rounded-lg transition-colors ${invalid ? 'bg-red-100 border border-red-200' : 'bg-gray-50'}`;
+
+                        const SummaryItem: React.FC<{label: string, value: React.ReactNode, invalid?: boolean}> = ({label, value, invalid = false}) => (
+                            <div className={summaryItemClasses(invalid)}>
+                                <div className="text-sm font-semibold text-gray-600">{label}</div>
+                                <div className="text-gray-900 pl-2 mt-1">{value || <span className="text-red-600 italic">Not Provided</span>}</div>
+                            </div>
+                        );
+                        return (<>
                             <div className="grid md:grid-cols-2 gap-6">
-                              <SummaryItem label="Report Name" value={params.reportName} invalid={isInvalid('reportName')} />
-                              <SummaryItem label="Operator" value={`${params.userName || 'N/A'} (${params.organizationType})`} invalid={isInvalid('userName')} />
-                              <SummaryItem label="Analysis Tiers" value={<ul className="list-disc list-inside space-y-1">{params.tier.map(t => <li key={t} className="text-sm">{currentTiers.find(tier => tier.id === t)?.title || t}</li>)}</ul>} invalid={isInvalid('tier')} />
-                              <SummaryItem label="Geographic Focus" value={`${params.region || 'N/A'}`} invalid={isInvalid('region')} />
-                              <SummaryItem label="Industry Sectors" value={params.industry.filter(i=>i !== 'Custom').join(', ') || 'N/A'} invalid={isInvalid('industry')} />
-                              <SummaryItem label="Custom Sector" value={params.customIndustry || 'Not specified'} invalid={isInvalid('customIndustry', params.industry.includes('Custom'))} />
+                                <SummaryItem label="Report Name" value={params.reportName} invalid={isInvalid('reportName')} />
+                                <SummaryItem label="Operator" value={`${params.userName || 'N/A'} (${params.organizationType})`} invalid={isInvalid('userName')} />
+                                <SummaryItem label="Analysis Tiers" value={<ul className="list-disc list-inside space-y-1">{params.tier.map(t => <li key={t} className="text-sm">{currentTiers.find(tier => tier.id === t)?.title || t}</li>)}</ul>} invalid={isInvalid('tier')} />
+                                <SummaryItem label="Geographic Focus" value={`${params.region || 'N/A'}`} invalid={isInvalid('region')} />
+                                <SummaryItem label="Industry Sectors" value={params.industry.filter(i=>i !== 'Custom').join(', ') || 'N/A'} invalid={isInvalid('industry')} />
+                                <SummaryItem label="Custom Sector" value={params.customIndustry || 'Not specified'} invalid={isInvalid('customIndustry', params.industry.includes('Custom'))} />
                             </div>
                             <div className="border-t border-gray-200 pt-4 space-y-4">
-                              <SummaryItem label="Strategic Objective" value={<div className="italic text-gray-800 bg-gray-100 p-3 rounded-lg border border-gray-200">"{params.problemStatement}"</div>} invalid={isInvalid('problemStatement')} />
-                              <SummaryItem label="AI Personas" value={<ul className="list-disc list-inside space-y-1">{params.aiPersona.filter(p=>p !== 'Custom').map(p => <li key={p} className="text-sm">{p}</li>)}</ul>} invalid={isInvalid('aiPersona')} />
-                              <SummaryItem label="Custom Profile" value={params.customAiPersona || 'Not configured'} invalid={isInvalid('customAiPersona', params.aiPersona.includes('Custom'))} />
+                                <SummaryItem label="Strategic Objective" value={<div className="italic text-gray-800 bg-gray-100 p-3 rounded-lg border border-gray-200">"{params.problemStatement}"</div>} invalid={isInvalid('problemStatement')} />
+                                <SummaryItem label="AI Personas" value={<ul className="list-disc list-inside space-y-1">{params.aiPersona.filter(p=>p !== 'Custom').map(p => <li key={p} className="text-sm">{p}</li>)}</ul>} invalid={isInvalid('aiPersona')} />
+                                <SummaryItem label="Custom Profile" value={params.customAiPersona || 'Not configured'} invalid={isInvalid('customAiPersona', params.aiPersona.includes('Custom'))} />
                             </div>
+                        </>);
+                    })()}
                         </div>
                     </div>
                 );
@@ -637,8 +599,8 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     }, []);
 
     return (
-        <div className="flex h-screen bg-gray-100 font-sans">
-            <div className="w-[35rem] flex-shrink-0 bg-white border-r border-gray-200 shadow-lg">
+        <div className="flex h-full bg-gray-100 text-gray-900 font-sans">
+            <div className="w-[32rem] flex-shrink-0 bg-white border-r border-gray-200 shadow-2xl">
                 <Inquire // The left-hand AI co-pilot panel
                     {...restInquireProps}
                     params={params}
@@ -674,24 +636,24 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                     </main>
 
                     {/* Footer with navigation buttons */}
-                    <footer className="flex-shrink-0 py-6 border-t border-gray-200 bg-white/80 backdrop-blur-sm sticky bottom-0 z-10">
-                        {error && <p className="text-red-600 text-center mb-4 text-sm bg-red-100 p-3 rounded-md border border-red-200">{error}</p>}
+                    <footer className="flex-shrink-0 py-6 border-t border-gray-700 bg-gray-900/80 backdrop-blur-sm sticky bottom-0 z-10">
+                        {error && <p className="text-red-400 text-center mb-4 text-sm bg-red-500/20 p-3 rounded-md border border-red-500/50">{error}</p>}
 
                         <div className="flex justify-between items-center max-w-5xl mx-auto px-4 md:px-6">
                             {step > 1 && (
-                                <button onClick={prevStep} disabled={isGenerating} className="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">Back</button>
+                                <button onClick={prevStep} disabled={isGenerating} className="px-6 py-3 bg-gray-700 text-gray-200 font-semibold rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">Back</button>
                             )}
 
                             {step < 5 ? (
                                 <button
                                     onClick={nextStep}
                                     disabled={isGenerating}
-                                    className="px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="ml-auto px-8 py-3 bg-green-500 text-black font-bold rounded-lg hover:bg-green-400 transition-all shadow-lg shadow-green-500/20 hover:shadow-green-400/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                                 >
                                     Next Step
                                 </button>
                             ) : step === 5 ? (
-                                <button onClick={handleGenerateReport} disabled={isGenerating} className="px-8 py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                <button onClick={handleGenerateReport} disabled={isGenerating} className="ml-auto px-8 py-3 bg-green-500 text-black font-bold rounded-lg hover:bg-green-400 transition-all shadow-lg shadow-green-500/20 hover:shadow-green-400/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                                     {isGenerating ? <><Spinner /> Generating...</> : <>🚀 Launch Nexus Report</>}
                                 </button>
                             ) : null}

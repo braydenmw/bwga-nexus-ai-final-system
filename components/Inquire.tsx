@@ -9,6 +9,8 @@ import { ChatBubbleLeftRightIcon, NexusLogo } from './Icons.tsx';
 import { RROIResultDisplay } from './RROIResultDisplay.tsx';
 import { TPTResultDisplay } from './TPTResultDisplay.tsx';
 import { SEAMResultDisplay } from './SEAMResultDisplay.tsx';
+import { TradeDisruptionDisplay, TradeDisruptionAnalyzer } from './TradeDisruptionModel.tsx';
+import { MarketDiversificationDashboard } from './MarketDiversificationModule.tsx';
 import { GenerativeModelResultDisplay } from './GenerativeModelResultDisplay.tsx';
 
 type AiInteractionState = 'idle' | 'welcomed' | 'prompted' | 'answeredPrompt' | 'active';
@@ -35,7 +37,7 @@ interface InquireProps {
 }
 
 const WIZARD_HELP_TEXT: Record<number, string> = {
-    1: "Let's start by defining your role and the high-level goal of your report. This helps me understand your perspective.",
+    1: "Welcome to the Nexus Workspace. Let's start by defining your role and the high-level goal of your report. This helps me understand your perspective.",
     2: `This is the core of the blueprint.
         - **Analysis Tiers** define *what* strategic questions the report will answer (e.g., Market Entry vs. Partner Vetting).
         - **Geographic Targeting** defines *where* we are looking.
@@ -43,7 +45,7 @@ const WIZARD_HELP_TEXT: Record<number, string> = {
         - **Ideal Partner Profile** tells me *who* you want to connect with.
         <br/><br/>
         <strong>Feeling stuck?</strong> Ask me to explain a specific tier like "What is a Supply Chain Gap Analysis?" or "What's the difference between Market Entry and Partner Vetting?".`,
-    3: "Now, let's define the 'why'. Your Core Objective is the most important input for the AI. Also, select one or more AI Analyst Personas to shape the report's perspective.",
+    3: "Excellent. Now, let's define the 'why'. Your Core Objective is the most important input for the AI. Also, select one or more AI Analyst Personas to shape the report's perspective.",
     4: "This is your final review. Check the Quality Analysis score for tips on improving your report. You can also use the Nexus Brain Commands below to run advanced, pre-report analysis on your defined opportunity.",
 };
 
@@ -78,7 +80,7 @@ export const Inquire = ({
     const economicDataInputRef = useRef<HTMLInputElement>(null);
     const queryTextAreaRef = useRef<HTMLTextAreaElement>(null);
     const [economicDataFile, setEconomicDataFile] = useState<string | null>(null);
-    const [economicDataFileName, setEconomicDataFileName] = useState<string | null>(null);
+    const [economicDataFileName, setEconomicDataFileName] = useState<string | null>(null);    
     
     // Nexus Brain state
     const [brainResults, setBrainResults] = useState<NexusBrainState>({ diagnosis: null, simulation: null, ecosystem: null, generativeModel: null });
@@ -269,6 +271,22 @@ export const Inquire = ({
         }
     };
 
+    const handleAdvancedAnalysisCommand = async (command: 'trade_disruption' | 'market_diversification') => {
+        try {
+            setLoadingCommand(command as any); // A bit of a type hack for loading state
+            setError(null);
+            setActiveCommand(null);
+            // In a real app, you'd trigger an API call here.
+            // For now, we'll just show the components with sample data.
+            // This simulates running the analysis and getting a result.
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+        } finally {
+            setLoadingCommand(null);
+            setSimulationInput('');
+        }
+    };
+
     const handleRefineObjective = async (context: EconomicData) => {
         if (!params.problemStatement.trim()) {
             setError("Please write an initial Core Objective in Step 3 before refining it.");
@@ -336,7 +354,7 @@ export const Inquire = ({
         };
 
         switch (aiInteractionState) {
-            case 'idle':
+            case 'idle': // This state will now be used for the initial greeting
                 return (
                     <div>
                         <p>I'm ready to assist. Start by entering your name in the profile section.</p>
@@ -384,7 +402,7 @@ export const Inquire = ({
                         )}
                     </div>
                 );
-            case 'welcomed':
+            case 'welcomed': // This state is now effectively merged into 'active'
                 return <p>Hello, <strong>{params.userName}</strong>. What is the primary goal of your report? You can describe it in the 'Report Name' field to get started.</p>;
             case 'prompted':
                 return (
@@ -404,13 +422,13 @@ export const Inquire = ({
                 if (insights.length > 0) {
                     return (
                         <div>
-                            <div className="prose prose-sm max-w-none text-nexus-text-secondary mb-3"
+                            <div className="prose prose-sm max-w-none text-nexus-text-secondary mb-4"
                                   dangerouslySetInnerHTML={{ __html: WIZARD_HELP_TEXT[wizardStep] || "How can I help you build your report?" }}
                             />
                             {insights.length >= 3 && (
-                                <div className="bg-nexus-accent-cyan/10 border border-nexus-accent-cyan/20 rounded-md p-3 mt-3">
+                                <div className="bg-white/5 border border-white/10 rounded-lg p-3 mt-4">
                                     <p className="text-sm font-semibold text-nexus-accent-cyan mb-2">📊 Current Assessment:</p>
-                                    <ul className="text-xs text-nexus-text-secondary space-y-1">
+                                    <ul className="text-xs text-nexus-text-secondary space-y-1.5">
                                         {insights.map((insight, index) => (
                                             <li key={index}>{insight}</li>
                                         ))}
@@ -432,27 +450,27 @@ export const Inquire = ({
     };
     
     return (
-        <div className="p-4 h-full flex flex-col max-w-full mx-auto">
+        <div className="p-4 h-full flex flex-col max-w-full mx-auto bg-white text-gray-800">
             <header className="flex-shrink-0">
                 <div className="flex items-center gap-3">
-                    <div className="bg-nexus-accent-cyan/10 p-2 rounded-lg">
-                        <ChatBubbleLeftRightIcon className="w-6 h-6 text-nexus-accent-cyan"/>
+                    <div className="bg-blue-600/10 p-2 rounded-lg border border-blue-600/30">
+                        <ChatBubbleLeftRightIcon className="w-6 h-6 text-blue-600"/>
                     </div>
                     <div>
-                        <h2 className="text-xl font-bold text-nexus-text-primary">Nexus Inquire AI</h2>
-                        <p className="text-sm text-nexus-text-secondary">Your Strategic Co-Pilot</p>
+                        <h2 className="text-xl font-bold text-gray-900">Nexus Inquire AI</h2>
+                        <p className="text-sm text-gray-500">Your Strategic Co-Pilot</p>
                     </div>
                 </div>
             </header>
 
-            <div className="mt-4 flex-grow overflow-y-auto pr-2 -mr-2 space-y-4 max-w-full min-h-0">
+            <div className="mt-4 flex-grow overflow-y-auto pr-2 -mr-2 space-y-4 max-w-full min-h-0" style={{ scrollbarWidth: 'thin' }}>
                  {wizardStep === 4 && (
                      <div className="p-3 bg-white/5 rounded-lg border border-white/10 space-y-3 animate-fadeIn">
-                          <h3 className="font-semibold text-nexus-text-primary text-md flex items-center gap-2">
+                          <h3 className="font-semibold text-gray-800 text-md flex items-center gap-2">
                              <NexusLogo className="w-5 h-5" />
                              Nexus Brain Commands - Pre-Report Analysis
                          </h3>
-                         <p className="text-xs text-nexus-text-secondary mb-3">
+                         <p className="text-xs text-gray-500">
                            Run advanced AI analysis before generating your final report. These insights will be automatically included in your comprehensive analysis.
                          </p>
 
@@ -460,7 +478,7 @@ export const Inquire = ({
                          <button onClick={() => setActiveCommand('diagnose')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Diagnose Region (RROI)</button>
                          {activeCommand === 'diagnose' && (
                              <div className="p-3 border-t">
-                                 <p className="text-xs text-nexus-text-secondary mb-2">This will generate a detailed economic diagnosis for the region defined in Step 2. Proceed?</p>
+                                 <p className="text-xs text-gray-500 mb-2">This will generate a detailed economic diagnosis for the region defined in Step 2. Proceed?</p>
                                  <div className="flex gap-2">
                                      <button onClick={() => handleBrainCommand('diagnose')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'diagnose' ? 'Diagnosing...' : 'Confirm'}</button>
                                      <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
@@ -473,7 +491,7 @@ export const Inquire = ({
                          <button onClick={() => setActiveCommand('simulate')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Simulate Pathway (TPT)</button>
                          {activeCommand === 'simulate' && brainResults.diagnosis && (
                              <div className="p-3 border-t space-y-2">
-                                 <p className="text-xs text-nexus-text-secondary">Describe the strategic intervention to simulate (e.g., "build a new university science park").</p>
+                                 <p className="text-xs text-gray-500">Describe the strategic intervention to simulate (e.g., "build a new university science park").</p>
                                  <input type="text" value={simulationInput} onChange={e => setSimulationInput(e.target.value)} placeholder="Describe the intervention..." className="w-full text-xs p-2 bg-white/5 border border-white/10 rounded-md" />
                                  <div className="flex gap-2">
                                      <button onClick={() => handleBrainCommand('simulate')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'simulate' ? 'Simulating...' : 'Run'}</button>
@@ -487,7 +505,7 @@ export const Inquire = ({
                          <button onClick={() => setActiveCommand('architect')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Architect Ecosystem (SEAM)</button>
                           {activeCommand === 'architect' && brainResults.diagnosis && (
                              <div className="p-3 border-t">
-                                 <p className="text-xs text-nexus-text-secondary mb-2">This will design a partner ecosystem based on the diagnosis and your Core Objective. Proceed?</p>
+                                 <p className="text-xs text-gray-500 mb-2">This will design a partner ecosystem based on the diagnosis and your Core Objective. Proceed?</p>
                                  <div className="flex gap-2">
                                      <button onClick={() => handleBrainCommand('architect')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'architect' ? 'Architecting...' : 'Confirm'}</button>
                                      <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
@@ -500,7 +518,7 @@ export const Inquire = ({
                          <button onClick={() => handleBrainCommand('generate_model')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-brown hover:bg-nexus-accent-brown/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!brainResults.diagnosis} title="Future capability: Generate a new economic model for the region.">Generate Novel Model (V2)</button>
                           {activeCommand === 'generate_model' && brainResults.diagnosis && (
                              <div className="p-3 border-t">
-                                 <p className="text-xs text-nexus-text-secondary mb-2">This will use the RROI diagnosis to generate a new, hybrid economic theory for the region. Proceed?</p>
+                                 <p className="text-xs text-gray-500 mb-2">This will use the RROI diagnosis to generate a new, hybrid economic theory for the region. Proceed?</p>
                                  <div className="flex gap-2">
                                      <button onClick={() => handleBrainCommand('generate_model')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'generate_model' ? 'Generating...' : 'Confirm'}</button>
                                      <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
@@ -509,12 +527,34 @@ export const Inquire = ({
                          )}
                          {brainResults.generativeModel && <div className="p-3 border-t animate-fadeIn"><GenerativeModelResultDisplay model={brainResults.generativeModel} /></div>}
 
+                         {/* New Advanced Analysis Commands */}
+                         <h3 className="font-semibold text-gray-800 text-md flex items-center gap-2 pt-4 border-t border-white/10">
+                             <NexusLogo className="w-5 h-5" />
+                             Global Trade Intelligence
+                         </h3>
+                         <button onClick={() => handleAdvancedAnalysisCommand('trade_disruption')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Analyze Trade Disruption</button>
+                         {loadingCommand === 'trade_disruption' && (
+                            <div className="p-3 border-t animate-fadeIn">
+                                <TradeDisruptionDisplay analysis={TradeDisruptionAnalyzer.calculateDisruptionImpact(2500000000, 15, ['Vietnam', 'India', 'Mexico'], 35)} />
+                            </div>
+                         )}
+
+                         <button onClick={() => handleAdvancedAnalysisCommand('market_diversification')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Model Market Diversification</button>
+                         {loadingCommand === 'market_diversification' && (
+                            <div className="p-3 border-t animate-fadeIn">
+                                <MarketDiversificationDashboard
+                                    currentMarkets={{ 'United States': 45, 'China': 25, 'European Union': 20, 'Japan': 10 }}
+                                    potentialMarkets={['Vietnam', 'India', 'Mexico', 'Brazil', 'Indonesia', 'Turkey', 'South Africa', 'Thailand']}
+                                    tradeDisruptionRisk={0.6}
+                                />
+                            </div>
+                         )}
                          {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
                      </div>
                  )}
                 
-                {wizardStep !== 1 && (
-                    <div className="p-3 text-sm text-nexus-text-secondary bg-white/5 rounded-lg border border-white/10">
+                {wizardStep && (
+                    <div className="p-3 text-sm text-gray-500 bg-gray-100 rounded-lg border border-gray-200">
                         <div className="flex items-start gap-2">
                             <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${aiInteractionState === 'idle' ? 'bg-gray-400' : 'bg-green-400 animate-pulse-green'}`}></div>
                             <div className="flex-grow">
@@ -525,12 +565,12 @@ export const Inquire = ({
                 )}
                 
                 {researchSummary && (
-                    <div className="p-3 bg-nexus-accent-cyan/5 rounded-lg border border-nexus-accent-cyan/20 animate-fadeIn">
-                        <h4 className="font-semibold text-nexus-accent-cyan text-md mb-2 flex items-center gap-2">
+                    <div className="p-3 bg-blue-600/5 rounded-lg border border-blue-600/20 animate-fadeIn">
+                        <h4 className="font-semibold text-blue-600 text-md mb-2 flex items-center gap-2">
                             <NexusLogo className="w-5 h-5" />
                             Nexus Brain: Initial Scoping
                         </h4>
-                        <div className="prose prose-sm max-w-none text-nexus-text-secondary" dangerouslySetInnerHTML={{ __html: marked.parse(researchSummary) as string }}></div>
+                        <div className="prose prose-sm max-w-none text-gray-600" dangerouslySetInnerHTML={{ __html: marked.parse(researchSummary) as string }}></div>
                     </div>
                 )}
 
@@ -552,17 +592,16 @@ export const Inquire = ({
                 />
 
 
-                {/* Nexus AI Support Interface - Available from Step 2 onwards */}
-                {wizardStep && wizardStep >= 2 && (
-                    <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">
+                {/* Nexus AI Support Interface - Always visible */}
+                <div className="mt-4 p-3 bg-gray-100 border border-gray-200 rounded-lg">
                         <div className="space-y-3">
-                            <label className="text-xs font-semibold text-nexus-text-secondary">Nexus AI Support</label>
+                            <label className="text-xs font-semibold text-gray-500">Nexus AI Support</label>
                             <textarea
                                 ref={queryTextAreaRef}
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 placeholder="Ask me anything about your report, get suggestions, or request analysis..."
-                                className="w-full p-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-nexus-accent-cyan focus:outline-none transition placeholder:text-nexus-text-muted text-sm"
+                                className="w-full p-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none transition placeholder:text-gray-500 text-sm text-gray-800"
                                 rows={4}
                                 disabled={!!loadingCommand}
                             />
@@ -575,11 +614,11 @@ export const Inquire = ({
                                     accept=".txt,.pdf,.md,.docx"
                                     aria-label="Attach document"
                                 />
-                                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-xs font-semibold p-2 rounded-md bg-white/5 border border-white/10 text-nexus-text-primary hover:bg-white/10 transition-colors flex-1 text-center" disabled={!!loadingCommand}>
+                                <button type="button" onClick={() => fileInputRef.current?.click()} className="text-xs font-semibold p-2 rounded-md bg-gray-200 border border-gray-300 text-gray-700 hover:bg-gray-300 transition-colors flex-1 text-center" disabled={!!loadingCommand}>
                                     Attach Document
                                 </button>
                                 {fileName && (
-                                    <div className="text-xs text-nexus-text-secondary flex items-center gap-1 flex-shrink-0">
+                                    <div className="text-xs text-gray-500 flex items-center gap-1 flex-shrink-0">
                                         <span className="truncate max-w-[120px]">{fileName}</span>
                                         <button onClick={clearFile} className="text-red-400 hover:text-red-600 flex-shrink-0 ml-1">&times;</button>
                                     </div>
@@ -589,7 +628,7 @@ export const Inquire = ({
                             <button
                                 onClick={() => handleQuickScope()}
                                 disabled={!!loadingCommand || !query.trim()}
-                                className="w-full p-3 bg-nexus-accent-cyan text-white font-bold rounded-lg hover:bg-nexus-accent-cyan-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="w-full p-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 hover:shadow-blue-700/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {loadingCommand === 'quick_scope' ? (
                                     <><SpinnerSmall /> Processing...</>
@@ -600,30 +639,29 @@ export const Inquire = ({
 
                             {/* AI Suggestions with checkboxes */}
                             {researchSummary && (
-                                <div className="mt-4 p-3 bg-nexus-accent-cyan/5 border border-nexus-accent-cyan/20 rounded-lg">
-                                    <h4 className="text-sm font-semibold text-nexus-accent-cyan mb-2">💡 AI Suggestions</h4>
+                                <div className="mt-4 p-3 bg-blue-600/5 border border-blue-600/20 rounded-lg">
+                                    <h4 className="text-sm font-semibold text-blue-600 mb-2">💡 AI Suggestions</h4>
                                     <div className="space-y-2">
                                         <label className="flex items-center gap-2 text-sm">
-                                            <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
-                                            <span className="text-nexus-text-secondary">Apply suggested report parameters</span>
+                                            <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                            <span className="text-gray-600">Apply suggested report parameters</span>
                                         </label>
                                         <label className="flex items-center gap-2 text-sm">
-                                            <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
-                                            <span className="text-nexus-text-secondary">Include regional analysis recommendations</span>
+                                            <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                            <span className="text-gray-600">Include regional analysis recommendations</span>
                                         </label>
                                         <label className="flex items-center gap-2 text-sm">
-                                            <input type="checkbox" className="rounded border-gray-300 text-nexus-accent-cyan focus:ring-nexus-accent-cyan" />
-                                            <span className="text-nexus-text-secondary">Add industry-specific insights</span>
+                                            <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                            <span className="text-gray-600">Add industry-specific insights</span>
                                         </label>
                                     </div>
-                                    <button className="mt-3 w-full px-3 py-2 bg-nexus-accent-cyan text-white text-sm font-semibold rounded-md hover:bg-nexus-accent-cyan-dark transition-colors">
+                                    <button className="mt-3 w-full px-3 py-2 bg-blue-600/80 text-white text-sm font-semibold rounded-md hover:bg-blue-700 transition-colors">
                                         Accept Selected Suggestions
                                     </button>
                                 </div>
                             )}
                         </div>
-                    </div>
-                )}
+                </div>
 
             </div>
         </div>
