@@ -578,14 +578,18 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                           <div className="my-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
                             <h4 className="text-lg font-semibold text-nexus-accent-cyan mb-4 flex items-center gap-2">
                               <span className="text-blue-600">🧠</span>
-                              Nexus Brain Analysis Available
+                              Nexus Inquire AI - Analysis & Guidance
                             </h4>
                             <p className="text-sm text-gray-700 mb-4">
-                              Before generating your final report, you can use the **Nexus Inquire AI** panel on the left to run advanced analysis on your defined region and objectives.
-                              The Nexus Brain will provide RROI diagnosis, TPT simulations, and SEAM ecosystem design.
+                              The Nexus Inquire AI (left panel) is your strategic analysis partner. It provides:
                             </p>
-                            <div className="text-xs text-nexus-text-muted">
-                              Note: This analysis will be automatically included in your final report generation.
+                            <ul className="text-sm text-gray-700 mb-4 space-y-2">
+                              <li>• <strong>Summary & Analysis:</strong> Reviews your inputs and provides strategic insights</li>
+                              <li>• <strong>Tier Recommendations:</strong> Suggests optimal analysis frameworks for your objectives</li>
+                              <li>• <strong>Advanced Intelligence:</strong> RROI diagnosis, TPT simulations, SEAM ecosystem design</li>
+                            </ul>
+                            <div className="text-xs text-nexus-text-muted bg-blue-100 p-3 rounded-lg">
+                              💡 <strong>Workflow:</strong> Use Nexus Inquire AI in steps 1-4 for guidance, then proceed to final report generation in step 5.
                             </div>
                           </div>
                         )}
@@ -669,32 +673,34 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         </div>
                     </header>
 
-                    <main className="flex-grow pb-16 relative">
+                    <main className="flex-grow pb-24 relative">
                         {renderStepContent()}
                     </main>
 
                     {/* Footer with navigation buttons */}
-                    <footer className="flex-shrink-0 py-4 border-t border-gray-200 bg-white/80 backdrop-blur-sm sticky bottom-0 z-10">
+                    <footer className="flex-shrink-0 py-6 border-t border-gray-200 bg-white/80 backdrop-blur-sm sticky bottom-0 z-10">
                         {error && <p className="text-red-600 text-center mb-4 text-sm bg-red-100 p-3 rounded-md border border-red-200">{error}</p>}
 
                         <div className="flex justify-between items-center max-w-5xl mx-auto px-4 md:px-6">
-                            {step > 1 && step < 5 && (
-                                <button onClick={prevStep} disabled={isGenerating} className="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Back</button>
+                            {step > 1 && (
+                                <button onClick={prevStep} disabled={isGenerating} className="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">Back</button>
                             )}
 
-                            {step >= 2 && step < 4 ? (
-                                <div className="flex gap-4">
-                                    <button
-                                        onClick={nextStep}
-                                        disabled={isGenerating}
-                                        className="px-6 py-2.5 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        Next Step
-                                    </button>
-                                </div>
+                            {step < 4 ? (
+                                <button
+                                    onClick={nextStep}
+                                    disabled={isGenerating}
+                                    className="px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Next Step
+                                </button>
                             ) : step === 4 ? (
                                 <button onClick={handleGenerateReport} disabled={isGenerating} className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                                     {isGenerating ? <><Spinner /> Generating...</> : 'Generate Report'}
+                                </button>
+                            ) : step === 5 ? (
+                                <button onClick={handleGenerateReport} disabled={isGenerating} className="px-8 py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                    {isGenerating ? <><Spinner /> Generating...</> : <>🚀 Launch Nexus Report</>}
                                 </button>
                             ) : null}
                         </div>
