@@ -34,7 +34,7 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                 <section className="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
                     <div className="space-y-12">
                         <div className="text-center max-w-5xl mx-auto">
-                            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">The Search for New Frontiers: A Crisis of Clarity</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">The Invisible Engines: Awakening Regional Power</h2>
                             <p className="mt-4 text-lg text-gray-600">A great economic realignment is underway. Countless reports from governments, universities, and global firms confirm that leaders are actively looking beyond traditional markets to secure supply chains and find new growth. The irony is that the opportunities they seek are often right in their own backyard—in the regional economies that have been misunderstood or underestimated for decades.</p>
                         </div>
                         <div className="max-w-5xl mx-auto">
