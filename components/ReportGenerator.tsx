@@ -682,17 +682,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                                 <button onClick={prevStep} disabled={isGenerating} className="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">Back</button>
                             )}
 
-                            {step < 4 ? (
+                            {step < 5 ? (
                                 <button
                                     onClick={nextStep}
                                     disabled={isGenerating}
                                     className="px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Next Step
-                                </button>
-                            ) : step === 4 ? (
-                                <button onClick={handleGenerateReport} disabled={isGenerating} className="px-8 py-3 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-900 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                                    {isGenerating ? <><Spinner /> Generating...</> : 'Generate Report'}
                                 </button>
                             ) : step === 5 ? (
                                 <button onClick={handleGenerateReport} disabled={isGenerating} className="px-8 py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
