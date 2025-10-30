@@ -3,8 +3,6 @@ import type { View, ReportParameters, LiveOpportunityItem, SymbiosisContext, Use
 import { Header } from './components/Header.tsx';
 
 import { LiveOpportunities } from './components/LiveOpportunities.tsx';
-import { Inquire } from './components/Inquire.tsx';
-import ReportGenerator from './components/ReportGenerator.tsx';
 import ReportViewer from './components/ReportViewer.tsx';
 import Compliance from './components/Compliance.tsx';
 import SymbiosisChatModal from './components/SymbiosisChatModal.tsx';
@@ -49,12 +47,7 @@ function App() {
     return localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
   });
 
-  // State for report generation
-  const [reportParams, setReportParams] = useState<ReportParameters>(initialReportParams);
-  const [reportContent, setReportContent] = useState<string>('');
-  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
-  const [reportError, setReportError] = useState<string | null>(null);
-  const [isViewingReport, setIsViewingReport] = useState(false);
+  // Simplified state - BlueprintReportWizard handles its own state
   const [savedReports, setSavedReports] = useState<ReportParameters[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -64,22 +57,12 @@ function App() {
   const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
   const [letterModalOpen, setLetterModalOpen] = useState(false);
 
-  // --- Saved Work & Autosave Logic ---
+  // --- Saved Work Logic ---
 
   // Initial load
   useEffect(() => {
-    // Per user request, clear any auto-saved work from previous sessions
-    // to ensure the report generator starts fresh every time.
-    clearAutoSave();
     setSavedReports(getSavedReports());
   }, []);
-
-  // Auto-save on param change
-  useEffect(() => {
-    if (JSON.stringify(reportParams) !== JSON.stringify(initialReportParams)) {
-      saveAutoSave(reportParams);
-    }
-  }, [reportParams]);
 
   // Toast message handler
   useEffect(() => {
@@ -102,14 +85,8 @@ function App() {
   }, []);
 
   const handleLoadReport = useCallback((params: ReportParameters) => {
-    setReportParams(params);
-    if(isViewingReport) {
-        setIsViewingReport(false);
-        setReportContent('');
-        setReportError(null);
-    }
     setToastMessage(`Blueprint "${params.reportName}" loaded.`);
-  }, [isViewingReport]);
+  }, []);
 
   const handleDeleteReport = useCallback((reportName: string) => {
     try {
@@ -123,19 +100,7 @@ function App() {
     }
   }, []);
 
-  const handleResetReport = useCallback(() => {
-    setIsViewingReport(false);
-    setReportContent('');
-    setReportError(null);
-    setReportParams(initialReportParams);
-    clearAutoSave();
-    setToastMessage("New blueprint started.");
-  }, []);
-
   const handleViewChange = (view: View) => {
-    if (isViewingReport) {
-        handleResetReport();
-    }
     // Reset terms acceptance when navigating to report view
     if (view === 'report') {
         setHasAcceptedTerms(localStorage.getItem('bwga-nexus-terms-accepted') === 'true');
@@ -155,44 +120,16 @@ function App() {
     window.location.href = 'https://www.bwga.com.au';
   };
   
+  // BlueprintReportWizard handles its own suggestions internally
   const handleApplySuggestions = useCallback((suggestions: ReportSuggestions) => {
-      setReportParams(prev => {
-          const newParams = {...prev};
-          for (const key in suggestions) {
-              const typedKey = key as keyof ReportSuggestions;
-              const value = suggestions[typedKey];
-              if (value === undefined) continue;
-
-              if (typedKey === 'industry') {
-                   if(typeof value === 'string') {
-                    const matchedIndustry = INDUSTRIES.find(i => i.id.toLowerCase() === value.toLowerCase() || i.title.toLowerCase() === value.toLowerCase());
-                    if (matchedIndustry) {
-                        newParams.industry = [matchedIndustry.id];
-                    } else {
-                        newParams.industry = ['Custom'];
-                        newParams.customIndustry = value;
-                    }
-                  }
-              } else {
-                  // We know from the type definition that these keys are shared and compatible.
-                  (newParams as Record<string, any>)[typedKey] = value;
-              }
-          }
-          return newParams;
-      });
+      // This function is kept for compatibility but BlueprintReportWizard manages its own state
+      console.log('Suggestions applied:', suggestions);
   }, []);
 
+  // BlueprintReportWizard handles report updates internally
   const handleReportUpdate = useCallback((params: ReportParameters, content: string, error: string | null, generating: boolean) => {
-    setReportParams(params);
-    setReportContent(content);
-    setReportError(error);
-    setIsGeneratingReport(generating);
-    if (!generating) {
-        setIsViewingReport(true);
-        if(!error) {
-            clearAutoSave();
-        }
-    }
+    // This function is kept for compatibility but BlueprintReportWizard manages its own state
+    console.log('Report update:', { params, content, error, generating });
   }, []);
 
   const handleAnalyzeOpportunity = useCallback((item: LiveOpportunityItem) => {
@@ -220,50 +157,7 @@ function App() {
       case 'report':
         return (
           <div className="h-full">
-            {isViewingReport ? (
-              <div className="intelligence-workspace">
-                <div className="inquire-panel">
-                  <Inquire
-                    onApplySuggestions={handleApplySuggestions}
-                    params={reportParams}
-                    savedReports={savedReports}
-                    onSaveReport={handleSaveReport}
-                    onLoadReport={handleLoadReport}
-                    onDeleteReport={handleDeleteReport}
-                    onScopeComplete={() => {}}
-                    onReportUpdate={handleReportUpdate}
-                    onProfileUpdate={setUserProfile}
-                    isGenerating={isGeneratingReport}
-                  />
-                </div>
-                <div className="report-panel">
-                  <ReportViewer
-                    content={reportContent}
-                    parameters={reportParams}
-                    isGenerating={isGeneratingReport}
-                    onReset={handleResetReport}
-                    onStartSymbiosis={handleStartSymbiosis}
-                    onGenerateLetter={handleGenerateLetter}
-                    error={reportError}
-                  />
-                </div>
-              </div>
-            ) : (
-              <ReportGenerator
-                params={reportParams}
-                onParamsChange={setReportParams}
-                onReportUpdate={handleReportUpdate}
-                isGenerating={isGeneratingReport}
-                onProfileUpdate={setUserProfile}
-                // Pass all Inquire props down for the co-pilot view
-                onApplySuggestions={handleApplySuggestions}
-                savedReports={savedReports}
-                onSaveReport={handleSaveReport}
-                onLoadReport={handleLoadReport}
-                onDeleteReport={handleDeleteReport}
-                onScopeComplete={() => {}} // This is handled inside ReportGenerator now
-              />
-            )}
+            <BlueprintReportWizard />
           </div>
         );
       case 'compliance':
@@ -289,14 +183,7 @@ function App() {
     );
   }
 
-  // Show blueprint wizard after terms acceptance
-  if (hasAcceptedTerms && currentView === 'report' && !isViewingReport) {
-    return (
-      <ErrorBoundary>
-        <BlueprintReportWizard />
-      </ErrorBoundary>
-    );
-  }
+  // Blueprint wizard is now handled in the main render logic above
 
   return (
     <ErrorBoundary>
@@ -337,18 +224,8 @@ function App() {
             isOpen={letterModalOpen}
             onClose={() => setLetterModalOpen(null)}
             onGenerate={async () => {
-              const stream = await generateLetterStream(reportParams);
-              const reader = stream.getReader();
-              const decoder = new TextDecoder();
-              let result = '';
-              let decodedChunk = '';
-              while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                decodedChunk = decoder.decode(value, { stream: true });
-                result += decodedChunk;
-              }
-              return result;
+              // For now, return a placeholder - BlueprintReportWizard should handle letter generation
+              return "Letter generation is handled within the Blueprint Report Wizard.";
             }}
           />
         )}
