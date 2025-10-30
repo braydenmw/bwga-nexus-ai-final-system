@@ -144,11 +144,11 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                     </div>
                 </section>
 
-                {/* Section: In Essence: The World's First Strategic Symbiosis System */}
+                {/* Section: In Essence: Strategic Symbiosis for Regional Development */}
                 <section className="text-center bg-gray-800 text-white rounded-2xl p-12">
-                    <h2 className="text-3xl font-bold mb-4">The World's First Strategic Symbiosis System</h2>
+                    <h2 className="text-3xl font-bold mb-4">Strategic Symbiosis for Regional Development</h2>
                     <p className="text-lg text-gray-300 mb-6 max-w-4xl mx-auto">
-                        BW Nexus AI is not just another AI platform. It is the world’s first Strategic Symbiosis System—designed to connect vision with reality, ambition with opportunity, and people with purpose. It takes a single idea—what if we could see the world clearly, region by region?—and turns it into a living intelligence engine that makes understanding accessible to everyone. Because the first spark of understanding is where every great partnership begins.
+                        BW Nexus AI is not just another AI platform. It is a comprehensive business strategy platform that fosters mutually beneficial relationships between regional cities, governments, enterprises, and development partners. It takes a single idea—what if we could see the world clearly, region by region?—and turns it into a living intelligence engine that makes understanding accessible to everyone. Because the first spark of understanding is where every great partnership begins.
                     </p>
                     <div className="my-8 py-6 border-t border-b border-gray-700 max-w-3xl mx-auto">
                         <h3 className="text-2xl font-bold text-white mb-4">Simple, Transparent Access</h3>
