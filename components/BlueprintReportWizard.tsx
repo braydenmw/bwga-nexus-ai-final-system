@@ -50,10 +50,7 @@ export default function BlueprintReportWizard({ params, ...props }: BlueprintRep
      const [lastSaved, setLastSaved] = useState<Date | null>(null);
      const [showPhaseOverview, setShowPhaseOverview] = useState(false);
      const [showLetterModal, setShowLetterModal] = useState(false);
-     const [termsAccepted, setTermsAccepted] = useState(() => {
-       // Check if terms were previously accepted
-       return localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
-     });
+     // Terms are now handled at the App level
      const [showHowToUse, setShowHowToUse] = useState(false);
 
   const handleNext = () => {
@@ -216,19 +213,7 @@ export default function BlueprintReportWizard({ params, ...props }: BlueprintRep
        }
      };
 
-  // Show Terms & How to Use if not accepted
-  if (!termsAccepted) {
-    return (
-      <TermsAndConditions
-        onAccept={() => setTermsAccepted(true)}
-        onDecline={() => {
-          // Could redirect to home page or show message
-          alert('You must accept the terms to use the system.');
-        }}
-        isModal={false}
-      />
-    );
-  }
+  // Terms are now handled at the App level
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">
