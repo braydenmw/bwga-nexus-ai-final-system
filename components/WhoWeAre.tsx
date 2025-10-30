@@ -122,11 +122,16 @@ const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
                                 <div>
                                     <div className="p-6 bg-gray-50 rounded-xl border border-gray-200 mb-6">
                                         <h3 className="text-xl font-bold text-gray-900 mb-3">Proprietary Technologies</h3>
-                                        <p className="text-gray-600">Innovations like Nexus Symbiotic Intelligence Language™ (for clear, queryable dialogue), Regional Readiness & Opportunity Index (RROI) (uncovering true economic DNA), Strategic Ecosystem Architecture Model (SEAM) (building resilient partner networks), and AI-Human Confidence Bridge (crafting risk-reducing communications).</p>
+                                        <p className="text-gray-600 mb-3"><strong>Innovations like Nexus Symbiotic Intelligence Language™ (for clear, queryable dialogue), Regional Readiness & Opportunity Index (RROI) (uncovering true economic DNA), Strategic Ecosystem Architecture Model (SEAM) (building resilient partner networks), Neutral Negotiation Intelligence (balancing dual perspectives for successful partnerships), and AI-Human Confidence Bridge (crafting risk-reducing communications).</strong></p>
+                                        <p className="text-gray-600 text-sm italic">Developed over the past 12 months, drawing from decades of industry experience in regional development, partnership facilitation, and economic intelligence analysis.</p>
                                     </div>
                                     <div className="p-6 bg-gray-50 rounded-xl border border-gray-200 mb-6">
                                         <h3 className="text-xl font-bold text-gray-900 mb-3">Early Stages of Interest</h3>
                                         <p className="text-gray-600">Where others are paralyzed by fog, Nexus AI requires just a few words to create structured, evidence-backed cases, breaking the ice for serious engagement without extensive upfront research.</p>
+                                    </div>
+                                    <div className="p-6 bg-gray-50 rounded-xl border border-gray-200 mb-6">
+                                        <h3 className="text-xl font-bold text-gray-900 mb-3">Neutral Negotiation Intelligence</h3>
+                                        <p className="text-gray-600">Revolutionary dual-perspective analysis providing both sides' viewpoints, historical success patterns, and predictive negotiation outcomes. Unlike traditional consulting, it acts as a neutral facilitator, identifying optimal compromise zones and maximizing partnership success probabilities through data-driven insights.</p>
                                     </div>
                                     <div className="p-6 bg-gray-50 rounded-xl border border-gray-200">
                                         <h3 className="text-xl font-bold text-gray-900 mb-3">Classifications on Overlooked Places</h3>

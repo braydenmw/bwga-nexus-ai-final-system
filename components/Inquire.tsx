@@ -34,6 +34,7 @@ interface InquireProps {
     onPrevStep?: () => void;
     canGoNext?: boolean;
     canGoPrev?: boolean;
+    integratedMode?: boolean;
 }
 
 const WIZARD_HELP_TEXT: Record<number, string> = {
@@ -67,6 +68,7 @@ export const Inquire = ({
     onPrevStep,
     canGoNext,
     canGoPrev,
+    integratedMode = false,
 }: InquireProps) => {
     const [query, setQuery] = useState('');
     const [loadingCommand, setLoadingCommand] = useState<BrainCommand | 'quick_scope' | 'trade_disruption' | 'market_diversification' | null>(null);
@@ -450,7 +452,8 @@ export const Inquire = ({
     };
     
     return (
-        <div className="p-4 h-full flex flex-col max-w-full mx-auto bg-white text-gray-800">
+        <div className={`h-full flex flex-col max-w-full mx-auto text-gray-800 ${integratedMode ? 'bg-transparent' : 'p-4 bg-white'}`}>
+            {!integratedMode && (
             <header className="flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="bg-blue-600/10 p-2 rounded-lg border border-blue-600/30">
@@ -462,10 +465,11 @@ export const Inquire = ({
                     </div>
                 </div>
             </header>
+            )}
 
-            <div className="mt-4 flex-grow overflow-y-auto pr-2 -mr-2 space-y-4 max-w-full min-h-0" style={{ scrollbarWidth: 'thin' }}>
-                 {wizardStep === 4 && (
-                     <div className="p-3 bg-white/5 rounded-lg border border-white/10 space-y-3 animate-fadeIn">
+            <div className={`flex-grow space-y-4 max-w-full min-h-0 ${integratedMode ? '' : 'mt-4 overflow-y-auto pr-2 -mr-2'}`} style={!integratedMode ? { scrollbarWidth: 'thin' } : {}}>
+                 {(wizardStep === 4 || wizardStep === 5) && (
+                     <div className="p-4 bg-gray-50/80 rounded-lg border border-gray-200/80 space-y-3 animate-fadeIn">
                           <h3 className="font-semibold text-gray-800 text-md flex items-center gap-2">
                              <NexusLogo className="w-5 h-5" />
                              Nexus Brain Commands - Pre-Report Analysis
@@ -475,7 +479,7 @@ export const Inquire = ({
                          </p>
 
                          {/* --- DIAGNOSE --- */}
-                         <button onClick={() => setActiveCommand('diagnose')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Diagnose Region (RROI)</button>
+                         <button onClick={() => setActiveCommand('diagnose')} className="w-full text-left p-2 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Diagnose Region (RROI)</button>
                          {activeCommand === 'diagnose' && (
                              <div className="p-3 border-t">
                                  <p className="text-xs text-gray-500 mb-2">This will generate a detailed economic diagnosis for the region defined in Step 2. Proceed?</p>
@@ -488,11 +492,11 @@ export const Inquire = ({
                          {brainResults.diagnosis && <div className="p-3 border-t animate-fadeIn"><RROIResultDisplay rroi={brainResults.diagnosis} /></div>}
 
                          {/* --- SIMULATE --- */}
-                         <button onClick={() => setActiveCommand('simulate')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Simulate Pathway (TPT)</button>
+                         <button onClick={() => setActiveCommand('simulate')} className="w-full text-left p-2 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Simulate Pathway (TPT)</button>
                          {activeCommand === 'simulate' && brainResults.diagnosis && (
                              <div className="p-3 border-t space-y-2">
                                  <p className="text-xs text-gray-500">Describe the strategic intervention to simulate (e.g., "build a new university science park").</p>
-                                 <input type="text" value={simulationInput} onChange={e => setSimulationInput(e.target.value)} placeholder="Describe the intervention..." className="w-full text-xs p-2 bg-white/5 border border-white/10 rounded-md" />
+                                 <input type="text" value={simulationInput} onChange={e => setSimulationInput(e.target.value)} placeholder="Describe the intervention..." className="w-full text-xs p-2 bg-white border border-gray-300 rounded-md" />
                                  <div className="flex gap-2">
                                      <button onClick={() => handleBrainCommand('simulate')} className="nexus-button-primary text-xs !py-1" disabled={!!loadingCommand}>{loadingCommand === 'simulate' ? 'Simulating...' : 'Run'}</button>
                                      <button onClick={() => setActiveCommand(null)} className="nexus-button-secondary text-xs !py-1" disabled={!!loadingCommand}>Cancel</button>
@@ -502,7 +506,7 @@ export const Inquire = ({
                          {brainResults.simulation && <div className="p-3 border-t animate-fadeIn"><TPTResultDisplay sim={brainResults.simulation} /></div>}
 
                          {/* --- ARCHITECT --- */}
-                         <button onClick={() => setActiveCommand('architect')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Architect Ecosystem (SEAM)</button>
+                         <button onClick={() => setActiveCommand('architect')} className="w-full text-left p-2 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-sm font-semibold disabled:opacity-50" disabled={!!loadingCommand || !brainResults.diagnosis}>Architect Ecosystem (SEAM)</button>
                           {activeCommand === 'architect' && brainResults.diagnosis && (
                              <div className="p-3 border-t">
                                  <p className="text-xs text-gray-500 mb-2">This will design a partner ecosystem based on the diagnosis and your Core Objective. Proceed?</p>
@@ -515,7 +519,7 @@ export const Inquire = ({
                          {brainResults.ecosystem && <div className="p-3 border-t animate-fadeIn"><SEAMResultDisplay seam={brainResults.ecosystem} /></div>}
 
                          {/* --- GENERATE MODEL (V2) --- */}
-                         <button onClick={() => handleBrainCommand('generate_model')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-brown hover:bg-nexus-accent-brown/10 transition-all text-sm font-semibold disabled:opacity-50" disabled={!brainResults.diagnosis} title="Future capability: Generate a new economic model for the region.">Generate Novel Model (V2)</button>
+                         <button onClick={() => handleBrainCommand('generate_model')} className="w-full text-left p-2 bg-white border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-all text-sm font-semibold disabled:opacity-50" disabled={!brainResults.diagnosis} title="Future capability: Generate a new economic model for the region.">Generate Novel Model (V2)</button>
                           {activeCommand === 'generate_model' && brainResults.diagnosis && (
                              <div className="p-3 border-t">
                                  <p className="text-xs text-gray-500 mb-2">This will use the RROI diagnosis to generate a new, hybrid economic theory for the region. Proceed?</p>
@@ -528,18 +532,18 @@ export const Inquire = ({
                          {brainResults.generativeModel && <div className="p-3 border-t animate-fadeIn"><GenerativeModelResultDisplay model={brainResults.generativeModel} /></div>}
 
                          {/* New Advanced Analysis Commands */}
-                         <h3 className="font-semibold text-gray-800 text-md flex items-center gap-2 pt-4 border-t border-white/10">
+                         <h3 className="font-semibold text-gray-800 text-md flex items-center gap-2 pt-4 border-t border-gray-200">
                              <NexusLogo className="w-5 h-5" />
                              Global Trade Intelligence
                          </h3>
-                         <button onClick={() => handleAdvancedAnalysisCommand('trade_disruption')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Analyze Trade Disruption</button>
+                         <button onClick={() => handleAdvancedAnalysisCommand('trade_disruption')} className="w-full text-left p-2 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Analyze Trade Disruption</button>
                          {loadingCommand === 'trade_disruption' && (
                             <div className="p-3 border-t animate-fadeIn">
                                 <TradeDisruptionDisplay analysis={TradeDisruptionAnalyzer.calculateDisruptionImpact(2500000000, 15, ['Vietnam', 'India', 'Mexico'], 35)} />
                             </div>
                          )}
 
-                         <button onClick={() => handleAdvancedAnalysisCommand('market_diversification')} className="w-full text-left p-2 bg-white/5 border border-white/10 rounded-lg hover:border-nexus-accent-cyan hover:bg-nexus-accent-cyan/10 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Model Market Diversification</button>
+                         <button onClick={() => handleAdvancedAnalysisCommand('market_diversification')} className="w-full text-left p-2 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-sm font-semibold" disabled={!!loadingCommand}>Model Market Diversification</button>
                          {loadingCommand === 'market_diversification' && (
                             <div className="p-3 border-t animate-fadeIn">
                                 <MarketDiversificationDashboard
@@ -553,7 +557,7 @@ export const Inquire = ({
                      </div>
                  )}
                 
-                {wizardStep && (
+                {wizardStep && !integratedMode && (
                     <div className="p-3 text-sm text-gray-500 bg-gray-100 rounded-lg border border-gray-200">
                         <div className="flex items-start gap-2">
                             <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${aiInteractionState === 'idle' ? 'bg-gray-400' : 'bg-green-400 animate-pulse-green'}`}></div>
@@ -564,7 +568,7 @@ export const Inquire = ({
                     </div>
                 )}
                 
-                {researchSummary && (
+                {researchSummary && !integratedMode && (
                     <div className="p-3 bg-blue-600/5 rounded-lg border border-blue-600/20 animate-fadeIn">
                         <h4 className="font-semibold text-blue-600 text-md mb-2 flex items-center gap-2">
                             <NexusLogo className="w-5 h-5" />
@@ -574,7 +578,7 @@ export const Inquire = ({
                     </div>
                 )}
 
-                {params.userCountry && (
+                {params.userCountry && !integratedMode && (
                     <EconomicSnapshot
                         country={params.userCountry}
                         objective={params.problemStatement}
@@ -583,7 +587,7 @@ export const Inquire = ({
                     />
                 )}
                 
-                <SavedWorkManager
+                {!integratedMode && <SavedWorkManager
                     currentParams={params}
                     savedReports={savedReports}
                     onSave={onSaveReport}
@@ -591,9 +595,9 @@ export const Inquire = ({
                     onDelete={onDeleteReport}
                 />
 
-
+                }
                 {/* Nexus AI Support Interface - Always visible */}
-                <div className="mt-4 p-3 bg-gray-100 border border-gray-200 rounded-lg">
+                {!integratedMode && <div className="mt-4 p-3 bg-gray-100 border border-gray-200 rounded-lg">
                         <div className="space-y-3">
                             <label className="text-xs font-semibold text-gray-500">Nexus AI Support</label>
                             <textarea
@@ -719,7 +723,7 @@ export const Inquire = ({
                                 </div>
                             )}
                         </div>
-                </div>
+                </div>}
 
             </div>
         </div>

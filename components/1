@@ -1,0 +1,51 @@
+import React from 'react';
+
+interface StepperProps {
+  steps: string[];
+  currentStep: number;
+  onStepClick: (step: number) => void;
+}
+
+const HorizontalStepper: React.FC<StepperProps> = ({ steps, currentStep, onStepClick }) => {
+  return (
+    <div className="w-full px-4 sm:px-8">
+      <div className="flex items-center">
+      {steps.map((step, index) => {
+        const stepNumber = index + 1;
+        const isCompleted = stepNumber < currentStep;
+        const isActive = stepNumber === currentStep;
+
+        return (
+          <React.Fragment key={stepNumber}>
+            <div className="flex flex-col items-center cursor-pointer group" onClick={() => onStepClick(stepNumber)}>
+              <button
+                className={`relative w-10 h-10 rounded-full flex items-center justify-center text-base font-bold transition-all duration-300 ${
+                  isActive
+                    ? 'bg-blue-600 text-white ring-4 ring-blue-600/20'
+                    : isCompleted
+                    ? 'bg-gray-200 text-gray-800'
+                    : 'bg-white text-gray-400 border-2 border-gray-300 group-hover:border-gray-400'
+                }`}
+              >
+                {isCompleted ? '✔' : stepNumber}
+              </button>
+              <p className={`mt-3 text-sm text-center font-semibold w-28 transition-colors duration-300 ${isActive ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'}`}>
+                {step}
+              </p>
+            </div>
+            {stepNumber < steps.length && (
+              <div
+                className={`flex-1 h-0.5 transition-colors duration-300 ${
+                  isCompleted ? 'bg-blue-600' : 'bg-gray-300'
+                }`}
+              />
+            )}
+          </React.Fragment>
+        );
+      })}
+    </div>
+    </div>
+  );
+};
+
+export default HorizontalStepper;

@@ -1,7 +1,6 @@
 import React from 'react';
 import type { ReportParameters } from '../../types';
 import { REGIONS_AND_COUNTRIES, ORGANIZATION_TYPES } from '../constants.tsx';
-import Card from './common/Card.tsx';
 
 interface ProfileStepProps {
     params: ReportParameters;
@@ -24,9 +23,9 @@ export const ProfileStep: React.FC<ProfileStepProps> = ({ params, handleChange, 
     };
 
     return (
-        <Card>
-            <h3 className="text-2xl font-bold text-nexus-text-primary mb-2">Your Profile (The Operator)</h3>
-            <p className="text-nexus-text-secondary mb-8 text-sm">This context frames the analysis from your unique strategic perspective. Enterprise-grade security, compliance tracking, and audit trails are now active. keep this text</p>
+        <>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Your Profile (The Operator)</h3>
+            <p className="text-gray-600 mb-8 text-base">This context frames the analysis from your unique strategic perspective. Enterprise-grade security, compliance tracking, and audit trails are now active.</p>
             <div className="space-y-6">
                 <div><label className={labelStyles}>Report Name / Goal *</label><input type="text" value={params.reportName} onChange={e => handleChange('reportName', e.target.value)} className={inputStyles} placeholder="e.g., AgriTech Partners for Mindanao" /></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -51,6 +50,6 @@ export const ProfileStep: React.FC<ProfileStepProps> = ({ params, handleChange, 
                 </div>
                 </div>
             </div>
-        </Card>
+        </>
     );
 };

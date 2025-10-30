@@ -1,52 +1,24 @@
-
 import React from 'react';
 
-interface StepperProps {
-  steps: string[];
-  currentStep: number;
-  onStepClick: (step: number) => void;
-}
-
-const Stepper: React.FC<StepperProps> = ({ steps, currentStep, onStepClick }) => {
+export default function Stepper({ steps, currentStep, onStepClick }) {
   return (
-    <div className="w-full px-4 sm:px-8">
-      <div className="flex items-center">
-      {steps.map((step, index) => {
-        const stepNumber = index + 1;
-        const isCompleted = stepNumber < currentStep;
-        const isActive = stepNumber === currentStep;
-
-        return (
-          <React.Fragment key={stepNumber}>
-            <div className="flex flex-col items-center cursor-pointer group" onClick={() => onStepClick(stepNumber)}>
-              <button
-                className={`relative w-10 h-10 rounded-full flex items-center justify-center text-base font-bold transition-all duration-300 ${
-                  isActive
-                    ? 'bg-green-500 text-black ring-4 ring-green-500/30'
-                    : isCompleted
-                    ? 'bg-gray-700 text-gray-400'
-                    : 'bg-gray-800 text-gray-500 group-hover:bg-gray-700'
-                }`}
-              >
-                {isCompleted ? '✔' : stepNumber}
-              </button>
-              <p className={`mt-3 text-sm text-center font-semibold w-28 transition-colors duration-300 ${isActive ? 'text-green-400' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                {step}
-              </p>
-            </div>
-            {stepNumber < steps.length && (
-              <div
-                className={`flex-1 h-0.5 transition-colors duration-300 ${
-                  isCompleted ? 'bg-green-500' : 'bg-gray-700'
-                }`}
-              />
-            )}
-          </React.Fragment>
-        );
-      })}
-    </div>
-    </div>
+    <nav className="w-full flex justify-center items-center gap-0 mb-10">
+      {steps.map((step, idx) => (
+        <div key={step.id} className="flex items-center">
+          <button
+            className={`flex flex-col items-center px-6 py-4 rounded-xl transition-all duration-200 font-bold text-base ${currentStep === idx ? 'bg-blue-600 text-white shadow-lg scale-105' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'} ${idx === 0 ? 'ml-0' : 'ml-2'}`}
+            onClick={() => onStepClick(idx)}
+            disabled={currentStep === idx}
+            style={{ minWidth: 120, minHeight: 70, boxShadow: currentStep === idx ? '0 4px 24px rgba(30, 64, 175, 0.12)' : undefined }}
+          >
+            <span className="text-lg font-bold">{step.title}</span>
+            <span className="text-xs font-normal mt-1 text-gray-500">{step.description}</span>
+          </button>
+          {idx < steps.length - 1 && (
+            <div className="w-10 h-1 bg-blue-200 mx-2 rounded-full" />
+          )}
+        </div>
+      ))}
+    </nav>
   );
-};
-
-export default Stepper;
+}
