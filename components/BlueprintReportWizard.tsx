@@ -52,8 +52,7 @@ export default function BlueprintReportWizard({ params, ...props }: BlueprintRep
      const [showLetterModal, setShowLetterModal] = useState(false);
      const [termsAccepted, setTermsAccepted] = useState(() => {
        // Check if terms were previously accepted
-       return false; // Force terms page to show for testing
-       // return localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
+       return localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
      });
      const [showHowToUse, setShowHowToUse] = useState(false);
 
