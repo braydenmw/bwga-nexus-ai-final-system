@@ -7,7 +7,7 @@ interface WhoWeAreProps {
 
 const WhoWeAre: React.FC<WhoWeAreProps> = ({ onViewChange }) => {
     return (
-        <div className="bg-gray-50 text-gray-800 font-sans antialiased">
+        <div className="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen overflow-y-auto">
             {/* Hero Section */}
             <section className="relative py-28 md:py-40">
                 <div className="absolute inset-0">
