@@ -42,10 +42,7 @@ const initialReportParams: ReportParameters = {
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('who-we-are');
-  const [hasAcceptedTerms, setHasAcceptedTerms] = useState<boolean>(() => {
-    // Check if user has already accepted terms
-    return localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
-  });
+  // Terms are now handled within BlueprintReportWizard
 
   // Simplified state - BlueprintReportWizard handles its own state
   const [savedReports, setSavedReports] = useState<ReportParameters[]>([]);
@@ -101,24 +98,12 @@ function App() {
   }, []);
 
   const handleViewChange = (view: View) => {
-    // Reset terms acceptance when navigating to report view
-    if (view === 'report') {
-        setHasAcceptedTerms(localStorage.getItem('bwga-nexus-terms-accepted') === 'true');
-    }
     setCurrentView(view);
     // Auto-scroll to top when changing views
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleAcceptTerms = () => {
-    localStorage.setItem('bwga-nexus-terms-accepted', 'true');
-    setHasAcceptedTerms(true);
-  };
-
-  const handleDeclineTerms = () => {
-    // Redirect to external site or show message
-    window.location.href = 'https://www.bwga.com.au';
-  };
+  // Terms handling is now within BlueprintReportWizard
   
   // BlueprintReportWizard handles its own suggestions internally
   const handleApplySuggestions = useCallback((suggestions: ReportSuggestions) => {
@@ -170,20 +155,7 @@ function App() {
 
 
 
-  // Show terms and conditions if not accepted and trying to access report
-  if (!hasAcceptedTerms && currentView === 'report') {
-    return (
-      <ErrorBoundary>
-        <TermsAndConditions
-          onAccept={handleAcceptTerms}
-          onDecline={handleDeclineTerms}
-          isModal={true}
-        />
-      </ErrorBoundary>
-    );
-  }
-
-  // Blueprint wizard is now handled in the main render logic above
+  // Terms are now handled within BlueprintReportWizard component
 
   return (
     <ErrorBoundary>
