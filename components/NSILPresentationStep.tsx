@@ -200,10 +200,35 @@ export const NSILPresentationStep: React.FC<NSILPresentationStepProps> = ({
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Intelligence Blueprint Complete</h2>
-        <p className="text-lg text-gray-600">
+        <p className="text-lg text-gray-600 mb-4">
           Your comprehensive NSIL report has been generated using the BWGA Nexus AI framework,
           integrating results from all analysis steps.
         </p>
+
+        {/* Important Disclaimers */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6 max-w-4xl mx-auto">
+          <h4 className="text-lg font-semibold text-yellow-800 mb-3">⚠️ Important Disclaimers</h4>
+          <div className="space-y-2 text-sm text-yellow-700">
+            <p><strong>This report is for guidance only</strong> and should not replace professional consultation, legal advice, or independent verification.</p>
+            <p><strong>Please verify all information independently</strong> before making any investment, policy, or business decisions.</p>
+            <p><strong>While every effort is made for accuracy,</strong> AI systems can occasionally err. Always cross-reference with multiple reliable sources.</p>
+            <p><strong>Market conditions change rapidly.</strong> Use this report as a foundation for your own due diligence and research.</p>
+          </div>
+        </div>
+
+        {/* Confirmation Checkbox */}
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-1 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              required
+            />
+            <span className="text-sm text-gray-700">
+              I acknowledge that I have read and understood the disclaimers above, and I accept that this report is for guidance purposes only.
+            </span>
+          </label>
+        </div>
       </div>
 
       <ReportViewer

@@ -11,25 +11,174 @@ interface ContextEntryStepProps {
 }
 
 const TIERS = [
-  {
-    id: 'market-entry',
-    title: 'Market Entry',
-    description: 'Analyze new market opportunities and entry strategies.',
-    icon: <GlobeIcon className="h-8 w-8 text-blue-600" />,
-  },
-  {
-    id: 'growth',
-    title: 'Growth & Expansion',
-    description: 'Identify growth paths and expansion opportunities.',
-    icon: <ChartBarIcon className="h-8 w-8 text-green-600" />,
-  },
-  {
-    id: 'risk',
-    title: 'Risk & Compliance',
-    description: 'Assess risks and compliance requirements.',
-    icon: <ShieldCheckIcon className="h-8 w-8 text-red-600" />,
-  },
-];
+   // Government-Focused Tiers
+   {
+     id: 'policy-reform',
+     title: 'Policy Development & Reform',
+     description: 'Design legislative frameworks and regulatory changes for regional development.',
+     icon: <BriefcaseIcon className="h-8 w-8 text-blue-600" />,
+     category: 'government',
+     confidence: 'high'
+   },
+   {
+     id: 'infrastructure',
+     title: 'Infrastructure Investment & Planning',
+     description: 'Analyze ports, roads, and digital infrastructure development opportunities.',
+     icon: <GlobeIcon className="h-8 w-8 text-green-600" />,
+     category: 'government',
+     confidence: 'high'
+   },
+   {
+     id: 'economic-development',
+     title: 'Regional Economic Development',
+     description: 'Create job growth and industry cluster development strategies.',
+     icon: <ChartBarIcon className="h-8 w-8 text-purple-600" />,
+     category: 'government',
+     confidence: 'high'
+   },
+   {
+     id: 'security-stability',
+     title: 'Security & Stability Analysis',
+     description: 'Assess crime, terrorism, and political risk factors.',
+     icon: <ShieldCheckIcon className="h-8 w-8 text-red-600" />,
+     category: 'government',
+     confidence: 'medium'
+   },
+   {
+     id: 'ppp-design',
+     title: 'Public-Private Partnership Design',
+     description: 'Structure and implement effective PPP frameworks.',
+     icon: <BriefcaseIcon className="h-8 w-8 text-indigo-600" />,
+     category: 'government',
+     confidence: 'medium'
+   },
+
+   // Corporate-Focused Tiers
+   {
+     id: 'market-entry',
+     title: 'Market Entry & Expansion Strategy',
+     description: 'Develop new market penetration and expansion strategies.',
+     icon: <GlobeIcon className="h-8 w-8 text-blue-600" />,
+     category: 'corporate',
+     confidence: 'high'
+   },
+   {
+     id: 'supply-chain',
+     title: 'Supply Chain & Logistics Optimization',
+     description: 'Design and optimize distribution and logistics networks.',
+     icon: <ChartBarIcon className="h-8 w-8 text-green-600" />,
+     category: 'corporate',
+     confidence: 'high'
+   },
+   {
+     id: 'manufacturing-ops',
+     title: 'Manufacturing & Operations Setup',
+     description: 'Plan facility locations and operational frameworks.',
+     icon: <BriefcaseIcon className="h-8 w-8 text-orange-600" />,
+     category: 'corporate',
+     confidence: 'high'
+   },
+   {
+     id: 'technology-innovation',
+     title: 'Technology & Innovation Investment',
+     description: 'Guide digital transformation and R&D investments.',
+     icon: <GlobeIcon className="h-8 w-8 text-cyan-600" />,
+     category: 'corporate',
+     confidence: 'medium'
+   },
+   {
+     id: 'regulatory-compliance',
+     title: 'Regulatory Compliance & Risk Management',
+     description: 'Navigate legal frameworks and compliance requirements.',
+     icon: <ShieldCheckIcon className="h-8 w-8 text-red-600" />,
+     category: 'corporate',
+     confidence: 'medium'
+   },
+
+   // Banking & Financial Tiers
+   {
+     id: 'investment-risk',
+     title: 'Investment Risk Assessment',
+     description: 'Conduct comprehensive due diligence and risk modeling.',
+     icon: <ShieldCheckIcon className="h-8 w-8 text-red-600" />,
+     category: 'banking',
+     confidence: 'high'
+   },
+   {
+     id: 'regulatory-analysis',
+     title: 'Regulatory Compliance Analysis',
+     description: 'Navigate financial regulations and reporting requirements.',
+     icon: <BriefcaseIcon className="h-8 w-8 text-blue-600" />,
+     category: 'banking',
+     confidence: 'high'
+   },
+   {
+     id: 'market-stability',
+     title: 'Market Stability & Economic Indicators',
+     description: 'Analyze economic forecasting and market stability.',
+     icon: <ChartBarIcon className="h-8 w-8 text-green-600" />,
+     category: 'banking',
+     confidence: 'high'
+   },
+   {
+     id: 'credit-financing',
+     title: 'Credit & Financing Opportunities',
+     description: 'Structure lending and investment frameworks.',
+     icon: <GlobeIcon className="h-8 w-8 text-purple-600" />,
+     category: 'banking',
+     confidence: 'medium'
+   },
+   {
+     id: 'financial-services',
+     title: 'Financial Services Expansion',
+     description: 'Develop new financial products and services.',
+     icon: <ChartBarIcon className="h-8 w-8 text-indigo-600" />,
+     category: 'banking',
+     confidence: 'medium'
+   },
+
+   // Global Trade & Economic Tiers
+   {
+     id: 'trade-corridors',
+     title: 'Trade Corridor Analysis',
+     description: 'Optimize shipping routes and customs procedures.',
+     icon: <GlobeIcon className="h-8 w-8 text-blue-600" />,
+     category: 'trade',
+     confidence: 'high'
+   },
+   {
+     id: 'tariff-policy',
+     title: 'Tariff & Trade Policy Impact',
+     description: 'Analyze international trade regulations and tariffs.',
+     icon: <ShieldCheckIcon className="h-8 w-8 text-red-600" />,
+     category: 'trade',
+     confidence: 'high'
+   },
+   {
+     id: 'geopolitical-risk',
+     title: 'Geopolitical Risk Assessment',
+     description: 'Evaluate international relations and political impacts.',
+     icon: <BriefcaseIcon className="h-8 w-8 text-orange-600" />,
+     category: 'trade',
+     confidence: 'high'
+   },
+   {
+     id: 'currency-markets',
+     title: 'Currency & Financial Market Analysis',
+     description: 'Assess FX risk and financial market conditions.',
+     icon: <ChartBarIcon className="h-8 w-8 text-green-600" />,
+     category: 'trade',
+     confidence: 'medium'
+   },
+   {
+     id: 'supply-chain-resilience',
+     title: 'Global Supply Chain Resilience',
+     description: 'Design diversification and resilience strategies.',
+     icon: <GlobeIcon className="h-8 w-8 text-cyan-600" />,
+     category: 'trade',
+     confidence: 'medium'
+   }
+ ];
 
 export const ContextEntryStep: React.FC<ContextEntryStepProps> = ({ params, handleChange, inputStyles, labelStyles }) => {
     const [userRegion, setUserRegion] = React.useState(() => {
@@ -139,20 +288,60 @@ export const ContextEntryStep: React.FC<ContextEntryStepProps> = ({ params, hand
 
                 {/* Analysis Tier */}
                 <div className="mb-8">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-4">Select Analysis Tier</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {TIERS.map(tier => (
-                            <button
-                                key={tier.id}
-                                className={`flex flex-col items-center p-6 bg-white rounded-2xl shadow-xl border-2 transition-all duration-200 hover:border-blue-500 focus:border-blue-700 ${params.tier?.includes(tier.id) ? 'border-blue-700' : 'border-transparent'}`}
-                                onClick={() => handleTierSelect(tier.id)}
-                            >
-                                {tier.icon}
-                                <span className="mt-4 text-lg font-semibold text-gray-900">{tier.title}</span>
-                                <span className="mt-2 text-gray-500 text-sm text-center">{tier.description}</span>
-                            </button>
-                        ))}
-                    </div>
+                    <h4 className="text-xl font-semibold text-gray-900 mb-4">Select Analysis Tiers</h4>
+                    <p className="text-gray-600 mb-6">Choose up to 3 tiers that best match your objectives. The Nexus AI will provide confidence ratings and recommendations.</p>
+
+                    {/* Tier Categories */}
+                    {['government', 'corporate', 'banking', 'trade'].map(category => (
+                        <div key={category} className="mb-8">
+                            <h5 className="text-lg font-medium text-gray-800 mb-4 capitalize">{category} Tiers</h5>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {TIERS.filter(tier => tier.category === category).map(tier => {
+                                    const isSelected = params.tier?.includes(tier.id);
+                                    const confidenceColor = tier.confidence === 'high' ? 'bg-green-100 border-green-300' :
+                                                          tier.confidence === 'medium' ? 'bg-yellow-100 border-yellow-300' : 'bg-red-100 border-red-300';
+
+                                    return (
+                                        <button
+                                            key={tier.id}
+                                            className={`flex flex-col items-center p-4 bg-white rounded-xl shadow-lg border-2 transition-all duration-200 hover:border-blue-500 focus:border-blue-700 ${
+                                                isSelected ? 'border-blue-700 bg-blue-50' : 'border-transparent'
+                                            } ${params.tier && params.tier.length >= 3 && !isSelected ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            onClick={() => handleTierSelect(tier.id)}
+                                            disabled={params.tier && params.tier.length >= 3 && !isSelected}
+                                        >
+                                            <div className={`w-3 h-3 rounded-full mb-2 ${tier.confidence === 'high' ? 'bg-green-500' : tier.confidence === 'medium' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
+                                            {tier.icon}
+                                            <span className="mt-2 text-sm font-semibold text-gray-900 text-center">{tier.title}</span>
+                                            <span className="mt-1 text-gray-500 text-xs text-center leading-tight">{tier.description}</span>
+                                            <span className={`mt-2 px-2 py-1 rounded-full text-xs font-medium ${
+                                                tier.confidence === 'high' ? 'bg-green-100 text-green-800' :
+                                                tier.confidence === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
+                                            }`}>
+                                                {tier.confidence === 'high' ? 'High Match' : tier.confidence === 'medium' ? 'Consider' : 'Review'}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
+
+                    {params.tier && params.tier.length > 0 && (
+                        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h6 className="font-medium text-blue-900 mb-2">Selected Tiers ({params.tier.length}/3):</h6>
+                            <div className="flex flex-wrap gap-2">
+                                {params.tier.map(tierId => {
+                                    const tier = TIERS.find(t => t.id === tierId);
+                                    return tier ? (
+                                        <span key={tierId} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                                            {tier.title}
+                                        </span>
+                                    ) : null;
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Industry Sector */}

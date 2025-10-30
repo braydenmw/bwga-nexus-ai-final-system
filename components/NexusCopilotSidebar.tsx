@@ -5,18 +5,50 @@ const copilotAvatar = (
   <SymbiosisIcon className="h-8 w-8 text-blue-600" />
 );
 
-// Step-specific guidance messages
-const stepGuidance: { [key: number]: string } = {
-  0: 'Welcome to the BWGA Nexus AI 5-Step Framework! I\'m here to guide you through defining your context and intent. Please review the terms and conditions, then tell me about your project or needs.',
-  1: 'Step 1: Profile & Setup. Let\'s set up your profile and basic requirements. Share details about your business, location, or industry for personalized guidance.',
-  2: 'Step 2: Opportunity & Tiers. Define your opportunities and analysis tiers. I can help you identify potential areas or suggest tier structures based on your inputs.',
-  3: 'Step 3: Objective & AI Analyst. Set your objectives and configure AI settings. Tell me your goals, and I\'ll suggest optimal AI configurations.',
-  4: 'Step 4: Regional Diagnostic (RROI). Perform regional readiness and opportunity analysis. Provide location data, and I\'ll help analyze regional factors.',
-  5: 'Step 5: Predictive Positioning (TPT). Run transformation pathway simulations. Share your strategic plans for predictive insights.',
-  6: 'Step 6: Symbiotic Ecosystem Mapping (SEAM). Design ecosystem architecture and partner networks. Let\'s map out your collaborative opportunities.',
-  7: 'Step 7: Intelligence Blueprint & Presentation (NSIL). Generate your final NSIL intelligence report. I\'ll help refine your blueprint.',
-  8: 'Step 8: Review & Generate. Review your inputs and generate the report. I can suggest improvements or answer questions.',
-  9: 'Step 9: Completion & Insights. Your report is complete! Download it and explore insights. Ask me about next steps or further analysis.'
+// Step-specific guidance messages with dynamic tier recommendations
+const getStepGuidance = (currentStep: number, reportParams: any): string => {
+  const baseGuidance: { [key: number]: string } = {
+    0: 'Welcome to the BWGA Nexus AI 9-Step Framework! I\'m your Nexus Enquire AI assistant. I\'ll guide you through defining your context and intent. Please review the terms and conditions, then tell me about your project or needs.',
+    1: 'Strategic Context Definition: Let\'s establish your profile and objectives. Share details about your organization, location, and goals for personalized guidance.',
+    2: 'Opportunity Assessment: Define your market opportunities and strategic focus areas. I can help you identify potential areas based on your inputs.',
+    3: 'Partnership Intent Clarification: Specify your partnership goals and criteria. Tell me what type of collaborations you\'re seeking.',
+    4: 'Regional Diagnostic (RROI): Let\'s analyze your target region\'s economic DNA and readiness factors.',
+    5: 'Predictive Positioning (TPT): Run transformation pathway simulations for your strategic plans.',
+    6: 'Ecosystem Mapping (SEAM): Design your partner network and symbiotic relationships.',
+    7: 'Risk Assessment & Mitigation: Evaluate risks and develop mitigation strategies.',
+    8: 'Implementation Planning: Create actionable execution roadmaps and timelines.',
+    9: 'Intelligence Blueprint & Presentation (NSIL): Generate your comprehensive NSIL intelligence report.'
+  };
+
+  let guidance = baseGuidance[currentStep] || 'I\'m here to help with any step of the process.';
+
+  // Add dynamic tier recommendations for step 0
+  if (currentStep === 0 && reportParams.organizationType) {
+    const orgType = reportParams.organizationType.toLowerCase();
+    if (orgType.includes('government')) {
+      guidance += ' Based on your government focus, I recommend exploring Policy Development, Infrastructure Investment, and Regional Economic Development tiers.';
+    } else if (orgType.includes('bank') || orgType.includes('financial')) {
+      guidance += ' For financial institutions, I suggest Investment Risk Assessment, Regulatory Compliance Analysis, and Market Stability tiers.';
+    } else if (orgType.includes('corporat') || orgType.includes('company')) {
+      guidance += ' Corporate organizations typically benefit from Market Entry Strategy, Supply Chain Optimization, and Technology Investment tiers.';
+    }
+  }
+
+  // Add tier feedback for step with tier selection
+  if (currentStep === 0 && reportParams.tier && reportParams.tier.length > 0) {
+    const selectedCount = reportParams.tier.length;
+    if (selectedCount === 1) {
+      guidance += ` You've selected ${selectedCount} tier. Consider adding 1-2 more for comprehensive analysis.`;
+    } else if (selectedCount === 2) {
+      guidance += ` You've selected ${selectedCount} tiers. One more would provide optimal coverage.`;
+    } else if (selectedCount === 3) {
+      guidance += ` Perfect! You've selected ${selectedCount} tiers for comprehensive analysis.`;
+    } else if (selectedCount > 3) {
+      guidance += ` You've selected ${selectedCount} tiers. Consider focusing on your top 3 priorities.`;
+    }
+  }
+
+  return guidance;
 };
 
 export default function NexusCopilotSidebar({ context, large, currentStep, reportParams, onUpdateParams, messages, setMessages }: {
@@ -33,10 +65,11 @@ export default function NexusCopilotSidebar({ context, large, currentStep, repor
 
   // Initialize messages based on current step
   useEffect(() => {
-    if (messages.length === 0 || messages[0].text !== stepGuidance[currentStep]) {
-      setMessages((prev: any[]) => [{ sender: 'copilot', text: stepGuidance[currentStep] || 'Welcome! I am your Nexus Copilot. Ask me anything or enter key facts to guide your blueprint.' }]);
+    const currentGuidance = getStepGuidance(currentStep, reportParams);
+    if (messages.length === 0 || messages[0].text !== currentGuidance) {
+      setMessages((prev: any[]) => [{ sender: 'copilot', text: currentGuidance }]);
     }
-  }, [currentStep, messages, setMessages]);
+  }, [currentStep, messages, setMessages, reportParams]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
