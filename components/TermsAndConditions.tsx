@@ -11,14 +11,6 @@ interface TermsAndConditionsProps {
 const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onAccept, onDecline, isModal = false, onClose }) => {
     const [accepted, setAccepted] = useState(false);
 
-    // Check localStorage for previous acceptance
-    useEffect(() => {
-        const hasAccepted = localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
-        if (hasAccepted) {
-            setAccepted(true);
-        }
-    }, []);
-
     // Handle acceptance with localStorage persistence
     const handleAccept = () => {
         localStorage.setItem('bwga-nexus-terms-accepted', 'true');
