@@ -299,7 +299,7 @@ export default async function handler(request: Request) {
     const systemInstruction = getSystemPrompt(params);
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4-turbo',
       messages: [
         { role: 'system', content: systemInstruction },
         { role: 'user', content: prompt }

@@ -17,6 +17,7 @@ import { SampleReport } from './components/SampleReport.tsx';
 import { TechnicalManual } from './components/TechnicalManual.tsx';
 import WhoWeAre from './components/WhoWeAre.tsx';
 import TermsAndConditions from './components/TermsAndConditions.tsx';
+import BlueprintReportWizard from './components/BlueprintReportWizard.tsx';
 import { saveAutoSave, loadAutoSave, clearAutoSave, getSavedReports, saveReport, deleteReport } from './services/storageService.ts';
 
 const initialReportParams: ReportParameters = {
@@ -282,7 +283,17 @@ function App() {
         <TermsAndConditions
           onAccept={handleAcceptTerms}
           onDecline={handleDeclineTerms}
+          isModal={true}
         />
+      </ErrorBoundary>
+    );
+  }
+
+  // Show blueprint wizard after terms acceptance
+  if (hasAcceptedTerms && currentView === 'report' && !isViewingReport) {
+    return (
+      <ErrorBoundary>
+        <BlueprintReportWizard />
       </ErrorBoundary>
     );
   }
