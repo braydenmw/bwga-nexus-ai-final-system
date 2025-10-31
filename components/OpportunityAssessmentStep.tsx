@@ -18,26 +18,6 @@ export const OpportunityAssessmentStep: React.FC<OpportunityAssessmentStepProps>
 }) => {
   const [loading, setLoading] = useState(false);
   const [marketInsights, setMarketInsights] = useState<any>(null);
-  const [targetRegion, setTargetRegion] = useState(params.region || '');
-  const [targetCountry, setTargetCountry] = useState(() => {
-    if (params.region) {
-      const parts = params.region.split(',').map((p: string) => p.trim());
-      return parts[parts.length - 1];
-    }
-    return '';
-  });
-
-  const handleRegionChange = (region: string) => {
-    setTargetRegion(region);
-    setTargetCountry('');
-    onChange({ ...params, region: '' });
-  };
-
-  const handleCountryChange = (country: string) => {
-    setTargetCountry(country);
-    const newRegion = [targetRegion, country].filter(Boolean).join(', ');
-    onChange({ ...params, region: newRegion });
-  };
 
   const handleIndustryToggle = (industryId: string) => {
     const currentIndustries = params.industry || [];
@@ -49,7 +29,9 @@ export const OpportunityAssessmentStep: React.FC<OpportunityAssessmentStepProps>
   };
 
   const handleMarketResearch = async () => {
-    if (!targetCountry || (params.industry || []).length === 0) {
+    // Note: Region selection now happens in Step 2 (Strategic Context)
+    // For market research, we'll use any region that might be set, or make it region-optional
+    if ((params.industry || []).length === 0) {
       return;
     }
 
@@ -58,17 +40,30 @@ export const OpportunityAssessmentStep: React.FC<OpportunityAssessmentStepProps>
       // Simulate market research API call
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Mock market insights
+      // Enhanced mock market insights based on selected industries
+      const selectedIndustries = params.industry || [];
+      const industryNames = selectedIndustries.map(id => {
+        const industry = INDUSTRIES.find(i => i.id === id);
+        return industry ? industry.title.toLowerCase() : id;
+      }).join(', ');
+
       const insights = {
         marketSize: `$${Math.floor(Math.random() * 500) + 100}B`,
         growthRate: `${(Math.random() * 8 + 2).toFixed(1)}% CAGR`,
-        keyOpportunities: [
+        keyOpportunities: selectedIndustries.length > 0 ? [
+          `Digital transformation in ${industryNames}`,
+          `Sustainable development projects for ${industryNames} sector`,
+          `Infrastructure modernization opportunities`,
+          `Technology adoption programs in ${industryNames}`
+        ] : [
           'Digital transformation initiatives',
           'Sustainable development projects',
           'Infrastructure modernization',
           'Technology adoption programs'
         ],
-        competitiveLandscape: 'Moderate competition with opportunities for specialized partnerships'
+        competitiveLandscape: selectedIndustries.includes('Custom')
+          ? 'Niche market with specialized opportunities and lower competition'
+          : 'Moderate competition with opportunities for specialized partnerships'
       };
 
       setMarketInsights(insights);
@@ -85,43 +80,23 @@ export const OpportunityAssessmentStep: React.FC<OpportunityAssessmentStepProps>
       <div>
         <h3 className="text-2xl font-bold text-gray-900 mb-2">Opportunity Assessment</h3>
         <p className="text-gray-600 mb-6">
-          Conduct market research and identify strategic opportunities in your target region.
+          Identify your industry interests and conduct preliminary market research.
           This analysis will inform your partnership strategy and help prioritize opportunities.
+          Geographic focus will be configured in the next step.
         </p>
       </div>
 
       <div className="space-y-4">
-        {/* Target Location */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className={labelStyles}>Target Region</label>
-            <select
-              value={targetRegion}
-              onChange={(e) => handleRegionChange(e.target.value)}
-              className={inputStyles}
-            >
-              <option value="">Select Region</option>
-              {REGIONS_AND_COUNTRIES.map(region => (
-                <option key={region.name} value={region.name}>{region.name}</option>
-              ))}
-            </select>
+        {/* Region Note */}
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-blue-600">ℹ️</span>
+            <h4 className="font-semibold text-blue-800">Region Selection</h4>
           </div>
-          <div>
-            <label className={labelStyles}>Target Country</label>
-            <select
-              value={targetCountry}
-              onChange={(e) => handleCountryChange(e.target.value)}
-              disabled={!targetRegion}
-              className={`${inputStyles} disabled:bg-gray-100 disabled:text-gray-400`}
-            >
-              <option value="">Select Country</option>
-              {targetRegion && REGIONS_AND_COUNTRIES
-                .find(r => r.name === targetRegion)?.countries
-                .map(country => (
-                  <option key={country} value={country}>{country}</option>
-                ))}
-            </select>
-          </div>
+          <p className="text-sm text-blue-700">
+            Geographic focus and region selection will be configured in the next step (Strategic Context).
+            For now, let's focus on identifying your industry interests and conducting preliminary market research.
+          </p>
         </div>
 
         {/* Industry Focus */}
@@ -170,7 +145,7 @@ export const OpportunityAssessmentStep: React.FC<OpportunityAssessmentStepProps>
         <div className="flex justify-center">
           <button
             onClick={handleMarketResearch}
-            disabled={loading || !targetCountry || (params.industry || []).length === 0}
+            disabled={loading || (params.industry || []).length === 0}
             className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold rounded-xl shadow-lg hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {loading ? (
