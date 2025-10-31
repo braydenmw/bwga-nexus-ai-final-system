@@ -59,20 +59,20 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     const [targetCity, setTargetCity] = useState('');
 
 
-    const handleStepClick = (stepNumber: number | null) => {
-        if (stepNumber > 0 && !initialAnalysis) {
+    const handleStepClick = useCallback((stepNumber: number | null) => {
+        if (stepNumber !== null && stepNumber > 0 && !initialAnalysis) {
             setError("Please complete the initial analysis first.");
             return;
         }
         if (stepNumber !== null) setStep(stepNumber);
-    };
+    }, [initialAnalysis]);
 
     // DEBUG: Force default organization type if missing
     useEffect(() => {
         if (!params.organizationType || params.organizationType === '') {
             handleChange('organizationType', 'Default');
         }
-    }, [params.organizationType]);
+    }, [params.organizationType, handleChange]); // Added handleChange to deps
 
     const [showScroll, setShowScroll] = useState(false);
     const scrollPanelRef = useRef<HTMLDivElement>(null);
@@ -85,13 +85,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         return () => panel.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const scrollToTop = () => scrollPanelRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    const scrollToTop = useCallback(() => scrollPanelRef.current?.scrollTo({ top: 0, behavior: 'smooth' }), []);
 
     useEffect(() => {
         if (params.reportName.trim() && aiInteractionState !== 'active') {
             setAiInteractionState('active');
         }
-    }, [params.reportName, aiInteractionState]);
+    }, [params.reportName]); // Removed aiInteractionState from deps to prevent loops
 
     const handleChange = useCallback((field: keyof ReportParameters, value: any) => {
         console.log('🔄 handleChange called:', { field, value, currentParams: params });
@@ -147,18 +147,18 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     }, [targetCity, targetCountry, params.region, handleChange]);
 
-    const handleMultiSelectToggle = (field: 'aiPersona' | 'analyticalLens' | 'toneAndStyle' | 'industry' | 'tier', value: string) => {
+    const handleMultiSelectToggle = useCallback((field: 'aiPersona' | 'analyticalLens' | 'toneAndStyle' | 'industry' | 'tier', value: string) => {
         const currentValues = params[field] as string[] || [];
         const newValues = currentValues.includes(value)
             ? currentValues.filter(v => v !== value)
             : [...currentValues, value];
-        
+
         if ((field === 'aiPersona' || field === 'industry') && newValues.length === 0 && (params[field] as string[]).length > 0) {
             return;
         }
 
         onViewChange('report', { ...params, [field]: newValues });
-    };
+    }, [params, onViewChange]);
     
     const getValidationErrors = useCallback((stepNum: number): string[] => {
         const errors: string[] = [];
@@ -186,7 +186,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         return errors;
     }, [params]);
 
-    const nextStep = () => {
+    const nextStep = useCallback(() => {
         setError(null);
         scrollToTop();
         const validationErrors = getValidationErrors(step);
@@ -195,13 +195,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         } else {
             setError(validationErrors.join(' '));
         }
-    };
+    }, [step, getValidationErrors]);
 
-    const prevStep = () => {
+    const prevStep = useCallback(() => {
         setError(null);
         scrollToTop();
         if (step > 0) setStep(s => s - 1);
-    };
+    }, []);
 
     const handleInitialAnalysis = useCallback(async (userInput: string) => {
         setIsAnalyzing(true);
@@ -237,10 +237,10 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     }, [params, onApplySuggestions]);
 
-    const handleScopeComplete = () => {
+    const handleScopeComplete = useCallback(() => {
         setStep(1); // Go to step 1 after initial analysis
         scrollToTop();
-    };
+    }, [scrollToTop]);
 
     const handleGenerateReport = useCallback(async () => {
         setError(null);
