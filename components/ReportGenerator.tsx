@@ -58,6 +58,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     const [targetCountry, setTargetCountry] = useState('');
     const [targetCity, setTargetCity] = useState('');
 
+
     const handleStepClick = (stepNumber: number | null) => {
         if (stepNumber > 0 && !initialAnalysis) {
             setError("Please complete the initial analysis first.");
@@ -92,11 +93,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     }, [params.reportName, aiInteractionState]);
 
-    const handleChange = (field: keyof ReportParameters, value: any) => {
+    const handleChange = useCallback((field: keyof ReportParameters, value: any) => {
+        console.log('🔄 handleChange called:', { field, value, currentParams: params });
         onViewChange('report', { ...params, [field]: value }); // Call the correct prop with updated params
-    };
+    }, [params, onViewChange]);
 
     useEffect(() => {
+        console.log('🔄 Region parsing useEffect triggered, params.region:', params.region);
         const regionValue = params.region;
         if (regionValue) {
             const parts = regionValue.split(',').map(p => p.trim());
@@ -104,28 +107,45 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
             const foundRegionData = REGIONS_AND_COUNTRIES.find(r => r.countries.includes(potentialCountry));
 
             if (foundRegionData) {
-                setTargetRegion(foundRegionData.name);
-                setTargetCountry(potentialCountry);
-                setTargetCity(parts.slice(0, -1).join(', '));
+                const newRegion = foundRegionData.name;
+                const newCountry = potentialCountry;
+                const newCity = parts.slice(0, -1).join(', ');
+
+                // Only update if values actually changed to prevent unnecessary re-renders
+                if (newRegion !== targetRegion || newCountry !== targetCountry || newCity !== targetCity) {
+                    console.log('🔄 Setting target states:', { region: newRegion, country: newCountry, city: newCity });
+                    setTargetRegion(newRegion);
+                    setTargetCountry(newCountry);
+                    setTargetCity(newCity);
+                }
             } else {
+                // Only clear if not already cleared
+                if (targetRegion || targetCountry || targetCity) {
+                    console.log('🔄 Clearing target states (no region found)');
+                    setTargetRegion('');
+                    setTargetCountry('');
+                    setTargetCity('');
+                }
+            }
+        } else {
+            // Only clear if not already cleared
+            if (targetRegion || targetCountry || targetCity) {
+                console.log('🔄 Clearing target states (no region value)');
                 setTargetRegion('');
                 setTargetCountry('');
                 setTargetCity('');
             }
-        } else {
-            setTargetRegion('');
-            setTargetCountry('');
-            setTargetCity('');
         }
-    }, [params.region]);
+    }, [params.region, targetRegion, targetCountry, targetCity]);
     
     useEffect(() => {
         const combinedRegion = [targetCity, targetCountry].filter(Boolean).join(', ');
+        console.log('🔄 Combined region useEffect triggered:', { combinedRegion, currentRegion: params.region, targetCity, targetCountry });
         if (combinedRegion !== params.region) {
+            console.log('🔄 Updating region via handleChange:', combinedRegion);
             handleChange('region', combinedRegion);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [targetCity, targetCountry]);
+    }, [targetCity, targetCountry, params.region, handleChange]);
 
     const handleMultiSelectToggle = (field: 'aiPersona' | 'analyticalLens' | 'toneAndStyle' | 'industry' | 'tier', value: string) => {
         const currentValues = params[field] as string[] || [];
