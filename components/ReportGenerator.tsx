@@ -84,10 +84,15 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     useEffect(() => {
         const panel = scrollPanelRef.current;
         if (!panel) return;
-        const handleScroll = () => setShowScroll(panel.scrollTop > 300);
+        const handleScroll = () => {
+            const shouldShow = panel.scrollTop > 300;
+            console.log('📜 Scroll event:', { scrollTop: panel.scrollTop, shouldShow, currentShowScroll: showScroll });
+            // Only update if the state actually changes to prevent unnecessary re-renders
+            setShowScroll(prev => prev !== shouldShow ? shouldShow : prev);
+        };
         panel.addEventListener('scroll', handleScroll);
         return () => panel.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, []); // Remove showScroll from deps to prevent re-creating the event listener
 
     const scrollToTop = useCallback(() => scrollPanelRef.current?.scrollTo({ top: 0, behavior: 'smooth' }), []);
 
