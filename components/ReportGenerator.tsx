@@ -58,6 +58,10 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     const [targetCountry, setTargetCountry] = useState('');
     const [targetCity, setTargetCity] = useState('');
 
+    // Use refs to avoid triggering re-renders during parsing
+    const regionParseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const lastParsedRegionRef = useRef<string>('');
+
     const handleStepClick = useCallback((stepNumber: number | null) => {
         if (stepNumber !== null && stepNumber > 0 && !initialAnalysis) {
             setError("Please complete the initial analysis first.");
@@ -102,54 +106,61 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     }, [params.reportName]); // Removed aiInteractionState from deps to prevent loops
 
+    // Completely rewritten region parsing logic to avoid any loops
     useEffect(() => {
-        console.log('🔄 Region parsing useEffect triggered, params.region:', params.region);
-        const regionValue = params.region;
-        if (regionValue) {
-            const parts = regionValue.split(',').map(p => p.trim());
-            const potentialCountry = parts[parts.length - 1];
-            const foundRegionData = REGIONS_AND_COUNTRIES.find(r => r.countries.includes(potentialCountry));
+        // Clear any pending timeout
+        if (regionParseTimeoutRef.current) {
+            clearTimeout(regionParseTimeoutRef.current);
+        }
 
-            if (foundRegionData) {
-                const newRegion = foundRegionData.name;
-                const newCountry = potentialCountry;
-                const newCity = parts.slice(0, -1).join(', ');
+        // Debounce the parsing to avoid rapid-fire updates
+        regionParseTimeoutRef.current = setTimeout(() => {
+            const regionValue = params.region;
+            console.log('🔄 Region parsing triggered:', regionValue);
 
-                // Only update if values actually changed to prevent unnecessary re-renders
-                if (newRegion !== targetRegion || newCountry !== targetCountry || newCity !== targetCity) {
-                    console.log('🔄 Setting target states:', { region: newRegion, country: newCountry, city: newCity });
-                    setTargetRegion(newRegion);
-                    setTargetCountry(newCountry);
-                    setTargetCity(newCity);
-                }
-            } else {
-                // Only clear if not already cleared
-                if (targetRegion || targetCountry || targetCity) {
-                    console.log('🔄 Clearing target states (no region found)');
+            if (regionValue && regionValue !== lastParsedRegionRef.current) {
+                lastParsedRegionRef.current = regionValue;
+                const parts = regionValue.split(',').map(p => p.trim());
+                const potentialCountry = parts[parts.length - 1];
+                const foundRegionData = REGIONS_AND_COUNTRIES.find(r => r.countries.includes(potentialCountry));
+
+                if (foundRegionData) {
+                    const newRegion = foundRegionData.name;
+                    const newCountry = potentialCountry;
+                    const newCity = parts.slice(0, -1).join(', ');
+
+                    // Batch state updates to prevent multiple re-renders
+                    setTargetRegion(prev => prev !== newRegion ? newRegion : prev);
+                    setTargetCountry(prev => prev !== newCountry ? newCountry : prev);
+                    setTargetCity(prev => prev !== newCity ? newCity : prev);
+                } else {
                     setTargetRegion('');
                     setTargetCountry('');
                     setTargetCity('');
                 }
-            }
-        } else {
-            // Only clear if not already cleared
-            if (targetRegion || targetCountry || targetCity) {
-                console.log('🔄 Clearing target states (no region value)');
+            } else if (!regionValue) {
+                lastParsedRegionRef.current = '';
                 setTargetRegion('');
                 setTargetCountry('');
                 setTargetCity('');
             }
-        }
-    }, [params.region, targetRegion, targetCountry, targetCity]);
+        }, 100); // Small debounce delay
+
+        return () => {
+            if (regionParseTimeoutRef.current) {
+                clearTimeout(regionParseTimeoutRef.current);
+            }
+        };
+    }, [params.region]); // Only depend on params.region
     
-    useEffect(() => {
-        const combinedRegion = [targetCity, targetCountry].filter(Boolean).join(', ');
-        console.log('🔄 Combined region useEffect triggered:', { combinedRegion, currentRegion: params.region, targetCity, targetCountry });
+    // Simplified region combination logic - only update when user explicitly changes dropdowns
+    const handleRegionChange = useCallback((region: string, country: string, city: string) => {
+        const combinedRegion = [city, country].filter(Boolean).join(', ');
         if (combinedRegion !== params.region) {
-            console.log('🔄 Updating region via handleChange:', combinedRegion);
+            console.log('🔄 User explicitly changed region:', combinedRegion);
             handleChange('region', combinedRegion);
         }
-    }, [targetCity, targetCountry, params.region, handleChange]);
+    }, [params.region, handleChange]);
 
     const handleMultiSelectToggle = useCallback((field: 'aiPersona' | 'analyticalLens' | 'toneAndStyle' | 'industry' | 'tier', value: string) => {
         const currentValues = params[field] as string[] || [];
@@ -475,14 +486,14 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className={`${labelStyles} text-base`}>Target Global Region *</label>
-                                <select value={targetRegion} onChange={e => { setTargetRegion(e.target.value); setTargetCountry(''); setTargetCity(''); }} className={`${inputStyles} text-base`} aria-label="Target Region">
+                                <select value={targetRegion} onChange={e => { setTargetRegion(e.target.value); setTargetCountry(''); setTargetCity(''); handleRegionChange(e.target.value, '', ''); }} className={`${inputStyles} text-base`} aria-label="Target Region">
                                     <option value="">Select Global Region</option>
                                     {REGIONS_AND_COUNTRIES.map(region => <option key={region.name} value={region.name}>{region.name}</option>)}
                                 </select>
                             </div>
                             <div className="space-y-2">
                                 <label className={`${labelStyles} text-base`}>Target Country *</label>
-                                  <select value={targetCountry} onChange={e => setTargetCountry(e.target.value)} disabled={!targetRegion} className={`${inputStyles} disabled:bg-gray-100 disabled:text-gray-400 text-base`} aria-label="Target Country">
+                                  <select value={targetCountry} onChange={e => { setTargetCountry(e.target.value); handleRegionChange(targetRegion, e.target.value, targetCity); }} disabled={!targetRegion} className={`${inputStyles} disabled:bg-gray-100 disabled:text-gray-400 text-base`} aria-label="Target Country">
                                     <option value="">Select Country</option>
                                     {REGIONS_AND_COUNTRIES.find(r => r.name === targetRegion)?.countries.map(country => <option key={country} value={country}>{country}</option>)}
                                 </select>
@@ -490,9 +501,9 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         </div>
                         <div className="grid md:grid-cols-2 gap-6 mt-6">
                            <div className="space-y-2 text-left">
-                                 <label className={`${labelStyles} text-base`}>Target City / Area</label>
-                                 <input type="text" value={targetCity} onChange={e => setTargetCity(e.target.value)} className={`${inputStyles} text-base`} placeholder="e.g., Davao City, Metro Manila" />
-                             </div>
+                               <label className={`${labelStyles} text-base`}>Target City / Area</label>
+                               <input type="text" value={targetCity} onChange={e => { setTargetCity(e.target.value); handleRegionChange(targetRegion, targetCountry, e.target.value); }} className={`${inputStyles} text-base`} placeholder="e.g., Davao City, Metro Manila" />
+                           </div>
                              <div className="space-y-2 text-left">
                                  <label className={`${labelStyles} text-base`}>Analysis Timeframe</label>
                                  <select value={params.analysisTimeframe} onChange={e => handleChange('analysisTimeframe', e.target.value)} className={`${inputStyles} text-base`} aria-label="Analysis Timeframe">
