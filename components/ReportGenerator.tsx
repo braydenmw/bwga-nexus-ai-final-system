@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { ReportParameters, UserProfile as UserProfileType, ReportSuggestions } from '../types.ts';
 import { REGIONS_AND_COUNTRIES, INDUSTRIES, AI_PERSONAS, ORGANIZATION_TYPES, ANALYTICAL_LENSES, TONES_AND_STYLES, TIERS_BY_ORG_TYPE, ANALYTICAL_MODULES } from '../constants.tsx';
 import Spinner, { SpinnerSmall } from './Spinner.tsx';
@@ -10,6 +10,7 @@ import QualityAnalysis from './QualityAnalysis.tsx';
 import { ProfileStep } from './ProfileStep.tsx';
 import { generateReportStream, fetchResearchAndScope } from '../services/nexusService.ts';
 import Card from './common/Card.tsx';
+import TermsAndConditions from './TermsAndConditions.tsx';
 
 interface ReportGeneratorProps {
     params: ReportParameters;
@@ -53,14 +54,20 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     const [initialAnalysis, setInitialAnalysis] = useState<any>(null);
     const [intelligenceFeed, setIntelligenceFeed] = useState<any[]>([]);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
-
-    const [targetRegion, setTargetRegion] = useState('');
-    const [targetCountry, setTargetCountry] = useState('');
-    const [targetCity, setTargetCity] = useState('');
-
     // Use refs to avoid triggering re-renders during parsing
     const regionParseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const lastParsedRegionRef = useRef<string>('');
+
+    // Mount/terms gating to prevent initial flash and require acceptance
+    const [mounted, setMounted] = useState(false);
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+        try {
+            const accepted = localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
+            setTermsAccepted(accepted);
+        } catch {}
+    }, []);
 
     const handleStepClick = useCallback((stepNumber: number | null) => {
         if (stepNumber !== null && stepNumber > 0 && !initialAnalysis) {
@@ -74,13 +81,6 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         console.log('🔄 handleChange called:', { field, value, currentParams: params });
         onViewChange('report', { ...params, [field]: value }); // Call the correct prop with updated params
     }, [params, onViewChange]);
-
-    // DEBUG: Force default organization type if missing
-    useEffect(() => {
-        if (!params.organizationType || params.organizationType === '') {
-            handleChange('organizationType', 'Default');
-        }
-    }, [params.organizationType, handleChange]); // Added handleChange to deps
 
     const [showScroll, setShowScroll] = useState(false);
     const scrollPanelRef = useRef<HTMLDivElement>(null);
@@ -106,51 +106,22 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     }, [params.reportName]); // Removed aiInteractionState from deps to prevent loops
 
-    // Completely rewritten region parsing logic to avoid any loops
-    useEffect(() => {
-        // Clear any pending timeout
-        if (regionParseTimeoutRef.current) {
-            clearTimeout(regionParseTimeoutRef.current);
+    const { targetRegion, targetCountry, targetCity } = useMemo(() => {
+        const regionValue = params.region;
+        if (!regionValue) {
+            return { targetRegion: '', targetCountry: '', targetCity: '' };
         }
-
-        // Debounce the parsing to avoid rapid-fire updates
-        regionParseTimeoutRef.current = setTimeout(() => {
-            const regionValue = params.region;
-            console.log('🔄 Region parsing triggered:', regionValue);
-
-            if (regionValue && regionValue !== lastParsedRegionRef.current) {
-                lastParsedRegionRef.current = regionValue;
-                const parts = regionValue.split(',').map(p => p.trim());
-                const potentialCountry = parts[parts.length - 1];
-                const foundRegionData = REGIONS_AND_COUNTRIES.find(r => r.countries.includes(potentialCountry));
-
-                if (foundRegionData) {
-                    const newRegion = foundRegionData.name;
-                    const newCountry = potentialCountry;
-                    const newCity = parts.slice(0, -1).join(', ');
-
-                    // Batch state updates to prevent multiple re-renders
-                    setTargetRegion(prev => prev !== newRegion ? newRegion : prev);
-                    setTargetCountry(prev => prev !== newCountry ? newCountry : prev);
-                    setTargetCity(prev => prev !== newCity ? newCity : prev);
-                } else {
-                    setTargetRegion('');
-                    setTargetCountry('');
-                    setTargetCity('');
-                }
-            } else if (!regionValue) {
-                lastParsedRegionRef.current = '';
-                setTargetRegion('');
-                setTargetCountry('');
-                setTargetCity('');
-            }
-        }, 100); // Small debounce delay
-
-        return () => {
-            if (regionParseTimeoutRef.current) {
-                clearTimeout(regionParseTimeoutRef.current);
-            }
-        };
+        const parts = regionValue.split(',').map(p => p.trim());
+        const potentialCountry = parts[parts.length - 1];
+        const foundRegionData = REGIONS_AND_COUNTRIES.find(r => r.countries.includes(potentialCountry));
+        if (foundRegionData) {
+            return {
+                targetRegion: foundRegionData.name,
+                targetCountry: potentialCountry,
+                targetCity: parts.slice(0, -1).join(', ')
+            };
+        }
+        return { targetRegion: '', targetCountry: '', targetCity: '' };
     }, [params.region]); // Only depend on params.region
     
     // Simplified region combination logic - only update when user explicitly changes dropdowns
@@ -486,14 +457,14 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className={`${labelStyles} text-base`}>Target Global Region *</label>
-                                <select value={targetRegion} onChange={e => { setTargetRegion(e.target.value); setTargetCountry(''); setTargetCity(''); handleRegionChange(e.target.value, '', ''); }} className={`${inputStyles} text-base`} aria-label="Target Region">
+                                <select value={targetRegion} onChange={e => { const newRegion = e.target.value; handleRegionChange(newRegion, '', ''); }} className={`${inputStyles} text-base`} aria-label="Target Region">
                                     <option value="">Select Global Region</option>
                                     {REGIONS_AND_COUNTRIES.map(region => <option key={region.name} value={region.name}>{region.name}</option>)}
                                 </select>
                             </div>
                             <div className="space-y-2">
                                 <label className={`${labelStyles} text-base`}>Target Country *</label>
-                                  <select value={targetCountry} onChange={e => { setTargetCountry(e.target.value); handleRegionChange(targetRegion, e.target.value, targetCity); }} disabled={!targetRegion} className={`${inputStyles} disabled:bg-gray-100 disabled:text-gray-400 text-base`} aria-label="Target Country">
+                                  <select value={targetCountry} onChange={e => { const newCountry = e.target.value; handleRegionChange(targetRegion, newCountry, targetCity); }} disabled={!targetRegion} className={`${inputStyles} disabled:bg-gray-100 disabled:text-gray-400 text-base`} aria-label="Target Country">
                                     <option value="">Select Country</option>
                                     {REGIONS_AND_COUNTRIES.find(r => r.name === targetRegion)?.countries.map(country => <option key={country} value={country}>{country}</option>)}
                                 </select>
@@ -501,8 +472,8 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                         </div>
                         <div className="grid md:grid-cols-2 gap-6 mt-6">
                            <div className="space-y-2 text-left">
-                               <label className={`${labelStyles} text-base`}>Target City / Area</label>
-                               <input type="text" value={targetCity} onChange={e => { setTargetCity(e.target.value); handleRegionChange(targetRegion, targetCountry, e.target.value); }} className={`${inputStyles} text-base`} placeholder="e.g., Davao City, Metro Manila" />
+                               <label className={`${labelStyles} text-base`}>Target City / Area</label> 
+                               <input type="text" value={targetCity} onChange={e => { const newCity = e.target.value; handleRegionChange(targetRegion, targetCountry, newCity); }} className={`${inputStyles} text-base`} placeholder="e.g., Davao City, Metro Manila" />
                            </div>
                              <div className="space-y-2 text-left">
                                  <label className={`${labelStyles} text-base`}>Analysis Timeframe</label>
@@ -736,10 +707,21 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
     };
 
-    // Reset terms acceptance on page refresh
-    useEffect(() => {
-        localStorage.removeItem('bwga-nexus-terms-accepted');
-    }, []);
+    // Prevent paint until mounted to avoid flicker
+    if (!mounted) {
+        return <div style={{ minHeight: '100vh', background: '#f3f4f6', visibility: 'hidden' }} />;
+    }
+
+    // Show Terms & Conditions gate if not accepted
+    if (!termsAccepted) {
+        return (
+            <TermsAndConditions
+                onAccept={() => setTermsAccepted(true)}
+                onDecline={() => { try { window.location.href = '/'; } catch {} }}
+                isModal={false}
+            />
+        );
+    }
 
     return (
         <div className="min-h-screen font-sans text-gray-900 bg-gray-100 flex">

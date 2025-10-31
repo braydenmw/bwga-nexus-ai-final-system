@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import NexusCopilotSidebar from './NexusCopilotSidebar.tsx';
 import EnhancedStepper from './EnhancedStepper.tsx';
 import { ContextEntryStep } from './ContextEntryStep';
@@ -50,8 +50,21 @@ export default function BlueprintReportWizard({ params, ...props }: BlueprintRep
      const [lastSaved, setLastSaved] = useState<Date | null>(null);
      const [showPhaseOverview, setShowPhaseOverview] = useState(false);
      const [showLetterModal, setShowLetterModal] = useState(false);
-     // Terms are now handled at the App level
+     const [mounted, setMounted] = useState(false);
+     const [termsAccepted, setTermsAccepted] = useState(false);
      const [showHowToUse, setShowHowToUse] = useState(false);
+
+     useEffect(() => {
+       setMounted(true);
+       try {
+         const accepted = localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
+         setTermsAccepted(accepted);
+       } catch {}
+     }, []);
+
+    const handleChange = useCallback((field: string, value: any) => {
+        setReportParams(prev => ({ ...prev, [field]: value }));
+    }, []);
 
   const handleNext = () => {
     if (currentStep < WIZARD_STEPS.length - 1) {
@@ -200,20 +213,33 @@ export default function BlueprintReportWizard({ params, ...props }: BlueprintRep
        const labelStyles = "block text-sm font-semibold text-gray-800 mb-2";
 
        switch (currentStep) {
-         case 0: return <ContextEntryStep params={reportParams} handleChange={setReportParams} inputStyles={inputStyles} labelStyles={labelStyles} />;
-         case 1: return <OpportunityAssessmentStep params={reportParams} onChange={setReportParams} inputStyles={inputStyles} labelStyles={labelStyles} />;
-         case 2: return <PartnershipIntentStep params={reportParams} onChange={setReportParams} inputStyles={inputStyles} labelStyles={labelStyles} />;
-         case 3: return <RROIDiagnosticStep params={reportParams} onChange={setReportParams} inputStyles={inputStyles} labelStyles={labelStyles} />;
-         case 4: return <TPTSimulationStep params={reportParams} onChange={setReportParams} inputStyles={inputStyles} labelStyles={labelStyles} />;
-         case 5: return <SEAMEcosystemStep params={reportParams} onChange={setReportParams} inputStyles={inputStyles} labelStyles={labelStyles} />;
-         case 6: return <RiskAssessmentStep params={reportParams} onChange={setReportParams} inputStyles={inputStyles} labelStyles={labelStyles} />;
-         case 7: return <ImplementationPlanningStep params={reportParams} onChange={setReportParams} inputStyles={inputStyles} labelStyles={labelStyles} />;
-         case 8: return <NSILPresentationStep params={reportParams} onChange={setReportParams} />;
+         case 0: return <ContextEntryStep params={reportParams} handleChange={handleChange} inputStyles={inputStyles} labelStyles={labelStyles} />;
+         case 1: return <OpportunityAssessmentStep params={reportParams} onChange={(p) => setReportParams(p)} inputStyles={inputStyles} labelStyles={labelStyles} />;
+         case 2: return <PartnershipIntentStep params={reportParams} onChange={(p) => setReportParams(p)} inputStyles={inputStyles} labelStyles={labelStyles} />;
+         case 3: return <RROIDiagnosticStep params={reportParams} onChange={(p) => setReportParams(p)} inputStyles={inputStyles} labelStyles={labelStyles} />;
+         case 4: return <TPTSimulationStep params={reportParams} onChange={(p) => setReportParams(p)} inputStyles={inputStyles} labelStyles={labelStyles} />;
+         case 5: return <SEAMEcosystemStep params={reportParams} onChange={(p) => setReportParams(p)} inputStyles={inputStyles} labelStyles={labelStyles} />;
+         case 6: return <RiskAssessmentStep params={reportParams} onChange={(p) => setReportParams(p)} inputStyles={inputStyles} labelStyles={labelStyles} />;
+         case 7: return <ImplementationPlanningStep params={reportParams} onChange={(p) => setReportParams(p)} inputStyles={inputStyles} labelStyles={labelStyles} />;
+         case 8: return <NSILPresentationStep params={reportParams} onChange={(p) => setReportParams(p)} />;
          default: return null;
        }
      };
 
-  // Terms are now handled at the App level
+  // Gate rendering to avoid flicker and enforce terms acceptance
+  if (!mounted) {
+    return <div style={{ minHeight: '100vh', background: '#f9fafb', visibility: 'hidden' }} />;
+  }
+
+  if (!termsAccepted) {
+    return (
+      <TermsAndConditions
+        onAccept={() => setTermsAccepted(true)}
+        onDecline={() => { try { window.location.href = '/'; } catch {} }}
+        isModal={false}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900">

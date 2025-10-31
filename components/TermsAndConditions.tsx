@@ -17,6 +17,18 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onAccept, onDec
         onAccept();
     };
 
+    // Enable Enter key to accept when checkbox checked
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            if ((e.key === 'Enter' || e.key === 'NumpadEnter') && accepted) {
+                e.preventDefault();
+                handleAccept();
+            }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [accepted]);
+
     const containerClasses = isModal
         ? "fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-sm"
         : "bg-gray-50";
