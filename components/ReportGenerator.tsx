@@ -58,7 +58,6 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     const [targetCountry, setTargetCountry] = useState('');
     const [targetCity, setTargetCity] = useState('');
 
-
     const handleStepClick = useCallback((stepNumber: number | null) => {
         if (stepNumber !== null && stepNumber > 0 && !initialAnalysis) {
             setError("Please complete the initial analysis first.");
@@ -66,6 +65,11 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         }
         if (stepNumber !== null) setStep(stepNumber);
     }, [initialAnalysis]);
+
+    const handleChange = useCallback((field: keyof ReportParameters, value: any) => {
+        console.log('🔄 handleChange called:', { field, value, currentParams: params });
+        onViewChange('report', { ...params, [field]: value }); // Call the correct prop with updated params
+    }, [params, onViewChange]);
 
     // DEBUG: Force default organization type if missing
     useEffect(() => {
@@ -92,11 +96,6 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
             setAiInteractionState('active');
         }
     }, [params.reportName]); // Removed aiInteractionState from deps to prevent loops
-
-    const handleChange = useCallback((field: keyof ReportParameters, value: any) => {
-        console.log('🔄 handleChange called:', { field, value, currentParams: params });
-        onViewChange('report', { ...params, [field]: value }); // Call the correct prop with updated params
-    }, [params, onViewChange]);
 
     useEffect(() => {
         console.log('🔄 Region parsing useEffect triggered, params.region:', params.region);
