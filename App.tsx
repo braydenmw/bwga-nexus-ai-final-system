@@ -16,6 +16,7 @@ import { TechnicalManual } from './components/TechnicalManual.tsx';
 import WhoWeAre from './components/WhoWeAre.tsx';
 import TermsAndConditions from './components/TermsAndConditions.tsx';
 import BlueprintReportWizard from './components/BlueprintReportWizard.tsx';
+import DebugReportGenerator from './components/DebugReportGenerator.tsx';
 import { saveAutoSave, loadAutoSave, clearAutoSave, getSavedReports, saveReport, deleteReport } from './services/storageService.ts';
 
 const initialReportParams: ReportParameters = {
@@ -163,6 +164,12 @@ function App() {
             <BlueprintReportWizard />
           </div>
         );
+      case 'debug-report':
+        return (
+          <div className="h-full">
+            <DebugReportGenerator />
+          </div>
+        );
       case 'compliance':
         return <div className="view-container"><Compliance /></div>;
       default:
@@ -187,15 +194,17 @@ function App() {
   }
 
   return (
-    <ErrorBoundary>
-      <div className="aurora-background" style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
-        <Header currentView={currentView} onViewChange={handleViewChange} />
-        <main className="pt-20 flex-grow overflow-y-auto" style={{height: 'calc(100vh - 80px)'}}>
-          {/* The container below ensures consistent padding and max-width for non-workspace views */}
-          <div className={`min-h-full ${currentView !== 'report' ? 'container mx-auto px-4 md:px-8' : ''}`}>
-            {renderCurrentView()}
-          </div>
-        </main>
+    <React.StrictMode>
+      <ErrorBoundary>
+        <div className="aurora-background" style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
+          <Header currentView={currentView} onViewChange={handleViewChange} />
+          <main className="pt-20 flex-grow overflow-y-auto" style={{height: 'calc(100vh - 80px)'}}>
+            {/* The container below ensures consistent padding and max-width for non-workspace views */}
+            <div className={`min-h-full ${currentView !== 'report' ? 'container mx-auto px-4 md:px-8' : ''}`}>
+              {renderCurrentView()}
+            </div>
+          </main>
+        </div>
 
         {toastMessage && (
             <div className="fixed bottom-4 right-4 bg-nexus-surface-700 text-nexus-text-primary px-4 py-2 rounded-lg shadow-lg border border-nexus-accent-cyan/50 animate-fadeIn z-50">
@@ -230,8 +239,8 @@ function App() {
             }}
           />
         )}
-      </div>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </React.StrictMode>
   );
 }
 
