@@ -89,7 +89,20 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
   const [error, setError] = useState<string | null>(null);
 
   // AI Chat state
-  const [chatMessages, setChatMessages] = useState<{sender: 'user' | 'ai', text: string}[]>([]);
+  const [chatMessages, setChatMessages] = useState<{sender: 'user' | 'ai', text: string}[]>([
+    {
+      sender: 'ai',
+      text: `👋 Hi! I'm your Nexus AI Co-Pilot. I can help you refine your objectives, suggest optimal partnership strategies, and provide real-time insights as you build your intelligence report.
+
+Based on your current step (Step ${currentStep + 1}: ${WIZARD_STEPS[currentStep]?.title}), I can assist with:
+• Step-by-step guidance through the framework
+• Input validation and suggestions
+• Real-time assistance and contextual help
+• Best practices and optimization tips
+
+What would you like help with?`
+    }
+  ]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
@@ -129,18 +142,60 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
     if (validateCurrentStep()) {
       setCompletedSteps(prev => new Set([...prev, currentStep]));
       setCurrentStep(prev => Math.min(prev + 1, WIZARD_STEPS.length - 1));
+      // Update AI co-pilot message for new step
+      updateCopilotForStep(currentStep + 1);
     }
   }, [currentStep]);
 
   const prevStep = useCallback(() => {
     setCurrentStep(prev => Math.max(prev - 1, 0));
-  }, []);
+    // Update AI co-pilot message for previous step
+    updateCopilotForStep(Math.max(currentStep - 1, 0));
+  }, [currentStep]);
 
   const goToStep = useCallback((stepId: number) => {
     if (stepId <= currentStep || completedSteps.has(stepId - 1)) {
       setCurrentStep(stepId);
+      updateCopilotForStep(stepId);
     }
   }, [currentStep, completedSteps]);
+
+  // AI Co-pilot step guidance
+  const updateCopilotForStep = useCallback((stepId: number) => {
+    const step = WIZARD_STEPS[stepId];
+    if (!step) return;
+
+    const stepGuidance = getStepGuidance(stepId, formData);
+    setChatMessages(prev => [...prev, {
+      sender: 'ai',
+      text: `📍 **Step ${stepId + 1}: ${step.title}**\n\n${stepGuidance}`
+    }]);
+  }, [formData]);
+
+  const getStepGuidance = (stepId: number, params: Partial<ReportParameters>): string => {
+    switch (stepId) {
+      case 0:
+        return `Welcome to the first step! Let's establish your profile and context. I'll help you fill out your personal and organizational details. This information helps me provide more targeted guidance throughout the process.\n\n💡 **Tip**: Be specific about your department and organization type - this affects which analysis tiers will be most relevant for your needs.`;
+      case 1:
+        return `Great! Now let's define your strategic objectives. This is the foundation of your entire intelligence report. I can help you craft clear, actionable objectives that will guide our analysis.\n\n💡 **Tip**: Focus on specific outcomes you want to achieve. For example: "Expand manufacturing operations in Southeast Asia" rather than "Grow business internationally".`;
+      case 2:
+        return `Now we'll assess market opportunities. Based on your objectives, I can help identify the most promising regions and sectors for your expansion.\n\n💡 **Tip**: Consider both established markets and emerging opportunities. I'll analyze regional readiness and growth potential.`;
+      case 3:
+        return `Let's clarify your partnership intentions. This step determines what type of collaboration would be most effective for your goals.\n\n💡 **Tip**: Think about whether you need B2B partnerships, government relationships (G2B/G2G), or a combination. I'll help match you with the right partnership model.`;
+      case 4:
+        return `Time to focus on your target regions and analysis tiers. Based on your previous inputs, I'll recommend the most appropriate geographic areas and depth of analysis.\n\n💡 **Tip**: Different regions require different analysis approaches. I'll help you choose the right level of detail for your specific situation.`;
+      case 5:
+        return `Let's deep-dive into industry sectors. Your industry focus will determine which economic indicators and market factors are most relevant.\n\n💡 **Tip**: You can select multiple industries if your objectives span different sectors. I'll provide sector-specific insights and recommendations.`;
+      case 6:
+        return `Now we'll configure the AI analysis parameters. This determines how deeply the system will analyze your objectives and what types of insights to prioritize.\n\n💡 **Tip**: Choose analysis lenses that align with your strategic priorities - financial, operational, risk, or strategic focus.`;
+      case 7:
+        return `Let's develop your implementation roadmap. Based on all your previous inputs, I'll help create a practical action plan for moving forward.\n\n💡 **Tip**: This step translates our analysis into concrete next steps. I'll provide timelines, milestones, and success metrics.`;
+      case 8:
+        return `Final step! Now we'll generate your comprehensive intelligence report. This brings together all the analysis from previous steps into actionable insights.\n\n💡 **Tip**: Choose your report format based on your audience - executive brief for leadership, comprehensive report for detailed planning.`;
+      default:
+        return `How can I help you with this step? Feel free to ask questions or request guidance at any time.`;
+    }
+  };
 
   // Step validation
   const validateCurrentStep = useCallback((): boolean => {
@@ -739,22 +794,22 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
 
             {chatMessages.map((msg, index) => (
               <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[80%] p-3 rounded-lg ${
+                <div className={`max-w-[85%] p-3 rounded-lg ${
                   msg.sender === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-800'
+                    ? 'bg-nexus-accent-cyan text-white'
+                    : 'bg-gray-100 text-gray-800 border border-gray-200'
                 }`}>
-                  <p className="text-sm">{msg.text}</p>
+                  <div className="text-sm whitespace-pre-line">{msg.text}</div>
                 </div>
               </div>
             ))}
 
             {isTyping && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 p-3 rounded-lg">
+                <div className="bg-gray-100 p-3 rounded-lg border border-gray-200">
                   <div className="flex items-center gap-2">
                     <SpinnerSmall />
-                    <span className="text-sm text-gray-600">AI is thinking...</span>
+                    <span className="text-sm text-gray-600">AI Co-Pilot is analyzing...</span>
                   </div>
                 </div>
               </div>
@@ -791,20 +846,26 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
 
     const userMessage = { sender: 'user' as const, text: currentMessage };
     setChatMessages(prev => [...prev, userMessage]);
+    const userQuery = currentMessage;
     setCurrentMessage('');
     setIsTyping(true);
 
     try {
-      // Simulate AI response - in real implementation, this would call the Nexus Brain API
-      setTimeout(() => {
-        const aiResponse = {
-          sender: 'ai' as const,
-          text: `Based on your objectives, I recommend focusing on ${formData.region} for your expansion. The regional analysis shows strong potential for ${formData.industry?.join(', ')} partnerships. Would you like me to elaborate on specific opportunities?`
-        };
-        setChatMessages(prev => [...prev, aiResponse]);
-        setIsTyping(false);
-      }, 2000);
+      // Call the research and scope API for intelligent responses
+      const response = await fetchResearchAndScope(userQuery, '', formData);
+      const aiResponse = {
+        sender: 'ai' as const,
+        text: response.summary || `Thank you for your question about "${userQuery}". Based on your current inputs, I can provide guidance on this step. Would you like me to elaborate on any specific aspect of the ${WIZARD_STEPS[currentStep]?.title} process?`
+      };
+      setChatMessages(prev => [...prev, aiResponse]);
     } catch (error) {
+      // Fallback response if API fails
+      const fallbackResponse = {
+        sender: 'ai' as const,
+        text: `I understand you're asking about "${userQuery}". For Step ${currentStep + 1} (${WIZARD_STEPS[currentStep]?.title}), I recommend focusing on completing the required fields first. Once you have your basic information entered, I can provide more specific guidance tailored to your situation. Is there anything particular about this step you'd like help with?`
+      };
+      setChatMessages(prev => [...prev, fallbackResponse]);
+    } finally {
       setIsTyping(false);
     }
   }
