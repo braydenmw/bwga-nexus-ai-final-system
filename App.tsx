@@ -15,7 +15,7 @@ import { SampleReport } from './components/SampleReport.tsx';
 import { TechnicalManual } from './components/TechnicalManual.tsx';
 import WhoWeAre from './components/WhoWeAre.tsx';
 import TermsAndConditions from './components/TermsAndConditions.tsx';
-import BlueprintReportWizard from './components/BlueprintReportWizard.tsx';
+import NexusReportStudio from './components/NexusReportStudio.tsx';
 import DebugReportGenerator from './components/DebugReportGenerator.tsx';
 import { saveAutoSave, loadAutoSave, clearAutoSave, getSavedReports, saveReport, deleteReport } from './services/storageService.ts';
 
@@ -161,7 +161,7 @@ function App() {
       case 'report':
         return (
           <div className="h-full">
-            <BlueprintReportWizard />
+            <NexusReportStudio />
           </div>
         );
       case 'debug-report':

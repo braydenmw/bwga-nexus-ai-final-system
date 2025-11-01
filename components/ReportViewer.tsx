@@ -120,7 +120,7 @@ const ReportLoadingIndicator: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center text-center text-nexus-text-secondary p-8 my-8 bg-gradient-to-br from-nexus-surface-800 to-nexus-surface-700 rounded-xl shadow-medium border border-nexus-border-medium">
             <div className="relative">
-                <NexusLogo className="w-12 h-12 text-nexus-accent-cyan animate-pulse" />
+                <NexusLogo className="w-12 h-12 text-nexus-accent-cyan" />
                 <div className="absolute inset-0 rounded-full border-2 border-nexus-accent-brown animate-ping opacity-20"></div>
             </div>
             <p className="mt-4 text-base font-bold text-nexus-text-primary">{message}</p>
@@ -250,13 +250,14 @@ const ReportViewer: React.FC<ReportViewerProps> = ({
     processedContent = processedContent.replace(/<nsil:match_score value="([\d.]*)">([\s\S]*?)<\/nsil:match_score>/g, '<div class="nsil-score my-6 text-center"><div class="text-6xl font-bold text-nexus-accent-brown">$1</div><p class="text-nexus-text-secondary mt-2">$2</p></div>');
     processedContent = processedContent.replace(/<nsil:risk_map>([\s\S]*?)<\/nsil:risk_map>/g, '<div class="nsil-riskmap my-6"><h3>Risk & Opportunity Map</h3><div class="grid md:grid-cols-3 gap-4 mt-2">$1</div></div>');
     processedContent = processedContent.replace(/<nsil:zone color="(\w+)" title="(.*?)">([\s\S]*?)<\/nsil:zone>/g, (match, color, title, text) => {
-        const colorClasses = {
+        const colorClasses: Record<string, string> = {
             green: 'border-green-500 bg-green-900/20',
             yellow: 'border-yellow-500 bg-yellow-900/20',
             red: 'border-red-500 bg-red-900/20'
-        }[color] || 'border-gray-500';
-        return `<div class="nsil-interactive nsil-zone border-t-4 ${colorClasses} p-4 rounded-b-lg bg-nexus-surface-800" data-symbiosis-title="Risk Zone: ${title}" data-symbiosis-content="${text}"><h5 class="font-bold text-nexus-text-primary">${title}</h5><p class="text-sm text-nexus-text-secondary mt-1">${text}</p></div>`
-    });    processedContent = processedContent.replace(/<nsil:source_attribution>([\s\S]*?)<\/nsil:source_attribution>/g, '<div class="nsil-source mt-6 pt-4 border-t border-nexus-border-medium"><h3>Source Attribution</h3>$1</div>');
+        };
+        const className = colorClasses[color] || 'border-gray-500';
+        return `<div class="nsil-interactive nsil-zone border-t-4 ${className} p-4 rounded-b-lg bg-nexus-surface-800" data-symbiosis-title="Risk Zone: ${title}" data-symbiosis-content="${text}"><h5 class="font-bold text-nexus-text-primary">${title}</h5><p class="text-sm text-nexus-text-secondary mt-1">${text}</p></div>`
+    });
 
     const parts = processedContent.split(chartSplitRegex);
 

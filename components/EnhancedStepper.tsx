@@ -32,7 +32,7 @@ const EnhancedStepper: React.FC<EnhancedStepperProps> = ({
       return <span className="text-sm font-bold text-red-600">!</span>;
     }
     if (step.status === 'active' || index === currentStep) {
-      return <span className="text-sm font-bold text-blue-600">●</span>;
+      return <span className="text-sm font-bold text-blue-600 animate-pulse">●</span>;
     }
     return <span className="text-sm font-bold">{index + 1}</span>;
   };
@@ -47,7 +47,7 @@ const EnhancedStepper: React.FC<EnhancedStepperProps> = ({
       return `${baseClasses} bg-red-500 border-red-500 text-white shadow-lg hover:bg-red-600`;
     }
     if (step.status === 'active' || index === currentStep) {
-      return `${baseClasses} bg-blue-600 border-blue-600 text-white shadow-lg ring-4 ring-blue-200 animate-pulse`;
+      return `${baseClasses} bg-blue-600 border-blue-600 text-white shadow-lg ring-4 ring-blue-200`;
     }
     return `${baseClasses} bg-white border-gray-300 text-gray-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50`;
   };

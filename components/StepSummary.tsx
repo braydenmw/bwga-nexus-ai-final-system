@@ -74,7 +74,7 @@ export const StepSummary: React.FC<StepSummaryProps> = ({
                 {step.completed ? (
                   <ShieldCheckIcon className="h-4 w-4 text-green-600" />
                 ) : index === currentStep ? (
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                 ) : (
                   <span className="text-gray-400 font-bold text-sm">○</span>
                 )}
