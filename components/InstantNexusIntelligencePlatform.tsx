@@ -650,7 +650,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-20">
         <div className="flex items-center justify-between">
@@ -658,8 +658,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             <div className="bg-blue-600 p-2 rounded-lg">
               <NexusLogo className="w-6 h-6 text-white" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">NEXUS AI Global Intelligence Platform</h1>
+            <div className="flex-grow">
+              <h1 className="text-lg font-bold text-gray-900">NEXUS AI Global Intelligence Platform</h1>
               <p className="text-sm text-gray-500">Intelligence in Minutes, Not Hours</p>
             </div>
           </div>
@@ -675,157 +675,20 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </div>
       </header>
 
-      {/* Stage Navigation Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-          {/* Stage Progress */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
-              {STAGES.map((stage, stageIndex) => (
-                <div key={stage.id} className="flex items-center gap-3">
-                  {/* Stage Circle */}
-                  <div className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-all duration-300 ${
-                    stageIndex < getCurrentStage()
-                      ? 'bg-green-600 text-white'
-                      : stageIndex === getCurrentStage()
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {stageIndex < getCurrentStage() ? (
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    ) : (
-                      stageIndex + 1
-                    )}
-                  </div>
-
-                  {/* Stage Info */}
-                  <div>
-                    <div className={`text-sm font-semibold ${
-                      stageIndex <= getCurrentStage() ? 'text-gray-900' : 'text-gray-500'
-                    }`}>
-                      {stage.title}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {stage.steps.length} steps
-                    </div>
-                  </div>
-
-                  {/* Connector Line */}
-                  {stageIndex < STAGES.length - 1 && (
-                    <div className={`w-8 sm:w-12 lg:w-16 h-0.5 ${
-                      stageIndex < getCurrentStage() ? 'bg-green-400' : 'bg-gray-300'
-                    }`} />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Current Step Info */}
-            <div className="text-right">
-              <div className="text-sm font-medium text-gray-700">
-                Step {currentStep + 1} of {WIZARD_STEPS.length}
-              </div>
-              <div className="text-xs text-gray-500">
-                {WIZARD_STEPS[currentStep]?.title}
-              </div>
-            </div>
-          </div>
-
-          {/* Step Progress within Current Stage */}
-          <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-700">
-                Stage {getCurrentStage() + 1}: {STAGES[getCurrentStage()]?.title}
-              </h3>
-              <span className="text-xs text-gray-500">
-                {getStageProgress()} of {STAGES[getCurrentStage()]?.steps.length} steps complete
-              </span>
-            </div>
-
+      <div className="flex-grow flex flex-col min-h-0">
+        {/* AI Co-Pilot Sidebar - Compact and non-intrusive */}
+        <aside className="w-full bg-white border-b border-gray-200 flex flex-col max-h-80 overflow-hidden">
+          <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
             <div className="flex items-center gap-2">
-              {STAGES[getCurrentStage()]?.steps.map((stepId, index) => {
-                const step = WIZARD_STEPS.find(s => s.id === stepId);
-                const isCompleted = completedSteps.has(stepId);
-                const isCurrent = currentStep === stepId;
-
-                return (
-                  <div key={stepId} className="flex items-center gap-2 flex-1">
-                    <button
-                      onClick={() => goToStep(stepId)}
-                      disabled={stepId > currentStep && !completedSteps.has(stepId - 1)}
-                      className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all duration-300 ${
-                        isCurrent
-                          ? 'bg-blue-600 text-white'
-                          : isCompleted
-                          ? 'bg-green-600 text-white'
-                          : stepId > currentStep && !completedSteps.has(stepId - 1)
-                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                          : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400'
-                      }`}
-                    >
-                      {isCompleted ? (
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      ) : (
-                        index + 1
-                      )}
-                    </button>
-
-                    <div className="flex-1">
-                      <div className={`text-sm font-medium ${
-                        isCurrent ? 'text-blue-700' : isCompleted ? 'text-green-700' : 'text-gray-600'
-                      }`}>
-                        {step?.title}
-                      </div>
-                      <div className="text-xs text-gray-500 hidden sm:block">
-                        {step?.description}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              <ChatBubbleLeftRightIcon className="w-5 h-5" />
+              <h3 className="font-semibold text-base">AI Co-Pilot</h3>
             </div>
-          </div>
-
-          {/* Step Errors */}
-          {stepErrors[currentStep]?.length > 0 && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <h4 className="text-sm font-semibold text-red-800 mb-2 flex items-center gap-2">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                Please complete the following:
-              </h4>
-              <ul className="text-sm text-red-700 space-y-1">
-                {stepErrors[currentStep].map((error, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="text-red-500 mt-1">•</span>
-                    <span>{error}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col 2xl:flex-row min-h-[calc(100vh-140px)]">
-        {/* AI Co-Pilot Sidebar - Responsive positioning */}
-        <aside className="w-full 2xl:w-60 bg-white border-b 2xl:border-b-0 2xl:border-r border-gray-200 order-2 2xl:order-1 2xl:sticky 2xl:top-[140px] h-auto 2xl:h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
-          <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-            <div className="flex items-center gap-2">
-              <ChatBubbleLeftRightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-              <h3 className="font-semibold text-sm sm:text-base">AI Co-Pilot</h3>
-            </div>
-            <p className="text-xs opacity-90 mt-1 hidden sm:block">
+            <p className="text-xs opacity-90 mt-1">
               Your intelligent assistant for guidance and insights
             </p>
           </div>
 
-          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-3 space-y-3">
             {chatMessages.map((msg, index) => (
               <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] p-3 rounded-lg ${
@@ -850,7 +713,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             )}
           </div>
 
-          <div className="p-3 sm:p-4 border-t border-gray-200 bg-gray-50">
+          <div className="p-3 border-t border-gray-200 bg-gray-50">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -858,14 +721,13 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Ask me anything..."
-                className="flex-1 p-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="flex-1 p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 disabled={isTyping}
-                title="AI Co-Pilot chat input"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!currentMessage.trim() || isTyping}
-                className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-xs sm:text-sm"
+                className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm"
               >
                 Send
               </button>
@@ -874,8 +736,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 order-1 2xl:order-2">
-          <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-4xl mx-auto space-y-4 pb-20">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="max-w-5xl mx-auto space-y-4 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
@@ -891,6 +753,11 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             )}
 
             {/* Step Content */}
+            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                <EnhancedStepper steps={WIZARD_STEPS} currentStep={currentStep} onStepClick={goToStep} />
+            </div>
+
+
             <div className="space-y-6">
               {renderStepContent()}
 
@@ -898,7 +765,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
               <div className="flex justify-between items-center pt-6 border-t border-gray-200">
                 <button
                   onClick={prevStep}
-                  disabled={currentStep === 0}
+                  disabled={currentStep === 0 || isAnalyzing || isGeneratingReport}
                   className="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Previous
@@ -911,13 +778,14 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                 {currentStep < WIZARD_STEPS.length - 1 ? (
                   <button
                     onClick={nextStep}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                    disabled={isAnalyzing || isGeneratingReport}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
                     Next
                   </button>
                 ) : (
                   <button
-                    onClick={() => {/* Generate final report */}}
+                    onClick={generateReport}
                     className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
                   >
                     Generate Intelligence Report
@@ -930,7 +798,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             {analysisResults && (
               <div className="space-y-6">
                 <Card>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">🧠 Nexus Brain Analysis Results</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-6">🧠 Nexus Brain Analysis Results</h2>
 
                   <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
                     {/* RROI Results */}
@@ -969,11 +837,10 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             {analysisResults && (
               <Card>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Generate Intelligence Package</h2>
-
                 <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Letter Generation */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">✉️ Ice-Breaker Letter</h3>
+                    <h3 className="text-base font-semibold text-gray-800 mb-4">✉️ Ice-Breaker Letter</h3>
                     <p className="text-gray-600 mb-4">Generate a professional introduction letter for your target partners.</p>
 
                     <button
@@ -999,7 +866,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
                   {/* Report Generation */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">📋 Intelligence Report</h3>
+                    <h3 className="text-base font-semibold text-gray-800 mb-4">📋 Intelligence Report</h3>
                     <p className="text-gray-600 mb-4">Choose your report depth and generate comprehensive analysis.</p>
 
                     <div className="space-y-3 mb-4">
@@ -1055,8 +922,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         {showTierSelection && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4">
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">🎯 Recommended Analysis Tiers</h3>
+              <div className="p-4">
+                <h3 className="text-base font-bold text-gray-900 mb-4">🎯 Recommended Analysis Tiers</h3>
                 <p className="text-sm text-gray-600 mb-6">
                   Based on your objectives and organization type, here are the most relevant analysis tiers:
                 </p>
@@ -1065,7 +932,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                   {recommendedTiers.map((tier, index) => (
                     <div key={tier.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
                       <div className="flex-1">
-                        <div className="font-medium text-gray-900">{tier.name}</div>
+                        <div className="font-medium text-sm text-gray-900">{tier.name}</div>
                         <div className="text-xs text-gray-600">{tier.rationale}</div>
                       </div>
                       <div className="flex items-center gap-2">
