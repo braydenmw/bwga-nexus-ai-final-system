@@ -257,9 +257,9 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
   const currentTiers = TIERS_BY_ORG_TYPE[formData.organizationType || 'Default'] || [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-y-auto">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-blue-600 p-2 rounded-lg">
@@ -282,10 +282,10 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
         </div>
       </header>
 
-      <div className="flex h-[calc(100vh-80px)]">
+      <div className="flex min-h-[calc(100vh-80px)]">
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-6xl mx-auto space-y-6">
+          <div className="max-w-6xl mx-auto space-y-6 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
@@ -559,7 +559,7 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
         </main>
 
         {/* AI Co-Pilot Sidebar */}
-        <aside className="w-96 bg-white border-l border-gray-200 flex flex-col">
+        <aside className="w-96 bg-white border-l border-gray-200 flex flex-col flex-shrink-0">
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center gap-2">
               <ChatBubbleLeftRightIcon className="w-5 h-5 text-blue-600" />
@@ -567,7 +567,7 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
             </div>
           </div>
 
-          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <p className="text-sm text-blue-800">
                 👋 Hi! I'm your Nexus AI Co-Pilot. I can help you refine your objectives,

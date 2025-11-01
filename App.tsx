@@ -165,13 +165,11 @@ function App() {
         return <div className="view-container"><LiveOpportunities onAnalyze={handleAnalyzeOpportunity} onStartSymbiosis={handleStartSymbiosis} /></div>;
       case 'report':
         return (
-          <div className="h-full">
-            <InstantNexusIntelligencePlatform
-              onViewChange={handleViewChange}
-              onReportUpdate={handleReportUpdate}
-              onProfileUpdate={handleProfileUpdate}
-            />
-          </div>
+          <InstantNexusIntelligencePlatform
+            onViewChange={handleViewChange}
+            onReportUpdate={handleReportUpdate}
+            onProfileUpdate={handleProfileUpdate}
+          />
         );
       case 'debug-report':
         return (
