@@ -169,7 +169,7 @@ export const DataFeedItem: React.FC<DataFeedItemProps> = ({ post, onAnalyze, onS
 
     return (
         <Card 
-            className={`p-0 overflow-hidden transition-all duration-300 hover:border-nexus-accent-cyan/50 hover:shadow-xl hover:shadow-nexus-accent-cyan/10 flex flex-col h-full ${className}`} 
+            className={`p-0 overflow-hidden transition-all duration-300 hover:border-nexus-border-light hover:shadow-xl hover:shadow-black/20 flex flex-col h-full bg-nexus-surface-800 border-nexus-border-medium ${className}`} 
             style={style}
         >
             <div className="p-4 border-b border-nexus-border-medium flex justify-between items-center bg-nexus-surface-800/50">

@@ -42,15 +42,7 @@ const PredictiveHorizonScan: React.FC<{ feed: FeedPost[] }> = ({ feed }) => {
     const hasContent = analysis && (analysis.emergingTrends.length > 0 || analysis.futureOpportunities.length > 0 || analysis.potentialDisruptions.length > 0);
 
     if (isLoading) {
-        return (
-            <Card className="nexus-card-glass p-6 mb-6 animate-fadeIn animation-delay-400 border-nexus-accent-cyan/30 bg-nexus-accent-cyan/5">
-                <div className="flex items-center gap-3 mb-2">
-                    <NexusLogo className="w-8 h-8 text-nexus-accent-cyan animate-pulse" />
-                    <h3 className="font-semibold text-nexus-text-primary text-lg">Nexus Brain: Predictive Scan</h3>
-                </div>
-                <p className="text-sm text-nexus-text-secondary">Analyzing feed for future trends and opportunities...</p>
-            </Card>
-        );
+        return null; // Simplified to not show a loading state here
     }
     
     if (error || !hasContent) {
@@ -75,13 +67,13 @@ const PredictiveHorizonScan: React.FC<{ feed: FeedPost[] }> = ({ feed }) => {
     };
     
     return (
-        <Card className="nexus-card-glass p-6 mb-6 animate-fadeIn animation-delay-400 border-nexus-accent-cyan/50 bg-nexus-accent-cyan/5">
+        <Card className="bg-nexus-surface-800 p-6 mb-6 animate-fadeIn animation-delay-400 border-nexus-border-medium">
             <div className="flex items-center gap-3 mb-2">
                 <NexusLogo className="w-8 h-8 text-nexus-accent-cyan" />
                 <h3 className="font-semibold text-nexus-text-primary text-lg">Nexus Brain: Predictive Horizon Scan</h3>
             </div>
             <p className="text-sm text-nexus-text-secondary mb-4">AI-driven analysis of emerging trends based on the current data feed.</p>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-4">
                 <AnalysisSection title="Emerging Trends" items={analysis.emergingTrends.map(t => ({ title: t.trend, content: t.justification }))} />
                 <AnalysisSection title="Future Opportunities" items={analysis.futureOpportunities.map(o => ({ title: o.opportunity, content: o.rationale }))} />
                 <AnalysisSection title="Potential Disruptions" items={analysis.potentialDisruptions.map(d => ({ title: d.disruption, content: d.impact }))} />
@@ -92,14 +84,14 @@ const PredictiveHorizonScan: React.FC<{ feed: FeedPost[] }> = ({ feed }) => {
 
 
 const ConnectionGuide: React.FC = () => (
-    <Card className="nexus-card-error mb-6 animate-fadeIn">
+    <Card className="bg-red-900/20 border border-red-500/50 text-red-200 p-6 mb-6 animate-fadeIn">
       <div className="flex items-center gap-3 mb-4">
-        <div className="nexus-icon-circle-error">
+        <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.21 3.03-1.742 3.03H4.42c-1.532 0-2.492-1.696-1.742-3.03l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
         </div>
-        <h3 className="text-xl font-bold text-white">Action Required: Connection Failure</h3>
+        <h3 className="text-xl font-bold text-red-100">Action Required: Connection Failure</h3>
       </div>
       
       <div className="space-y-4">
@@ -110,13 +102,13 @@ const ConnectionGuide: React.FC = () => (
           This typically happens when the server-side component is unresponsive or not configured correctly. The most common cause is a missing API Key.
         </p>
         
-        <div className="p-4 bg-nexus-primary-900/50 rounded-lg border border-nexus-border-medium">
-          <h4 className="text-white mb-3 font-semibold">How to Fix This:</h4>
+        <div className="p-4 bg-black/20 rounded-lg border border-red-400/30">
+          <h4 className="text-red-100 mb-3 font-semibold">How to Fix This:</h4>
           <p className="text-amber-200 mb-4 text-sm">
             The application administrator must configure the backend service with a valid API Key by setting a server-side environment variable.
           </p>
           
-          <div className="p-3 bg-nexus-primary-900 rounded text-sm font-mono text-nexus-text-secondary">
+          <div className="p-3 bg-black/30 rounded text-sm font-mono text-red-200">
             <div><strong>Variable Name:</strong> <code className="text-white">API_KEY</code></div>
             <div className="mt-2"><strong>Variable Value:</strong> <code className="text-white">[Your OpenAI API Key]</code></div>
             <div className="mt-2 text-xs text-nexus-text-secondary">
@@ -130,7 +122,7 @@ const ConnectionGuide: React.FC = () => (
 
 const IntelligenceToolItem: React.FC<{ icon: React.ReactNode, title: string, children: React.ReactNode }> = ({ icon, title, children }) => (
     <div className="flex items-start gap-4">
-        <div className="nexus-icon-circle-accent">
+        <div className="w-12 h-12 rounded-full bg-nexus-surface-700 border border-nexus-border-medium flex items-center justify-center flex-shrink-0">
             {icon}
         </div>
         <div>
@@ -187,7 +179,7 @@ const RotatingGlobalInsights: React.FC<{ feed: FeedPost[] }> = ({ feed }) => {
     const currentInsight = globalInsights[currentIndex];
 
     return (
-        <Card className="nexus-card-glass p-6 mb-6 animate-fadeIn animation-delay-300 border-nexus-accent-gold/50 bg-nexus-accent-gold/5">
+        <Card className="bg-nexus-surface-800 p-6 mb-6 animate-fadeIn animation-delay-300 border-nexus-border-medium">
             <div className="flex items-center gap-3 mb-4">
                 <GlobeIcon className="w-8 h-8 text-nexus-accent-gold animate-pulse" />
                 <div>
@@ -300,7 +292,7 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                             The Nexus clearinghouse for live development opportunities, news, and economic indicators. Our AI provides an initial feasibility and risk assessment on aggregated tenders and projects.
                         </p>
                     </div>
-                    <Card className="nexus-card-glass p-4 lg:col-span-2 animate-fadeIn animation-delay-400">
+                    <Card className="bg-nexus-surface-800 p-4 lg:col-span-2 animate-fadeIn animation-delay-400 border-nexus-border-medium">
                          <h3 className="font-semibold text-nexus-accent-brown mb-3">Sector Focus Snapshot</h3>
                          <RegionalSnapshot feed={feed} />
                     </Card>
@@ -308,9 +300,10 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                 
                 <RotatingGlobalInsights feed={feed} />
 
-                <PredictiveHorizonScan feed={feed} />
+                {/* PredictiveHorizonScan is now simpler and fits the theme */}
+                {feed.length > 2 && <PredictiveHorizonScan feed={feed} />}
 
-                <Card className="nexus-card-glass p-6 mb-6 animate-fadeIn animation-delay-600">
+                <Card className="bg-nexus-surface-800 p-6 mb-6 animate-fadeIn animation-delay-600 border-nexus-border-medium">
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <IntelligenceToolItem icon={<BriefcaseIcon className="w-7 h-7" />} title="Identify Opportunities">
                             Scan live tenders and projects aggregated from global development banks and government sources.
@@ -327,9 +320,9 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                     </div>
                 </Card>
 
-                <Card className="nexus-card-glass p-6 mb-6 animate-fadeIn animation-delay-700 border-nexus-accent-cyan/50 bg-nexus-accent-cyan/5">
+                <Card className="bg-nexus-surface-800 p-6 mb-6 animate-fadeIn animation-delay-700 border-nexus-border-medium">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="nexus-icon-circle-accent">
+                        <div className="w-12 h-12 rounded-full bg-nexus-surface-700 border border-nexus-border-medium flex items-center justify-center flex-shrink-0">
                             <GlobeIcon className="w-7 h-7" />
                         </div>
                         <div>
@@ -339,15 +332,15 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                        <div className="bg-nexus-surface-700 p-4 rounded-lg border border-nexus-border-medium">
                             <h4 className="font-semibold text-nexus-accent-cyan mb-2">🌍 Regional Market Scanner</h4>
                             <p className="text-sm text-nexus-text-secondary mb-3">Discover emerging markets with growth potential in your industry sector.</p>
-                            <button className="w-full text-sm bg-nexus-accent-cyan/20 hover:bg-nexus-accent-cyan/30 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
+                            <button className="w-full text-sm bg-nexus-accent-cyan/10 hover:bg-nexus-accent-cyan/20 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
                                 Scan Markets
                             </button>
                         </div>
 
-                        <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                        <div className="bg-nexus-surface-700 p-4 rounded-lg border border-nexus-border-medium">
                             <h4 className="font-semibold text-nexus-accent-cyan mb-2">📈 Business Climate Index</h4>
                             <p className="text-sm text-nexus-text-secondary mb-3">Compare business-friendly regions with tax incentives and regulatory advantages.</p>
                             <div className="space-y-2">
@@ -365,13 +358,13 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                                         <span className="text-yellow-400 font-semibold">88/100</span>
                                     </div>
                                 </div>
-                                <button className="w-full text-sm bg-nexus-accent-cyan/20 hover:bg-nexus-accent-cyan/30 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
+                                <button className="w-full text-sm bg-nexus-accent-cyan/10 hover:bg-nexus-accent-cyan/20 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
                                     View Full Rankings
                                 </button>
                             </div>
                         </div>
 
-                        <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                        <div className="bg-nexus-surface-700 p-4 rounded-lg border border-nexus-border-medium">
                             <h4 className="font-semibold text-nexus-accent-cyan mb-2">🔗 Partnership Finder</h4>
                             <p className="text-sm text-nexus-text-secondary mb-3">Connect with regional partners, distributors, and strategic alliances.</p>
                             <div className="space-y-2">
@@ -385,7 +378,7 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                                         <div>• Latin America Renewable Energy</div>
                                     </div>
                                 </div>
-                                <button className="w-full text-sm bg-nexus-accent-cyan/20 hover:bg-nexus-accent-cyan/30 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
+                                <button className="w-full text-sm bg-nexus-accent-cyan/10 hover:bg-nexus-accent-cyan/20 text-nexus-accent-cyan py-2 px-3 rounded-md transition-colors">
                                     Explore Partnerships
                                 </button>
                             </div>
@@ -425,7 +418,7 @@ export const LiveOpportunities: React.FC<LiveOpportunitiesProps> = ({ onAnalyze,
                  
                  {!isLoading && feed.length === 0 && (
                     <div className="text-center py-16">
-                        <div className="nexus-icon-circle-accent mx-auto mb-4">
+                        <div className="w-16 h-16 rounded-full bg-nexus-surface-700 border border-nexus-border-medium flex items-center justify-center mx-auto mb-4">
                             <BriefcaseIcon className="w-8 h-8" />
                         </div>
                         <h3 className="text-lg font-semibold text-nexus-text-primary mb-2">No opportunities found</h3>

@@ -196,9 +196,9 @@ function App() {
   return (
     <React.StrictMode>
       <ErrorBoundary>
-        <div className="aurora-background" style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
+        <div className="bg-gray-50 dark:bg-nexus-primary-900" style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
           <Header currentView={currentView} onViewChange={handleViewChange} />
-          <main className="pt-20 flex-grow overflow-y-auto" style={{height: 'calc(100vh - 80px)'}}>
+          <main className="pt-20 flex-grow overflow-y-auto" style={{height: 'calc(100vh - 80px)'}} id="main-content">
             {/* The container below ensures consistent padding and max-width for non-workspace views */}
             <div className={`min-h-full ${currentView !== 'report' ? 'max-w-6xl mx-auto px-4 md:px-8' : ''}`}>
               {renderCurrentView()}

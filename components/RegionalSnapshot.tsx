@@ -7,8 +7,7 @@ interface RegionalSnapshotProps {
 }
 
 // New color palette for the chart, harmonized with the app theme
-const COLORS = ['#92400e', '#00C6FF', '#10b981', '#6366f1', '#ec4899', '#d946ef'];
-
+const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#d946ef'];
 const CustomTooltip = ({ active, payload }: any) => {  
   if (active && payload && payload.length) {
     return (
@@ -103,7 +102,7 @@ export const RegionalSnapshot: React.FC<RegionalSnapshotProps> = ({ feed }) => {
                            layout="vertical"
                            verticalAlign="middle"
                            align="right"
-                           wrapperStyle={{fontSize: '12px', color: '#8B949E', paddingLeft: '20px'}}
+                           wrapperStyle={{fontSize: '12px', color: 'var(--text-secondary)', paddingLeft: '20px'}}
                         />
                     </PieChart>
                 </ResponsiveContainer>
