@@ -636,18 +636,30 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
       {/* Step Navigation Header */}
       <div className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="px-6 py-6">
+        <div className="px-4 sm:px-6 py-4 sm:py-6">
+          {/* Mobile: Current step info at top */}
+          <div className="block lg:hidden text-center mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full shadow-sm border border-gray-200">
+              <span className="text-sm font-medium text-gray-700">
+                Step {currentStep + 1} of {WIZARD_STEPS.length}
+              </span>
+              <span className="text-xs text-gray-500 hidden sm:inline">
+                {WIZARD_STEPS[currentStep]?.title}
+              </span>
+            </div>
+          </div>
+
           <div className="flex items-center justify-center">
-            <div className="flex items-center gap-1 overflow-x-auto">
+            <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto max-w-full">
               {WIZARD_STEPS.map((step, index) => (
-                <div key={step.id} className="flex items-center">
+                <div key={step.id} className="flex items-center flex-shrink-0">
                   {/* Step Circle */}
                   <button
                     onClick={() => goToStep(step.id)}
                     disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
-                    className={`relative flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-all duration-300 ${
+                    className={`relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
                       step.id === currentStep
-                        ? 'bg-blue-600 text-white shadow-lg scale-110'
+                        ? 'bg-blue-600 text-white shadow-lg scale-105 sm:scale-110'
                         : step.id < currentStep || completedSteps.has(step.id)
                         ? 'bg-green-600 text-white shadow-md'
                         : step.id > currentStep && !completedSteps.has(step.id - 1)
@@ -656,7 +668,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                     }`}
                   >
                     {step.id < currentStep || completedSteps.has(step.id) ? (
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-3 h-3 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     ) : (
@@ -664,9 +676,9 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                     )}
                   </button>
 
-                  {/* Step Title */}
-                  <div className="ml-3 hidden lg:block">
-                    <div className={`text-sm font-semibold ${
+                  {/* Step Title - Desktop only */}
+                  <div className="ml-2 sm:ml-3 hidden xl:block">
+                    <div className={`text-xs sm:text-sm font-semibold ${
                       step.id === currentStep
                         ? 'text-blue-700'
                         : step.id < currentStep || completedSteps.has(step.id)
@@ -675,14 +687,14 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                     }`}>
                       {step.title}
                     </div>
-                    <div className="text-xs text-gray-500 mt-0.5">
+                    <div className="text-xs text-gray-500 mt-0.5 hidden 2xl:block">
                       {step.description}
                     </div>
                   </div>
 
                   {/* Connector Line */}
                   {index < WIZARD_STEPS.length - 1 && (
-                    <div className={`w-8 h-0.5 mx-2 ${
+                    <div className={`w-4 sm:w-6 lg:w-8 h-0.5 mx-1 sm:mx-2 ${
                       step.id < currentStep || completedSteps.has(step.id)
                         ? 'bg-green-400'
                         : 'bg-gray-300'
@@ -693,8 +705,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             </div>
           </div>
 
-          {/* Current Step Info */}
-          <div className="text-center mt-4">
+          {/* Desktop: Current step info at bottom */}
+          <div className="hidden lg:block text-center mt-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
               <span className="text-sm font-medium text-gray-700">
                 Step {currentStep + 1} of {WIZARD_STEPS.length}
@@ -707,14 +719,14 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
           {/* Step Errors */}
           {stepErrors[currentStep]?.length > 0 && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg max-w-md mx-auto">
-              <h4 className="text-sm font-semibold text-red-800 mb-2 flex items-center gap-2">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <div className="mt-3 sm:mt-4 p-3 bg-red-50 border border-red-200 rounded-lg max-w-sm sm:max-w-md mx-auto">
+              <h4 className="text-xs sm:text-sm font-semibold text-red-800 mb-2 flex items-center gap-2">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
                 Please complete:
               </h4>
-              <ul className="text-sm text-red-700 space-y-1">
+              <ul className="text-xs sm:text-sm text-red-700 space-y-1">
                 {stepErrors[currentStep].map((error, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <span className="text-red-500 mt-1">•</span>
@@ -727,15 +739,15 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </div>
       </div>
 
-      <div className="flex min-h-[calc(100vh-140px)]">
-        {/* AI Co-Pilot Sidebar - Now sticky and follows scrolling */}
-        <aside className="w-72 bg-white border-r border-gray-200 sticky top-[140px] h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
-          <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white">
+      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-140px)]">
+        {/* AI Co-Pilot Sidebar - Responsive positioning */}
+        <aside className="w-full lg:w-72 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 order-2 lg:order-1 lg:sticky lg:top-[140px] h-auto lg:h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
+          <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white">
             <div className="flex items-center gap-2">
-              <ChatBubbleLeftRightIcon className="w-5 h-5" />
-              <h3 className="font-semibold">AI Co-Pilot</h3>
+              <ChatBubbleLeftRightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+              <h3 className="font-semibold text-sm sm:text-base">AI Co-Pilot</h3>
             </div>
-            <p className="text-xs opacity-90 mt-1">
+            <p className="text-xs opacity-90 mt-1 hidden sm:block">
               Your intelligent assistant for guidance and insights
             </p>
           </div>
@@ -765,7 +777,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             )}
           </div>
 
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-3 sm:p-4 border-t border-gray-200">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -773,14 +785,14 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Ask me anything..."
-                className="flex-1 p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="flex-1 p-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 disabled={isTyping}
                 title="AI Co-Pilot chat input"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!currentMessage.trim() || isTyping}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm"
+                className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-xs sm:text-sm"
               >
                 Send
               </button>
@@ -789,8 +801,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-4xl mx-auto space-y-6 pb-20">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 order-1 lg:order-2">
+          <div className="max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto space-y-6 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
