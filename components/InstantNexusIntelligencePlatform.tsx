@@ -7,8 +7,18 @@ import { TPTResultDisplay } from './TPTResultDisplay.tsx';
 import { SEAMResultDisplay } from './SEAMResultDisplay.tsx';
 import { EconomicSnapshot } from './EconomicSnapshot.tsx';
 import Spinner, { SpinnerSmall } from './Spinner.tsx';
-import { NexusLogo, ArrowUpIcon, DownloadIcon, ChatBubbleLeftRightIcon } from './Icons.tsx';
+import { NexusLogo, DownloadIcon, ChatBubbleLeftRightIcon } from './Icons.tsx';
 import Card from './common/Card.tsx';
+import { ContextEntryStep } from './ContextEntryStep.tsx';
+import ObjectiveStep from './ObjectiveStep.tsx';
+import { OpportunityAssessmentStep } from './OpportunityAssessmentStep.tsx';
+import { PartnershipIntentStep } from './PartnershipIntentStep.tsx';
+import OpportunityStep from './OpportunityStep.tsx';
+import { ImplementationPlanningStep } from './ImplementationPlanningStep.tsx';
+import { NSILPresentationStep } from './NSILPresentationStep.tsx';
+import ReviewStep from './ReviewStep.tsx';
+import { StepSummary } from './StepSummary.tsx';
+import EnhancedStepper from './EnhancedStepper.tsx';
 
 interface InstantNexusIntelligencePlatformProps {
   onViewChange: (view: any, params: ReportParameters) => void;
@@ -27,11 +37,28 @@ interface AnalysisResults {
   opportunities: LiveOpportunityItem[];
 }
 
+// Step definitions for the wizard
+const WIZARD_STEPS = [
+  { id: 0, title: 'Context & Profile', description: 'Establish your background and objectives' },
+  { id: 1, title: 'Strategic Objectives', description: 'Define your core business goals' },
+  { id: 2, title: 'Opportunity Assessment', description: 'Analyze market opportunities' },
+  { id: 3, title: 'Partnership Intent', description: 'Clarify partnership requirements' },
+  { id: 4, title: 'Regional Focus', description: 'Select target regions and tiers' },
+  { id: 5, title: 'Industry Analysis', description: 'Deep-dive into industry sectors' },
+  { id: 6, title: 'AI Configuration', description: 'Configure AI analysis parameters' },
+  { id: 7, title: 'Implementation Planning', description: 'Develop execution roadmap' },
+  { id: 8, title: 'Intelligence Generation', description: 'Generate comprehensive reports' },
+];
+
 const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatformProps> = ({
   onViewChange,
   onReportUpdate,
   onProfileUpdate,
 }) => {
+  // Wizard state
+  const [currentStep, setCurrentStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+
   // Form state
   const [formData, setFormData] = useState<Partial<ReportParameters>>({
     userName: '',
@@ -66,6 +93,9 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
   const [currentMessage, setCurrentMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
+  // Validation state
+  const [stepErrors, setStepErrors] = useState<Record<number, string[]>>({});
+
   // Refs
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -82,7 +112,65 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
   // Handle form changes
   const handleFormChange = useCallback((field: keyof ReportParameters, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear any errors for this field
+    setStepErrors(prev => {
+      const newErrors = { ...prev };
+      if (newErrors[currentStep]) {
+        newErrors[currentStep] = newErrors[currentStep].filter(error =>
+          !error.toLowerCase().includes(field.toLowerCase())
+        );
+      }
+      return newErrors;
+    });
+  }, [currentStep]);
+
+  // Step navigation
+  const nextStep = useCallback(() => {
+    if (validateCurrentStep()) {
+      setCompletedSteps(prev => new Set([...prev, currentStep]));
+      setCurrentStep(prev => Math.min(prev + 1, WIZARD_STEPS.length - 1));
+    }
+  }, [currentStep]);
+
+  const prevStep = useCallback(() => {
+    setCurrentStep(prev => Math.max(prev - 1, 0));
   }, []);
+
+  const goToStep = useCallback((stepId: number) => {
+    if (stepId <= currentStep || completedSteps.has(stepId - 1)) {
+      setCurrentStep(stepId);
+    }
+  }, [currentStep, completedSteps]);
+
+  // Step validation
+  const validateCurrentStep = useCallback((): boolean => {
+    const errors: string[] = [];
+
+    switch (currentStep) {
+      case 0: // Context & Profile
+        if (!formData.userName?.trim()) errors.push('Full name is required');
+        if (!formData.userCountry) errors.push('Country selection is required');
+        if (!formData.organizationType) errors.push('Organization type is required');
+        break;
+      case 1: // Strategic Objectives
+        if (!formData.reportName?.trim()) errors.push('Report name is required');
+        if (!formData.problemStatement?.trim()) errors.push('Core objective is required');
+        break;
+      case 2: // Opportunity Assessment
+        if (!formData.region?.trim()) errors.push('Target region is required');
+        break;
+      case 3: // Partnership Intent
+        if (!formData.idealPartnerProfile?.trim()) errors.push('Partner profile is required');
+        break;
+      case 4: // Regional Focus
+        if (!formData.industry?.length) errors.push('At least one industry must be selected');
+        if (!formData.tier?.length) errors.push('At least one tier must be selected');
+        break;
+    }
+
+    setStepErrors(prev => ({ ...prev, [currentStep]: errors }));
+    return errors.length === 0;
+  }, [currentStep, formData]);
 
   // Multi-select handlers
   const handleIndustryToggle = useCallback((industryId: string) => {
@@ -256,6 +344,129 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
 
   const currentTiers = TIERS_BY_ORG_TYPE[formData.organizationType || 'Default'] || [];
 
+  // Render step content
+  const renderStepContent = () => {
+    const inputStyles = "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+    const labelStyles = "block text-sm font-medium text-gray-700 mb-1";
+
+    switch (currentStep) {
+      case 0:
+        return (
+          <ContextEntryStep
+            params={formData as ReportParameters}
+            handleChange={(field, value) => handleFormChange(field as keyof ReportParameters, value)}
+            inputStyles={inputStyles}
+            labelStyles={labelStyles}
+          />
+        );
+      case 1:
+        return (
+          <ObjectiveStep
+            params={formData as ReportParameters}
+            onChange={(params) => setFormData(prev => ({ ...prev, ...params }))}
+          />
+        );
+      case 2:
+        return (
+          <OpportunityAssessmentStep
+            params={formData as ReportParameters}
+            onChange={(params) => setFormData(prev => ({ ...prev, ...params }))}
+            inputStyles={inputStyles}
+            labelStyles={labelStyles}
+          />
+        );
+      case 3:
+        return (
+          <PartnershipIntentStep
+            params={formData as ReportParameters}
+            onChange={(params) => setFormData(prev => ({ ...prev, ...params }))}
+            inputStyles={inputStyles}
+            labelStyles={labelStyles}
+          />
+        );
+      case 4:
+        return (
+          <OpportunityStep
+            params={formData as ReportParameters}
+            onChange={(params) => setFormData(prev => ({ ...prev, ...params }))}
+          />
+        );
+      case 5:
+        return (
+          <div className="space-y-6">
+            <Card>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Industry Analysis</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {INDUSTRIES.map((industry) => (
+                  <button
+                    key={industry.id}
+                    onClick={() => handleIndustryToggle(industry.id)}
+                    className={`p-3 rounded-lg border text-center transition-all ${
+                      formData.industry?.includes(industry.id)
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-300 hover:border-gray-400 bg-white'
+                    }`}
+                  >
+                    <div className="text-sm font-medium">{industry.title}</div>
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </div>
+        );
+      case 6:
+        return (
+          <div className="space-y-6">
+            <Card>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">AI Configuration</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelStyles}>AI Analysis Lenses</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {['Strategic', 'Financial', 'Operational', 'Risk'].map((lens) => (
+                      <label key={lens} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.analyticalLens?.includes(lens) || false}
+                          onChange={(e) => {
+                            const current = formData.analyticalLens || [];
+                            const updated = e.target.checked
+                              ? [...current, lens]
+                              : current.filter(l => l !== lens);
+                            handleFormChange('analyticalLens', updated);
+                          }}
+                          className="h-4 w-4 text-blue-600"
+                        />
+                        <span className="text-sm">{lens}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        );
+      case 7:
+        return (
+          <ImplementationPlanningStep
+            params={formData as ReportParameters}
+            onChange={(params) => setFormData(prev => ({ ...prev, ...params }))}
+            inputStyles={inputStyles}
+            labelStyles={labelStyles}
+          />
+        );
+      case 8:
+        return (
+          <NSILPresentationStep
+            params={formData as ReportParameters}
+            onChange={(params) => setFormData(prev => ({ ...prev, ...params }))}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 overflow-y-auto">
       {/* Header */}
@@ -283,9 +494,57 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
       </header>
 
       <div className="flex min-h-[calc(100vh-80px)]">
+        {/* Stepper Sidebar */}
+        <aside className="w-80 bg-white border-r border-gray-200 p-6 overflow-y-auto">
+          <div className="space-y-4">
+            {WIZARD_STEPS.map((step, index) => (
+              <button
+                key={step.id}
+                onClick={() => goToStep(step.id)}
+                disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
+                className={`w-full text-left p-4 rounded-lg border transition-all ${
+                  step.id === currentStep
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : step.id < currentStep || completedSteps.has(step.id)
+                    ? 'border-green-500 bg-green-50 text-green-700'
+                    : 'border-gray-300 bg-white text-gray-500'
+                } ${step.id > currentStep && !completedSteps.has(step.id - 1) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-md'}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                    step.id === currentStep
+                      ? 'bg-blue-600 text-white'
+                      : step.id < currentStep || completedSteps.has(step.id)
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-300 text-gray-600'
+                  }`}>
+                    {step.id < currentStep || completedSteps.has(step.id) ? '✓' : step.id + 1}
+                  </div>
+                  <div>
+                    <div className="font-semibold">{step.title}</div>
+                    <div className="text-sm opacity-75">{step.description}</div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Step Errors */}
+          {stepErrors[currentStep]?.length > 0 && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <h4 className="text-sm font-semibold text-red-800 mb-2">Please complete:</h4>
+              <ul className="text-sm text-red-700 space-y-1">
+                {stepErrors[currentStep].map((error, index) => (
+                  <li key={index}>• {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </aside>
+
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-6xl mx-auto space-y-6 pb-20">
+          <div className="max-w-4xl mx-auto space-y-6 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
@@ -300,139 +559,41 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
               </Card>
             )}
 
-            {/* Rapid Assessment Form */}
-            <Card>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">🚀 Rapid Intelligence Assessment</h2>
+            {/* Step Content */}
+            <div className="space-y-6">
+              {renderStepContent()}
 
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Profile Section */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-800">Your Profile</h3>
+              {/* Navigation */}
+              <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+                <button
+                  onClick={prevStep}
+                  disabled={currentStep === 0}
+                  className="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                    <input
-                      type="text"
-                      value={formData.userName || ''}
-                      onChange={(e) => handleFormChange('userName', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Enter your full name"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                    <input
-                      type="text"
-                      value={formData.userDepartment || ''}
-                      onChange={(e) => handleFormChange('userDepartment', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="e.g., Business Development"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Organization Type</label>
-                    <select
-                      value={formData.organizationType || ORGANIZATION_TYPES[0]}
-                      onChange={(e) => handleFormChange('organizationType', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      title="Select your organization type"
-                    >
-                      {ORGANIZATION_TYPES.map(type => (
-                        <option key={type} value={type}>{type}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Country</label>
-                    <select
-                      value={formData.userCountry || ''}
-                      onChange={(e) => handleFormChange('userCountry', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      title="Select your country"
-                    >
-                      <option value="">Select your country</option>
-                      {COUNTRIES.map(country => (
-                        <option key={country} value={country}>{country}</option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="text-sm text-gray-600">
+                  Step {currentStep + 1} of {WIZARD_STEPS.length}
                 </div>
 
-                {/* Objectives Section */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-800">Your Objectives</h3>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Report/Project Name *</label>
-                    <input
-                      type="text"
-                      value={formData.reportName || ''}
-                      onChange={(e) => handleFormChange('reportName', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Name your intelligence project"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Core Objective *</label>
-                    <textarea
-                      value={formData.problemStatement || ''}
-                      onChange={(e) => handleFormChange('problemStatement', e.target.value)}
-                      rows={4}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="What are you trying to achieve? Be specific about your goals, target markets, and partnership needs."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Target Region *</label>
-                    <input
-                      type="text"
-                      value={formData.region || ''}
-                      onChange={(e) => handleFormChange('region', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="e.g., Southeast Asia, Metro Manila, Philippines"
-                    />
-                  </div>
-                </div>
+                {currentStep < WIZARD_STEPS.length - 1 ? (
+                  <button
+                    onClick={nextStep}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {/* Generate final report */}}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                  >
+                    Generate Intelligence Report
+                  </button>
+                )}
               </div>
-
-              {/* Industry Selection */}
-              <div className="mt-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Industry Focus *</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {INDUSTRIES.map((industry) => (
-                    <button
-                      key={industry.id}
-                      onClick={() => handleIndustryToggle(industry.id)}
-                      className={`p-3 rounded-lg border text-center transition-all ${
-                        formData.industry?.includes(industry.id)
-                          ? 'border-blue-500 bg-blue-50 text-blue-700'
-                          : 'border-gray-300 hover:border-gray-400 bg-white'
-                      }`}
-                    >
-                      <industry.icon className="w-6 h-6 mx-auto mb-2" />
-                      <div className="text-sm font-medium">{industry.title}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Partner Profile */}
-              <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ideal Partner Profile</label>
-                <textarea
-                  value={formData.idealPartnerProfile || ''}
-                  onChange={(e) => handleFormChange('idealPartnerProfile', e.target.value)}
-                  rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Describe your ideal partner - their size, capabilities, experience, location preferences, etc."
-                />
-              </div>
-            </Card>
+            </div>
 
             {/* Analysis Results */}
             {analysisResults && (

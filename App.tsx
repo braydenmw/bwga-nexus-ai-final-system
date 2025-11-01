@@ -15,6 +15,9 @@ import { SampleReport } from './components/SampleReport.tsx';
 import { TechnicalManual } from './components/TechnicalManual.tsx';
 import WhoWeAre from './components/WhoWeAre.tsx';
 import TermsAndConditions from './components/TermsAndConditions.tsx';
+
+// Terms acceptance check
+const hasAcceptedTerms = localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
 import NexusReportStudio from './components/NexusReportStudio.tsx';
 import DebugReportGenerator from './components/DebugReportGenerator.tsx';
 import InstantNexusIntelligencePlatform from './components/InstantNexusIntelligencePlatform.tsx';
@@ -46,11 +49,7 @@ function App() {
   const [currentView, setCurrentView] = useState<View>('who-we-are');
   // Terms are now handled within BlueprintReportWizard
 
-  // State for terms acceptance and report system
-  const [hasAcceptedTerms, setHasAcceptedTerms] = useState<boolean>(() => {
-    // Check if user has already accepted terms
-    return localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
-  });
+  // Terms are now handled globally
   const [savedReports, setSavedReports] = useState<ReportParameters[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -104,18 +103,9 @@ function App() {
   }, []);
 
   const handleViewChange = (view: View) => {
-    // Reset terms acceptance when navigating to report view
-    if (view === 'report') {
-        setHasAcceptedTerms(localStorage.getItem('bwga-nexus-terms-accepted') === 'true');
-    }
     setCurrentView(view);
     // Auto-scroll to top when changing views
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleAcceptTerms = () => {
-    localStorage.setItem('bwga-nexus-terms-accepted', 'true');
-    setHasAcceptedTerms(true);
   };
 
   const handleDeclineTerms = () => {
@@ -192,7 +182,10 @@ function App() {
     return (
       <ErrorBoundary>
         <TermsAndConditions
-          onAccept={handleAcceptTerms}
+          onAccept={() => {
+            localStorage.setItem('bwga-nexus-terms-accepted', 'true');
+            window.location.reload(); // Force reload to update terms state
+          }}
           onDecline={handleDeclineTerms}
           isModal={true}
         />
