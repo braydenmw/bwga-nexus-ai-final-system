@@ -37,6 +37,30 @@ interface AnalysisResults {
   opportunities: LiveOpportunityItem[];
 }
 
+// Stage definitions for the 4-stage process
+const STAGES = [
+  {
+    id: 0,
+    title: 'Discovery',
+    steps: [0, 1, 2] // Context & Profile, Strategic Objectives, Opportunity Assessment
+  },
+  {
+    id: 1,
+    title: 'Strategy',
+    steps: [3, 4, 5] // Partnership Intent, Regional Focus, Industry Analysis
+  },
+  {
+    id: 2,
+    title: 'Analysis',
+    steps: [6, 7] // AI Configuration, Implementation Planning
+  },
+  {
+    id: 3,
+    title: 'Intelligence',
+    steps: [8] // Intelligence Generation (Report Release)
+  }
+];
+
 // Step definitions for the wizard
 const WIZARD_STEPS = [
   { id: 0, title: 'Context & Profile', description: 'Establish your background and objectives' },
@@ -131,6 +155,23 @@ const InstantNexusIntelligencePlatform: React.FC<InstantNexusIntelligencePlatfor
       return newErrors;
     });
   }, [currentStep]);
+
+  // Helper functions for stage management
+  const getCurrentStage = useCallback(() => {
+    for (let i = 0; i < STAGES.length; i++) {
+      if (STAGES[i].steps.includes(currentStep)) {
+        return i;
+      }
+    }
+    return 0;
+  }, [currentStep]);
+
+  const getStageProgress = useCallback(() => {
+    const currentStage = getCurrentStage();
+    const stageSteps = STAGES[currentStage].steps;
+    const completedInStage = stageSteps.filter(stepId => completedSteps.has(stepId)).length;
+    return completedInStage;
+  }, [currentStep, completedSteps, getCurrentStage]);
 
   // Step navigation
   const nextStep = useCallback(() => {
@@ -634,99 +675,131 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </div>
       </header>
 
-      {/* Step Navigation Header */}
-      <div className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-          {/* Mobile: Current step info at top */}
-          <div className="block lg:hidden text-center mb-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full shadow-sm border border-gray-200">
-              <span className="text-sm font-medium text-gray-700">
-                Step {currentStep + 1} of {WIZARD_STEPS.length}
-              </span>
-              <span className="text-xs text-gray-500 hidden sm:inline">
-                {WIZARD_STEPS[currentStep]?.title}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center">
-            <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto max-w-full">
-              {WIZARD_STEPS.map((step, index) => (
-                <div key={step.id} className="flex items-center flex-shrink-0">
-                  {/* Step Circle */}
-                  <button
-                    onClick={() => goToStep(step.id)}
-                    disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
-                    className={`relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
-                      step.id === currentStep
-                        ? 'bg-blue-600 text-white shadow-lg scale-105'
-                        : step.id < currentStep || completedSteps.has(step.id)
-                        ? 'bg-green-600 text-white shadow-md'
-                        : step.id > currentStep && !completedSteps.has(step.id - 1)
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-blue-400 hover:bg-blue-50'
-                    }`}
-                  >
-                    {step.id < currentStep || completedSteps.has(step.id) ? (
-                      <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 lg:w-4 lg:h-4" fill="currentColor" viewBox="0 0 20 20">
+      {/* Stage Navigation Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-[73px] z-10">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          {/* Stage Progress */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-8">
+              {STAGES.map((stage, stageIndex) => (
+                <div key={stage.id} className="flex items-center gap-3">
+                  {/* Stage Circle */}
+                  <div className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-all duration-300 ${
+                    stageIndex < getCurrentStage()
+                      ? 'bg-green-600 text-white'
+                      : stageIndex === getCurrentStage()
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {stageIndex < getCurrentStage() ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     ) : (
-                      step.id + 1
+                      stageIndex + 1
                     )}
-                  </button>
+                  </div>
 
-                  {/* Step Title - Desktop only */}
-                  <div className="ml-1.5 sm:ml-2 lg:ml-2.5 hidden xl:block">
-                    <div className={`text-xs lg:text-sm font-semibold ${
-                      step.id === currentStep
-                        ? 'text-blue-700'
-                        : step.id < currentStep || completedSteps.has(step.id)
-                        ? 'text-green-700'
-                        : 'text-gray-600'
+                  {/* Stage Info */}
+                  <div>
+                    <div className={`text-sm font-semibold ${
+                      stageIndex <= getCurrentStage() ? 'text-gray-900' : 'text-gray-500'
                     }`}>
-                      {step.title}
+                      {stage.title}
                     </div>
-                    <div className="text-xs text-gray-500 mt-0.5 hidden 2xl:block">
-                      {step.description}
+                    <div className="text-xs text-gray-500">
+                      {stage.steps.length} steps
                     </div>
                   </div>
 
                   {/* Connector Line */}
-                  {index < WIZARD_STEPS.length - 1 && (
-                    <div className={`w-3 sm:w-4 lg:w-5 h-0.5 mx-1 sm:mx-1.5 ${
-                      step.id < currentStep || completedSteps.has(step.id)
-                        ? 'bg-green-400'
-                        : 'bg-gray-300'
+                  {stageIndex < STAGES.length - 1 && (
+                    <div className={`w-16 h-0.5 ${
+                      stageIndex < getCurrentStage() ? 'bg-green-400' : 'bg-gray-300'
                     }`} />
                   )}
                 </div>
               ))}
             </div>
+
+            {/* Current Step Info */}
+            <div className="text-right">
+              <div className="text-sm font-medium text-gray-700">
+                Step {currentStep + 1} of {WIZARD_STEPS.length}
+              </div>
+              <div className="text-xs text-gray-500">
+                {WIZARD_STEPS[currentStep]?.title}
+              </div>
+            </div>
           </div>
 
-          {/* Desktop: Current step info at bottom */}
-          <div className="hidden lg:block text-center mt-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
-              <span className="text-sm font-medium text-gray-700">
-                Step {currentStep + 1} of {WIZARD_STEPS.length}
-              </span>
+          {/* Step Progress within Current Stage */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-gray-700">
+                Stage {getCurrentStage() + 1}: {STAGES[getCurrentStage()]?.title}
+              </h3>
               <span className="text-xs text-gray-500">
-                {WIZARD_STEPS[currentStep]?.title}
+                {getStageProgress()} of {STAGES[getCurrentStage()]?.steps.length} steps complete
               </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {STAGES[getCurrentStage()]?.steps.map((stepId, index) => {
+                const step = WIZARD_STEPS.find(s => s.id === stepId);
+                const isCompleted = completedSteps.has(stepId);
+                const isCurrent = currentStep === stepId;
+
+                return (
+                  <div key={stepId} className="flex items-center gap-2 flex-1">
+                    <button
+                      onClick={() => goToStep(stepId)}
+                      disabled={stepId > currentStep && !completedSteps.has(stepId - 1)}
+                      className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all duration-300 ${
+                        isCurrent
+                          ? 'bg-blue-600 text-white'
+                          : isCompleted
+                          ? 'bg-green-600 text-white'
+                          : stepId > currentStep && !completedSteps.has(stepId - 1)
+                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                          : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400'
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      ) : (
+                        index + 1
+                      )}
+                    </button>
+
+                    <div className="flex-1">
+                      <div className={`text-sm font-medium ${
+                        isCurrent ? 'text-blue-700' : isCompleted ? 'text-green-700' : 'text-gray-600'
+                      }`}>
+                        {step?.title}
+                      </div>
+                      <div className="text-xs text-gray-500 hidden sm:block">
+                        {step?.description}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           {/* Step Errors */}
           {stepErrors[currentStep]?.length > 0 && (
-            <div className="mt-3 sm:mt-4 p-3 bg-red-50 border border-red-200 rounded-lg max-w-sm sm:max-w-md mx-auto">
-              <h4 className="text-xs sm:text-sm font-semibold text-red-800 mb-2 flex items-center gap-2">
-                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <h4 className="text-sm font-semibold text-red-800 mb-2 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
-                Please complete:
+                Please complete the following:
               </h4>
-              <ul className="text-xs sm:text-sm text-red-700 space-y-1">
+              <ul className="text-sm text-red-700 space-y-1">
                 {stepErrors[currentStep].map((error, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <span className="text-red-500 mt-1">•</span>
