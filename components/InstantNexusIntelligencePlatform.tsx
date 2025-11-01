@@ -495,6 +495,36 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
   const currentTiers = TIERS_BY_ORG_TYPE[formData.organizationType || 'Default'] || [];
 
+  // Handle send message
+  const handleSendMessage = useCallback(async () => {
+    if (!currentMessage.trim()) return;
+
+    const userMessage = { sender: 'user' as const, text: currentMessage };
+    setChatMessages(prev => [...prev, userMessage]);
+    const userQuery = currentMessage;
+    setCurrentMessage('');
+    setIsTyping(true);
+
+    try {
+      // Call the research and scope API for intelligent responses
+      const response = await fetchResearchAndScope(userQuery, '', formData);
+      const aiResponse = {
+        sender: 'ai' as const,
+        text: response.summary || `Thank you for your question about "${userQuery}". Based on your current inputs, I can provide guidance on this step. Would you like me to elaborate on any specific aspect of the ${WIZARD_STEPS[currentStep]?.title} process?`
+      };
+      setChatMessages(prev => [...prev, aiResponse]);
+    } catch (error) {
+      // Fallback response if API fails
+      const fallbackResponse = {
+        sender: 'ai' as const,
+        text: `I understand you're asking about "${userQuery}". For Step ${currentStep + 1} (${WIZARD_STEPS[currentStep]?.title}), I recommend focusing on completing the required fields first. Once you have your basic information entered, I can provide more specific guidance tailored to your situation. Is there anything particular about this step you'd like help with?`
+      };
+      setChatMessages(prev => [...prev, fallbackResponse]);
+    } finally {
+      setIsTyping(false);
+    }
+  }, [currentMessage, currentStep, formData]);
+
   // Render step content
   const renderStepContent = () => {
     const inputStyles = "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
@@ -690,7 +720,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
               disabled={isTyping}
             />
             <button
-              onClick={handleSendMessage}
+              onClick={() => handleSendMessage()}
               disabled={!currentMessage.trim() || isTyping}
               className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:opacity-50 text-xs"
             >
@@ -940,34 +970,5 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
       </div>
     </div>
   );
-
-  const handleSendMessage = useCallback(async () => {
-    if (!currentMessage.trim()) return;
-
-    const userMessage = { sender: 'user' as const, text: currentMessage };
-    setChatMessages(prev => [...prev, userMessage]);
-    const userQuery = currentMessage;
-    setCurrentMessage('');
-    setIsTyping(true);
-
-    try {
-      // Call the research and scope API for intelligent responses
-      const response = await fetchResearchAndScope(userQuery, '', formData);
-      const aiResponse = {
-        sender: 'ai' as const,
-        text: response.summary || `Thank you for your question about "${userQuery}". Based on your current inputs, I can provide guidance on this step. Would you like me to elaborate on any specific aspect of the ${WIZARD_STEPS[currentStep]?.title} process?`
-      };
-      setChatMessages(prev => [...prev, aiResponse]);
-    } catch (error) {
-      // Fallback response if API fails
-      const fallbackResponse = {
-        sender: 'ai' as const,
-        text: `I understand you're asking about "${userQuery}". For Step ${currentStep + 1} (${WIZARD_STEPS[currentStep]?.title}), I recommend focusing on completing the required fields first. Once you have your basic information entered, I can provide more specific guidance tailored to your situation. Is there anything particular about this step you'd like help with?`
-      };
-      setChatMessages(prev => [...prev, fallbackResponse]);
-    } finally {
-      setIsTyping(false);
-    }
-  }, [currentMessage, currentStep, formData]);
 
 export default InstantNexusIntelligencePlatform;
