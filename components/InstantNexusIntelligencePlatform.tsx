@@ -636,7 +636,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
       {/* Step Navigation Header */}
       <div className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           {/* Mobile: Current step info at top */}
           <div className="block lg:hidden text-center mb-4">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full shadow-sm border border-gray-200">
@@ -739,9 +739,9 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </div>
       </div>
 
-      <div className="flex flex-col xl:flex-row min-h-[calc(100vh-140px)]">
+      <div className="flex flex-col 2xl:flex-row min-h-[calc(100vh-140px)]">
         {/* AI Co-Pilot Sidebar - Responsive positioning */}
-        <aside className="w-full xl:w-64 bg-white border-b xl:border-b-0 xl:border-r border-gray-200 order-2 xl:order-1 xl:sticky xl:top-[140px] h-auto xl:h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
+        <aside className="w-full 2xl:w-64 bg-white border-b 2xl:border-b-0 2xl:border-r border-gray-200 order-2 2xl:order-1 2xl:sticky 2xl:top-[140px] h-auto 2xl:h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
           <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white">
             <div className="flex items-center gap-2">
               <ChatBubbleLeftRightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -801,8 +801,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 order-1 xl:order-2">
-          <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-5xl mx-auto space-y-6 pb-20">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 order-1 2xl:order-2">
+          <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-auto space-y-6 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
