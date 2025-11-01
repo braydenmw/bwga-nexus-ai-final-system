@@ -26,9 +26,15 @@ interface NexusReportStudioProps {
 }
 
 const WIZARD_STEPS = [
-    { id: 0, title: 'Strategic Foundation', description: 'Define your objectives, target region, and partnership criteria', phase: 1, phaseName: 'Foundation & Planning' },
-    { id: 1, title: 'AI Analysis Engine', description: 'Run comprehensive RROI, TPT, and SEAM analysis modules', phase: 2, phaseName: 'AI Analysis & Assessment' },
-    { id: 2, title: 'Strategy & Execution', description: 'Risk assessment, implementation planning, and final report generation', phase: 3, phaseName: 'Strategy & Intelligence' }
+    { id: 0, title: 'Strategic Context', description: 'Define your strategic context and objectives', phase: 1, phaseName: 'Context & Planning' },
+    { id: 1, title: 'Opportunity Assessment', description: 'Market research and opportunity identification', phase: 1, phaseName: 'Context & Planning' },
+    { id: 2, title: 'Partnership Intent', description: 'Define partnership goals and criteria', phase: 1, phaseName: 'Context & Planning' },
+    { id: 3, title: 'Regional Diagnostic (RROI)', description: 'Analyze regional readiness and opportunity index', phase: 2, phaseName: 'Analysis & Assessment' },
+    { id: 4, title: 'Predictive Positioning (TPT)', description: 'Run transformation pathway simulations', phase: 2, phaseName: 'Analysis & Assessment' },
+    { id: 5, title: 'Ecosystem Mapping (SEAM)', description: 'Design ecosystem architecture and partnerships', phase: 2, phaseName: 'Analysis & Assessment' },
+    { id: 6, title: 'Risk Assessment', description: 'Comprehensive risk analysis and mitigation strategies', phase: 3, phaseName: 'Strategy & Execution' },
+    { id: 7, title: 'Implementation Planning', description: 'Actionable execution roadmap and timeline', phase: 3, phaseName: 'Strategy & Execution' },
+    { id: 8, title: 'Intelligence Blueprint (NSIL)', description: 'Generate final NSIL intelligence report', phase: 3, phaseName: 'Strategy & Execution' }
 ];
 
 export default function NexusReportStudio({
@@ -240,27 +246,75 @@ export default function NexusReportStudio({
 
     const stepSummaryData = [
         {
-            title: 'Strategic Foundation',
+            title: 'Strategic Context Definition',
             completed: currentStep > 0,
             data: reportParams,
-            requiredFields: ['reportName', 'userName', 'problemStatement', 'region', 'industry', 'idealPartnerProfile'],
-            optionalFields: ['userDepartment', 'organizationType', 'tier', 'aiPersona'],
+            requiredFields: ['reportName', 'userName', 'problemStatement'],
+            optionalFields: ['userDepartment', 'organizationType', 'tier', 'industry'],
             phase: 1
         },
         {
-            title: 'AI Analysis Engine',
+            title: 'Opportunity Assessment',
             completed: currentStep > 1,
             data: reportParams,
-            requiredFields: ['region', 'industry', 'aiPersona', 'tier'],
-            optionalFields: ['rroiResult', 'tptResult', 'seamResult'],
+            requiredFields: ['region', 'industry'],
+            optionalFields: ['marketResearch', 'opportunityAnalysis'],
+            phase: 1
+        },
+        {
+            title: 'Partnership Intent Clarification',
+            completed: currentStep > 2,
+            data: reportParams,
+            requiredFields: ['idealPartnerProfile', 'partnershipGoals'],
+            optionalFields: ['partnershipCriteria', 'successMetrics'],
+            phase: 1
+        },
+        {
+            title: 'Regional Diagnostic (RROI)',
+            completed: currentStep > 3,
+            data: reportParams,
+            requiredFields: ['region'],
+            optionalFields: ['rroiResult'],
             phase: 2
         },
         {
-            title: 'Strategy & Intelligence',
-            completed: currentStep > 2,
+            title: 'Predictive Positioning (TPT)',
+            completed: currentStep > 4,
+            data: reportParams,
+            requiredFields: ['timeHorizon', 'growthAssumption', 'intervention'],
+            optionalFields: ['tptResult'],
+            phase: 2
+        },
+        {
+            title: 'Ecosystem Mapping (SEAM)',
+            completed: currentStep > 5,
+            data: reportParams,
+            requiredFields: ['partnerTypes', 'ecosystemParameters'],
+            optionalFields: ['collaborationModels', 'seamResult'],
+            phase: 2
+        },
+        {
+            title: 'Risk Assessment & Mitigation',
+            completed: currentStep > 6,
+            data: reportParams,
+            requiredFields: ['riskAssessment'],
+            optionalFields: ['mitigationStrategies', 'contingencyPlans'],
+            phase: 3
+        },
+        {
+            title: 'Implementation Planning',
+            completed: currentStep > 7,
+            data: reportParams,
+            requiredFields: ['implementationRoadmap', 'timeline'],
+            optionalFields: ['milestones', 'resourceRequirements'],
+            phase: 3
+        },
+        {
+            title: 'Intelligence Blueprint & Presentation (NSIL)',
+            completed: currentStep > 8,
             data: reportParams,
             requiredFields: [],
-            optionalFields: ['riskAssessment', 'implementationRoadmap', 'nsilReport'],
+            optionalFields: ['nsilReport'],
             phase: 3
         }
     ];
@@ -372,31 +426,27 @@ export default function NexusReportStudio({
 
         switch (currentStep) {
             case 0: return (
-                <div className="space-y-6">
-                    {/* Strategic Foundation - All inputs on one page */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label className={labelStyles}>Report Name *</label>
-                            <input
-                                type="text"
-                                value={reportParams.reportName || ''}
-                                onChange={(e) => handleChange('reportName', e.target.value)}
-                                className={inputStyles}
-                                placeholder="Enter report name"
-                            />
-                        </div>
-                        <div>
-                            <label className={labelStyles}>Your Name *</label>
-                            <input
-                                type="text"
-                                value={reportParams.userName || ''}
-                                onChange={(e) => handleChange('userName', e.target.value)}
-                                className={inputStyles}
-                                placeholder="Enter your name"
-                            />
-                        </div>
+                <div className="space-y-4">
+                    <div>
+                        <label className={labelStyles}>Report Name *</label>
+                        <input
+                            type="text"
+                            value={reportParams.reportName || ''}
+                            onChange={(e) => handleChange('reportName', e.target.value)}
+                            className={inputStyles}
+                            placeholder="Enter report name"
+                        />
                     </div>
-
+                    <div>
+                        <label className={labelStyles}>Your Name *</label>
+                        <input
+                            type="text"
+                            value={reportParams.userName || ''}
+                            onChange={(e) => handleChange('userName', e.target.value)}
+                            className={inputStyles}
+                            placeholder="Enter your name"
+                        />
+                    </div>
                     <div>
                         <label className={labelStyles}>Core Objective *</label>
                         <textarea
@@ -407,8 +457,26 @@ export default function NexusReportStudio({
                             placeholder="Describe your strategic objective..."
                         />
                     </div>
-
-                    <div className="grid md:grid-cols-3 gap-4">
+                    {!initialAnalysis && (
+                        <button
+                            onClick={() => handleInitialAnalysis(reportParams.problemStatement || '')}
+                            disabled={isAnalyzing || !reportParams.problemStatement?.trim()}
+                            className="w-full bg-gray-800 text-white py-2 px-4 rounded font-medium disabled:bg-gray-400"
+                        >
+                            {isAnalyzing ? 'Analyzing...' : 'Run AI Analysis'}
+                        </button>
+                    )}
+                    {initialAnalysis && (
+                        <div className="p-4 bg-gray-50 border border-gray-200 rounded">
+                            <h4 className="text-sm font-bold text-gray-800 mb-2">AI Analysis Complete</h4>
+                            <div className="text-sm text-gray-700" dangerouslySetInnerHTML={{ __html: initialAnalysis.summary }} />
+                        </div>
+                    )}
+                </div>
+            );
+            case 1:
+                return (
+                    <div className="space-y-4">
                         <div>
                             <label className={labelStyles}>Target Region *</label>
                             <select
@@ -446,40 +514,40 @@ export default function NexusReportStudio({
                                 placeholder="e.g., Manila, Metro Manila"
                             />
                         </div>
-                    </div>
-
-                    <div>
-                        <label className={labelStyles}>Core Industry Focus *</label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                            {INDUSTRIES.map((industry) => (
-                                <label key={industry.id} className="flex items-center space-x-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={reportParams.industry?.includes(industry.id) || false}
-                                        onChange={() => handleMultiSelectToggle('industry', industry.id)}
-                                        className="rounded"
-                                    />
-                                    <span className="text-sm">{industry.title}</span>
-                                </label>
-                            ))}
+                        <div>
+                            <label className={labelStyles}>Core Industry Focus *</label>
+                            <div className="grid grid-cols-2 gap-2">
+                                {INDUSTRIES.map((industry) => (
+                                    <label key={industry.id} className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={reportParams.industry?.includes(industry.id) || false}
+                                            onChange={() => handleMultiSelectToggle('industry', industry.id)}
+                                            className="rounded"
+                                        />
+                                        <span className="text-sm">{industry.title}</span>
+                                    </label>
+                                ))}
+                            </div>
                         </div>
                     </div>
-
-                    <div>
-                        <label className={labelStyles}>Ideal Partner Profile *</label>
-                        <textarea
-                            value={reportParams.idealPartnerProfile || ''}
-                            onChange={(e) => handleChange('idealPartnerProfile', e.target.value)}
-                            rows={3}
-                            className={inputStyles}
-                            placeholder="Describe your ideal partner..."
-                        />
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
+                );
+            case 2:
+                return (
+                    <div className="space-y-4">
+                        <div>
+                            <label className={labelStyles}>Ideal Partner Profile *</label>
+                            <textarea
+                                value={reportParams.idealPartnerProfile || ''}
+                                onChange={(e) => handleChange('idealPartnerProfile', e.target.value)}
+                                rows={3}
+                                className={inputStyles}
+                                placeholder="Describe your ideal partner..."
+                            />
+                        </div>
                         <div>
                             <label className={labelStyles}>AI Analyst Personas *</label>
-                            <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
+                            <div className="grid grid-cols-2 gap-2">
                                 {AI_PERSONAS.map((persona) => (
                                     <label key={persona.id} className="flex items-center space-x-2">
                                         <input
@@ -495,7 +563,7 @@ export default function NexusReportStudio({
                         </div>
                         <div>
                             <label className={labelStyles}>Report Tiers *</label>
-                            <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
+                            <div className="grid grid-cols-2 gap-2">
                                 {TIERS_BY_ORG_TYPE[reportParams.organizationType || 'Default']?.map((tier) => (
                                     <label key={tier.id} className="flex items-center space-x-2">
                                         <input
@@ -510,144 +578,136 @@ export default function NexusReportStudio({
                             </div>
                         </div>
                     </div>
-
-                    {!initialAnalysis && (
-                        <button
-                            onClick={() => handleInitialAnalysis(reportParams.problemStatement || '')}
-                            disabled={isAnalyzing || !reportParams.problemStatement?.trim()}
-                            className="w-full bg-gray-800 text-white py-3 px-4 rounded font-medium disabled:bg-gray-400"
-                        >
-                            {isAnalyzing ? 'Analyzing...' : 'Run AI Analysis'}
-                        </button>
-                    )}
-                    {initialAnalysis && (
-                        <div className="p-4 bg-gray-50 border border-gray-200 rounded">
-                            <h4 className="text-sm font-bold text-gray-800 mb-2">AI Analysis Complete</h4>
-                            <div className="text-sm text-gray-700" dangerouslySetInnerHTML={{ __html: initialAnalysis.summary }} />
-                        </div>
-                    )}
-                </div>
-            );
-            case 1: return (
-                <div className="space-y-6">
-                    {/* AI Analysis Engine - All analysis modules on one page */}
-                    <div className="text-center mb-6">
-                        <h3 className="text-xl font-bold mb-2">AI Analysis Engine</h3>
-                        <p className="text-gray-600">Running comprehensive RROI, TPT, and SEAM analysis modules</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {/* RROI Analysis */}
-                        <div className="bg-blue-50 p-4 rounded border border-blue-200">
-                            <h4 className="font-bold text-blue-800 mb-3">Regional Diagnostic (RROI)</h4>
-                            <div className="space-y-2 text-sm">
+                );
+            case 3: return (
+                <div className="space-y-4">
+                    <div className="text-center py-8">
+                        <h3 className="text-lg font-bold mb-4">Regional Diagnostic (RROI)</h3>
+                        <p className="text-gray-600 mb-6">Analyzing regional readiness and opportunity index...</p>
+                        <div className="bg-gray-50 p-6 rounded border">
+                            <div className="grid grid-cols-2 gap-4 text-sm">
                                 <div><strong>Region:</strong> {reportParams.region || 'Not specified'}</div>
-                                <div><strong>Readiness Score:</strong> <span className="text-green-600">High</span></div>
+                                <div><strong>Readiness Score:</strong> High</div>
                                 <div><strong>Opportunity Index:</strong> 8.5/10</div>
-                                <div><strong>Risk Level:</strong> <span className="text-green-600">Low</span></div>
+                                <div><strong>Risk Level:</strong> Low</div>
                             </div>
                         </div>
-
-                        {/* TPT Analysis */}
-                        <div className="bg-green-50 p-4 rounded border border-green-200">
-                            <h4 className="font-bold text-green-800 mb-3">Predictive Positioning (TPT)</h4>
-                            <div className="space-y-2 text-sm">
+                    </div>
+                </div>
+            );
+            case 4: return (
+                <div className="space-y-4">
+                    <div className="text-center py-8">
+                        <h3 className="text-lg font-bold mb-4">Predictive Positioning (TPT)</h3>
+                        <p className="text-gray-600 mb-6">Running transformation pathway simulations...</p>
+                        <div className="bg-gray-50 p-6 rounded border">
+                            <div className="space-y-4 text-sm">
                                 <div><strong>Time Horizon:</strong> 5 years</div>
                                 <div><strong>Growth Assumption:</strong> 15% CAGR</div>
-                                <div><strong>Intervention Impact:</strong> <span className="text-green-600">High</span></div>
-                                <div className="pt-2">
-                                    <strong>Scenarios:</strong>
-                                    <ul className="mt-1 space-y-1 text-xs">
-                                        <li>• Optimistic: 25% growth</li>
-                                        <li>• Base Case: 15% growth</li>
-                                        <li>• Conservative: 8% growth</li>
+                                <div><strong>Intervention Impact:</strong> High</div>
+                                <div className="pt-4">
+                                    <strong>Scenario Analysis:</strong>
+                                    <ul className="mt-2 space-y-1 text-left">
+                                        <li>• Optimistic: 25% growth potential</li>
+                                        <li>• Base Case: 15% growth potential</li>
+                                        <li>• Conservative: 8% growth potential</li>
                                     </ul>
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* SEAM Analysis */}
-                        <div className="bg-purple-50 p-4 rounded border border-purple-200">
-                            <h4 className="font-bold text-purple-800 mb-3">Ecosystem Mapping (SEAM)</h4>
-                            <div className="space-y-2 text-sm">
-                                <div><strong>Partner Types:</strong> Tech, Manufacturing, Logistics</div>
-                                <div><strong>Ecosystem:</strong> <span className="text-green-600">High connectivity</span></div>
-                                <div className="pt-2">
-                                    <strong>Models:</strong>
-                                    <ul className="mt-1 space-y-1 text-xs">
-                                        <li>• Joint Venture</li>
-                                        <li>• Tech Licensing</li>
-                                        <li>• Supply Chain</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-50 p-4 rounded border">
-                        <h4 className="font-bold mb-3">Analysis Summary</h4>
-                        <div className="grid md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <strong>Risk Assessment:</strong>
-                                <ul className="mt-1 space-y-1">
-                                    <li>• Political Risk: <span className="text-green-600">Low</span></li>
-                                    <li>• Economic Risk: <span className="text-yellow-600">Medium</span></li>
-                                    <li>• Operational Risk: <span className="text-green-600">Low</span></li>
-                                    <li>• Market Risk: <span className="text-yellow-600">Medium</span></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <strong>Mitigation Strategies:</strong>
-                                <ul className="mt-1 space-y-1 text-xs">
-                                    <li>• Diversified supplier network</li>
-                                    <li>• Local partnership development</li>
-                                    <li>• Regulatory compliance monitoring</li>
-                                    <li>• Financial hedging strategies</li>
-                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             );
-            case 2: return (
+            case 5: return (
+                <div className="space-y-4">
+                    <div className="text-center py-8">
+                        <h3 className="text-lg font-bold mb-4">Ecosystem Mapping (SEAM)</h3>
+                        <p className="text-gray-600 mb-6">Designing ecosystem architecture and partnerships...</p>
+                        <div className="bg-gray-50 p-6 rounded border">
+                            <div className="space-y-4 text-sm">
+                                <div><strong>Partner Types Identified:</strong> Technology, Manufacturing, Logistics</div>
+                                <div><strong>Ecosystem Parameters:</strong> High connectivity, Medium competition</div>
+                                <div className="pt-4">
+                                    <strong>Collaboration Models:</strong>
+                                    <ul className="mt-2 space-y-1 text-left">
+                                        <li>• Joint Venture Partnership</li>
+                                        <li>• Technology Licensing</li>
+                                        <li>• Supply Chain Integration</li>
+                                        <li>• Knowledge Transfer Agreement</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+            case 6: return (
+                <div className="space-y-4">
+                    <div className="text-center py-8">
+                        <h3 className="text-lg font-bold mb-4">Risk Assessment & Mitigation</h3>
+                        <p className="text-gray-600 mb-6">Comprehensive risk analysis and mitigation strategies...</p>
+                        <div className="bg-gray-50 p-6 rounded border">
+                            <div className="space-y-4 text-sm">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div><strong>Political Risk:</strong> Low</div>
+                                    <div><strong>Economic Risk:</strong> Medium</div>
+                                    <div><strong>Operational Risk:</strong> Low</div>
+                                    <div><strong>Market Risk:</strong> Medium</div>
+                                </div>
+                                <div className="pt-4">
+                                    <strong>Mitigation Strategies:</strong>
+                                    <ul className="mt-2 space-y-1 text-left">
+                                        <li>• Diversified supplier network</li>
+                                        <li>• Local partnership development</li>
+                                        <li>• Regulatory compliance monitoring</li>
+                                        <li>• Financial hedging strategies</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+            case 7: return (
+                <div className="space-y-4">
+                    <div className="text-center py-8">
+                        <h3 className="text-lg font-bold mb-4">Implementation Planning</h3>
+                        <p className="text-gray-600 mb-6">Actionable execution roadmap and timeline...</p>
+                        <div className="bg-gray-50 p-6 rounded border">
+                            <div className="space-y-4 text-sm">
+                                <div><strong>Timeline:</strong> 24 months</div>
+                                <div><strong>Budget Estimate:</strong> $2.5M - $5M</div>
+                                <div className="pt-4">
+                                    <strong>Implementation Roadmap:</strong>
+                                    <ul className="mt-2 space-y-2 text-left">
+                                        <li><strong>Phase 1 (0-6 months):</strong> Partnership development and due diligence</li>
+                                        <li><strong>Phase 2 (6-12 months):</strong> Technology transfer and pilot implementation</li>
+                                        <li><strong>Phase 3 (12-18 months):</strong> Full-scale deployment and optimization</li>
+                                        <li><strong>Phase 4 (18-24 months):</strong> Performance monitoring and scaling</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+            case 8: return (
                 <div className="space-y-6">
-                    {/* Strategy & Intelligence - Final step */}
-                    <div className="text-center mb-6">
-                        <h3 className="text-xl font-bold mb-2">Strategy & Intelligence</h3>
-                        <p className="text-gray-600">Implementation planning and final intelligence blueprint generation</p>
-                    </div>
-
-                    <div className="bg-gray-50 p-6 rounded border">
-                        <h4 className="font-bold mb-4">Implementation Roadmap</h4>
-                        <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
-                            <div><strong>Timeline:</strong> 24 months</div>
-                            <div><strong>Budget Estimate:</strong> $2.5M - $5M</div>
+                    <div className="text-center py-4">
+                        <h3 className="text-lg font-bold mb-4">Intelligence Blueprint (NSIL)</h3>
+                        <p className="text-gray-600 mb-6">Ready to generate your comprehensive intelligence report?</p>
+                        <div className="bg-gray-50 p-4 rounded border mb-6">
+                            <QualityAnalysis params={reportParams} />
                         </div>
-                        <div>
-                            <strong>Implementation Phases:</strong>
-                            <ul className="mt-2 space-y-2 text-sm">
-                                <li><strong>Phase 1 (0-6 months):</strong> Partnership development and due diligence</li>
-                                <li><strong>Phase 2 (6-12 months):</strong> Technology transfer and pilot implementation</li>
-                                <li><strong>Phase 3 (12-18 months):</strong> Full-scale deployment and optimization</li>
-                                <li><strong>Phase 4 (18-24 months):</strong> Performance monitoring and scaling</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-50 p-4 rounded border">
-                        <QualityAnalysis params={reportParams} />
-                    </div>
-
-                    <div className="text-center">
                         <button
                             onClick={handleGenerateReport}
                             disabled={isGenerating}
-                            className="bg-black text-white py-3 px-8 rounded font-medium disabled:bg-gray-400 text-lg"
+                            className="bg-black text-white py-3 px-6 rounded font-medium disabled:bg-gray-400"
                         >
                             {isGenerating ? (
                                 <>
                                     <Spinner />
-                                    Generating Intelligence Blueprint...
+                                    Generating Report...
                                 </>
                             ) : (
                                 'Generate Intelligence Blueprint'
