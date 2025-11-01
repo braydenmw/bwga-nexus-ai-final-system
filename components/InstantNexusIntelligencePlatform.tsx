@@ -636,15 +636,15 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
       {/* Step Navigation Header */}
       <div className="bg-white border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="px-6 py-4">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 overflow-x-auto">
+            <div className="flex items-center gap-2 overflow-x-auto flex-1">
               {WIZARD_STEPS.map((step, index) => (
                 <button
                   key={step.id}
                   onClick={() => goToStep(step.id)}
                   disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-all ${
                     step.id === currentStep
                       ? 'bg-blue-600 text-white'
                       : step.id < currentStep || completedSteps.has(step.id)
@@ -654,7 +654,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
+                  <span className={`w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold ${
                     step.id === currentStep
                       ? 'bg-white text-blue-600'
                       : step.id < currentStep || completedSteps.has(step.id)
@@ -663,20 +663,20 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                   }`}>
                     {step.id < currentStep || completedSteps.has(step.id) ? '✓' : step.id + 1}
                   </span>
-                  <span className="hidden sm:inline">{step.title}</span>
+                  <span className="hidden md:inline">{step.title}</span>
                 </button>
               ))}
             </div>
-            <div className="text-sm text-gray-600 hidden md:block">
+            <div className="text-xs text-gray-600 ml-4 hidden lg:block">
               Step {currentStep + 1} of {WIZARD_STEPS.length}
             </div>
           </div>
 
           {/* Step Errors */}
           {stepErrors[currentStep]?.length > 0 && (
-            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <h4 className="text-sm font-semibold text-red-800 mb-1">Please complete:</h4>
-              <ul className="text-sm text-red-700 space-y-0.5">
+            <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+              <h4 className="text-xs font-semibold text-red-800 mb-1">Please complete:</h4>
+              <ul className="text-xs text-red-700 space-y-0.5">
                 {stepErrors[currentStep].map((error, index) => (
                   <li key={index}>• {error}</li>
                 ))}
@@ -686,9 +686,9 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </div>
       </div>
 
-      <div className="flex min-h-[calc(100vh-140px)]">
+      <div className="flex min-h-[calc(100vh-140px)] max-w-7xl mx-auto">
         {/* AI Co-Pilot Sidebar - Now sticky and follows scrolling */}
-        <aside className="w-80 bg-white border-r border-gray-200 sticky top-[140px] h-[calc(100vh-140px)] overflow-y-auto">
+        <aside className="w-72 bg-white border-r border-gray-200 sticky top-[140px] h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
           <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white">
             <div className="flex items-center gap-2">
               <ChatBubbleLeftRightIcon className="w-5 h-5" />
@@ -749,7 +749,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-4xl mx-auto space-y-6 pb-20">
+          <div className="max-w-3xl mx-auto space-y-6 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
