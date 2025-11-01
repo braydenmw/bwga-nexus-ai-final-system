@@ -17,6 +17,7 @@ import WhoWeAre from './components/WhoWeAre.tsx';
 import TermsAndConditions from './components/TermsAndConditions.tsx';
 import NexusReportStudio from './components/NexusReportStudio.tsx';
 import DebugReportGenerator from './components/DebugReportGenerator.tsx';
+import InstantNexusIntelligencePlatform from './components/InstantNexusIntelligencePlatform.tsx';
 import { saveAutoSave, loadAutoSave, clearAutoSave, getSavedReports, saveReport, deleteReport } from './services/storageService.ts';
 
 const initialReportParams: ReportParameters = {
@@ -148,6 +149,10 @@ function App() {
     setLetterModalOpen(true);
   }, []);
 
+  const handleProfileUpdate = useCallback((profile: UserProfileType) => {
+    setUserProfile(profile);
+  }, []);
+
   const renderCurrentView = () => {
     switch (currentView) {
       case 'sample-report':
@@ -161,7 +166,11 @@ function App() {
       case 'report':
         return (
           <div className="h-full">
-            <NexusReportStudio />
+            <InstantNexusIntelligencePlatform
+              onViewChange={handleViewChange}
+              onReportUpdate={handleReportUpdate}
+              onProfileUpdate={handleProfileUpdate}
+            />
           </div>
         );
       case 'debug-report':
