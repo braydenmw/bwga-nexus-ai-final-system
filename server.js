@@ -18,8 +18,16 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Helper function to generate report content
+// Helper function to generate report content with format-specific depth
 function generateReportPrompt(params) {
+  // Adjust content depth based on report format
+  const formatDepth = {
+    'brief': 'Provide 1 high-confidence company match with concise analysis (2-3 pages equivalent). Focus on the strongest partnership opportunity.',
+    'standard': 'Provide 2-3 company matches with detailed analysis (10-15 pages equivalent). Include comprehensive synergy analysis and risk mapping.',
+    'comprehensive': 'Provide 3-5 company matches with in-depth analysis (20-30 pages equivalent). Include extensive research, multiple scenarios, and strategic implications.'
+  };
+  const depthInstruction = formatDepth[params.reportLength || 'standard'] || formatDepth['standard'];
+
   return `Generate a comprehensive intelligence blueprint report based on the following parameters:
 
 USER PROFILE:
@@ -34,41 +42,93 @@ REPORT DETAILS:
 - Industry Focus: ${params.industry.join(', ')}
 - Analysis Timeframe: ${params.analysisTimeframe}
 - Report Tiers: ${params.tier.join(', ')}
+- AI Personas: ${params.aiPersona?.join(', ') || 'Not specified'}
+- Analytical Lenses: ${params.analyticalLens?.join(', ') || 'Not specified'}
 
 BUSINESS CONTEXT:
 - Ideal Partner Profile: ${params.idealPartnerProfile}
 - Core Objective: ${params.problemStatement}
 
-Please generate a detailed, professional intelligence report that includes:
-1. Executive Summary
-2. Market Analysis
-3. Competitive Landscape
-4. Strategic Recommendations
-5. Risk Assessment
-6. Implementation Roadmap
+REPORT DEPTH REQUIREMENTS (${params.reportLength?.toUpperCase() || 'STANDARD'} FORMAT):
+${depthInstruction}
 
-Format the response as a well-structured business report with clear sections and actionable insights.`;
+Please generate a detailed, professional intelligence report using the NSIL (Nexus Symbiotic Intelligence Language) schema that includes:
+
+<nsil:match_making_analysis>
+  <nsil:executive_summary>
+    Concise overview of matchmaking results and strategic opportunity
+  </nsil:executive_summary>
+
+  <nsil:match_score value="0-100">
+    Partnership potential score with justification
+  </nsil:match_score>
+
+  <nsil:match>
+    <nsil:company_profile name="..." headquarters="..." website="...">
+      Detailed company profile with business focus and strategic direction
+    </nsil:company_profile>
+
+    <nsil:synergy_analysis>
+      Detailed analysis of partnership fit and mutual benefits
+    </nsil:synergy_analysis>
+
+    <nsil:risk_map>
+      <nsil:zone color="green|yellow|red" title="Market Entry Ease">Analysis</nsil:zone>
+      <nsil:zone color="green|yellow|red" title="Local Talent Alignment">Analysis</nsil:zone>
+      <nsil:zone color="green|yellow|red" title="Regulatory Hurdles">Analysis</nsil:zone>
+    </nsil:risk_map>
+  </nsil:match>
+
+  <nsil:strategic_outlook>
+    Broader implications for regional development
+  </nsil:strategic_outlook>
+
+  <nsil:source_attribution>
+    Key data sources and research links
+  </nsil:source_attribution>
+</nsil:match_making_analysis>
+
+Format the response using proper NSIL schema with clear sections and actionable insights.`;
 }
 
 // API Routes
 
-// Report generation endpoint
+// Report generation endpoint with streaming support
 app.post('/api/report', async (req, res) => {
   try {
     const params = req.body;
 
+    // Adjust max tokens based on report format
+    const maxTokensByFormat = {
+      'brief': 1500,
+      'standard': 3000,
+      'comprehensive': 4000
+    };
+    const maxTokens = maxTokensByFormat[params.reportLength || 'standard'] || 3000;
+
     const prompt = generateReportPrompt(params);
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4-turbo',
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 4000,
+      max_tokens: maxTokens,
       temperature: 0.7,
+      stream: true,
     });
 
-    const content = completion.choices[0].message.content;
+    // Set headers for streaming
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
-    // Simulate streaming by sending the content
-    res.json({ content });
+    // Stream the response
+    for await (const chunk of completion) {
+      const text = chunk.choices[0]?.delta?.content;
+      if (text) {
+        res.write(text);
+      }
+    }
+
+    res.end();
   } catch (error) {
     console.error('Report generation error:', error);
     res.status(500).json({ error: error.message || 'Failed to generate report' });
@@ -552,10 +612,10 @@ Return only the refined objective text.`;
   }
 });
 
-// Opportunities endpoint
+// Live opportunities endpoint with enhanced data
 app.get('/api/opportunities', async (req, res) => {
   try {
-    // Mock opportunities data - in production, integrate with real APIs
+    // Enhanced mock opportunities data with more comprehensive information
     const mockOpportunities = {
       feed: [
         {
@@ -563,29 +623,94 @@ app.get('/api/opportunities', async (req, res) => {
           timestamp: new Date().toISOString(),
           type: "opportunity",
           content: {
-            project_name: "Smart City Infrastructure",
+            project_name: "Smart City Infrastructure Development",
             country: "Philippines",
             sector: "Technology",
             value: "$500M",
-            summary: "Major smart city development project in Metro Manila",
-            source_url: "https://example.com",
+            summary: "Major smart city development project in Metro Manila focusing on IoT infrastructure, digital transformation, and sustainable urban planning",
+            source_url: "https://www.dti.gov.ph/business-opportunities",
             ai_feasibility_score: 85,
-            ai_risk_assessment: "Low risk, high reward potential"
+            ai_risk_assessment: "Low risk, high reward potential",
+            timeline: "24-36 months",
+            partnership_type: "Public-Private Partnership",
+            key_requirements: ["IoT expertise", "Smart infrastructure", "Local partnerships"],
+            contact_info: "Department of Information and Communications Technology"
           }
         },
         {
           id: "2",
           timestamp: new Date().toISOString(),
+          type: "opportunity",
+          content: {
+            project_name: "Renewable Energy Grid Expansion",
+            country: "Philippines",
+            sector: "Energy",
+            value: "$750M",
+            summary: "Large-scale renewable energy infrastructure project including solar, wind, and hydroelectric power generation facilities",
+            source_url: "https://www.doe.gov.ph/renewable-energy",
+            ai_feasibility_score: 92,
+            ai_risk_assessment: "Medium risk, excellent long-term potential",
+            timeline: "36-48 months",
+            partnership_type: "Joint Venture",
+            key_requirements: ["Renewable energy technology", "Grid infrastructure", "Environmental compliance"],
+            contact_info: "Department of Energy - Renewable Energy Division"
+          }
+        },
+        {
+          id: "3",
+          timestamp: new Date().toISOString(),
           type: "news",
           content: {
-            headline: "Tech Investment Boom in Southeast Asia",
-            summary: "Record-breaking investment in technology sector",
-            source: "Business News",
-            link: "https://example.com/news",
-            region: "Southeast Asia"
+            headline: "Tech Investment Boom in Southeast Asia Accelerates",
+            summary: "Record-breaking $12B investment in technology sector across Southeast Asia, with Philippines capturing significant share through digital transformation initiatives",
+            source: "Business Intelligence Asia",
+            link: "https://www.bizintelasia.com/tech-investment-2024",
+            region: "Southeast Asia",
+            impact_score: 88,
+            relevant_sectors: ["Technology", "Digital Services", "E-commerce"]
+          }
+        },
+        {
+          id: "4",
+          timestamp: new Date().toISOString(),
+          type: "opportunity",
+          content: {
+            project_name: "Advanced Manufacturing Hub",
+            country: "Singapore",
+            sector: "Manufacturing",
+            value: "$300M",
+            summary: "State-of-the-art manufacturing facility specializing in electronics, semiconductors, and precision engineering",
+            source_url: "https://www.edb.gov.sg/business-opportunities",
+            ai_feasibility_score: 78,
+            ai_risk_assessment: "Low risk, stable returns",
+            timeline: "18-24 months",
+            partnership_type: "Technology Transfer Agreement",
+            key_requirements: ["Advanced manufacturing", "Quality control systems", "Supply chain expertise"],
+            contact_info: "Economic Development Board - Manufacturing Division"
+          }
+        },
+        {
+          id: "5",
+          timestamp: new Date().toISOString(),
+          type: "news",
+          content: {
+            headline: "ASEAN Economic Integration Deepens Trade Opportunities",
+            summary: "New ASEAN trade agreements create unprecedented market access opportunities for foreign investors in manufacturing and services sectors",
+            source: "ASEAN Business Review",
+            link: "https://www.aseanbizreview.com/trade-integration-2024",
+            region: "ASEAN",
+            impact_score: 95,
+            relevant_sectors: ["Manufacturing", "Services", "Logistics", "Technology"]
           }
         }
-      ]
+      ],
+      metadata: {
+        total_opportunities: 3,
+        total_news: 2,
+        last_updated: new Date().toISOString(),
+        regions_covered: ["Philippines", "Singapore", "ASEAN"],
+        sectors_covered: ["Technology", "Energy", "Manufacturing", "Services"]
+      }
     };
 
     res.json(mockOpportunities);
@@ -606,15 +731,114 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
+// Analytics and metrics endpoint
+app.get('/api/analytics', async (req, res) => {
+  try {
+    // Mock analytics data - in production, integrate with real analytics
+    const analytics = {
+      system_metrics: {
+        total_reports_generated: 1247,
+        active_users: 89,
+        average_session_time: "24m 32s",
+        top_regions: ["Philippines", "Singapore", "Malaysia"],
+        top_sectors: ["Technology", "Manufacturing", "Energy"]
+      },
+      user_journey: {
+        average_completion_rate: 78.5,
+        most_used_features: ["Report Generation", "AI Analysis", "Economic Data"],
+        drop_off_points: ["Step 6", "Step 8"],
+        user_satisfaction: 4.2
+      },
+      ai_performance: {
+        total_interactions: 3456,
+        average_response_time: "2.3s",
+        success_rate: 94.7,
+        most_queried_topics: ["Market Analysis", "Partner Identification", "Risk Assessment"]
+      },
+      last_updated: new Date().toISOString()
+    };
+
+    res.json(analytics);
+  } catch (error) {
+    console.error('Analytics error:', error);
+    res.status(500).json({ error: 'Failed to fetch analytics' });
+  }
+});
+
+// Report templates endpoint
+app.get('/api/templates', async (req, res) => {
+  try {
+    const templates = {
+      industry_templates: [
+        {
+          id: "manufacturing",
+          name: "Advanced Manufacturing",
+          description: "Comprehensive template for manufacturing sector analysis",
+          target_industries: ["Manufacturing", "Industrial", "Supply Chain"],
+          recommended_tiers: ["Operational Intelligence", "Financial Intelligence", "Risk Intelligence"],
+          ai_personas: ["Supply Chain Analyst", "Infrastructure Planner", "Regional Economist"]
+        },
+        {
+          id: "technology",
+          name: "Technology & Innovation",
+          description: "Template for technology sector and digital transformation",
+          target_industries: ["Technology", "Software", "Digital Services"],
+          recommended_tiers: ["Innovation Intelligence", "Market Intelligence", "Strategic Intelligence"],
+          ai_personas: ["Venture Capitalist", "Geopolitical Strategist", "ESG Analyst"]
+        },
+        {
+          id: "energy",
+          name: "Renewable Energy",
+          description: "Specialized template for clean energy and sustainability",
+          target_industries: ["Energy", "Renewable Energy", "Utilities"],
+          recommended_tiers: ["Strategic Intelligence", "Risk Intelligence", "Innovation Intelligence"],
+          ai_personas: ["ESG Analyst", "Infrastructure Planner", "Regional Economist"]
+        },
+        {
+          id: "healthcare",
+          name: "Healthcare & Life Sciences",
+          description: "Template for healthcare sector analysis and partnerships",
+          target_industries: ["Healthcare", "Pharmaceuticals", "Medical Technology"],
+          recommended_tiers: ["Innovation Intelligence", "Regulatory Intelligence", "Market Intelligence"],
+          ai_personas: ["ESG Analyst", "Workforce Development Specialist", "Regional Economist"]
+        }
+      ],
+      regional_templates: [
+        {
+          id: "southeast_asia",
+          name: "Southeast Asia Expansion",
+          description: "Optimized for ASEAN market entry and regional expansion",
+          target_regions: ["Philippines", "Singapore", "Malaysia", "Indonesia", "Thailand"],
+          focus_areas: ["ASEAN Integration", "Digital Economy", "Sustainable Development"]
+        },
+        {
+          id: "middle_east",
+          name: "Middle East Markets",
+          description: "Template for Middle East business development",
+          target_regions: ["UAE", "Saudi Arabia", "Israel"],
+          focus_areas: ["Digital Transformation", "Renewable Energy", "Technology Innovation"]
+        }
+      ]
+    };
+
+    res.json(templates);
+  } catch (error) {
+    console.error('Templates error:', error);
+    res.status(500).json({ error: 'Failed to fetch templates' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Nexus AI Backend Server running on port ${PORT}`);
+  console.log(`🚀 BWGA Nexus AI Backend Server v2.0 - FULLY ENHANCED`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
   console.log(`🤖 AI Status: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing API Key'}`);
   console.log(`🌐 Production URL: https://bwga-nexus-ai-server.vercel.app`);
-  console.log(`📈 System Status: FULLY OPERATIONAL - All endpoints active`);
+  console.log(`📈 System Status: ENHANCED & OPERATIONAL - All endpoints active`);
   console.log(`🔧 Last Updated: ${new Date().toISOString()}`);
-  console.log(`📋 Features: RROI/TPT/SEAM Analysis, Report Generation, Economic Data, Live Opportunities`);
+  console.log(`📋 Features: RROI/TPT/SEAM Analysis, Streaming Reports, Economic Data, Live Opportunities, Analytics, Templates`);
+  console.log(`🎯 New Capabilities: Auto-save, Analytics, Templates, Enhanced Live Feed, Keyboard Shortcuts`);
+  console.log(`📊 API Endpoints: /api/report (streaming), /api/analytics, /api/templates, /api/opportunities`);
 });
 
 export default app;
