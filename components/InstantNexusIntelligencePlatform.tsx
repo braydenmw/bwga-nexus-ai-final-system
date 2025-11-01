@@ -635,50 +635,91 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
       </header>
 
       {/* Step Navigation Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 overflow-x-auto flex-1">
+      <div className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-gray-200 sticky top-[73px] z-10">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-center">
+            <div className="flex items-center gap-1 overflow-x-auto">
               {WIZARD_STEPS.map((step, index) => (
-                <button
-                  key={step.id}
-                  onClick={() => goToStep(step.id)}
-                  disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
-                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-all ${
-                    step.id === currentStep
-                      ? 'bg-blue-600 text-white'
-                      : step.id < currentStep || completedSteps.has(step.id)
-                      ? 'bg-green-600 text-white'
-                      : step.id > currentStep && !completedSteps.has(step.id - 1)
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  <span className={`w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold ${
-                    step.id === currentStep
-                      ? 'bg-white text-blue-600'
-                      : step.id < currentStep || completedSteps.has(step.id)
-                      ? 'bg-white text-green-600'
-                      : 'bg-gray-400 text-white'
-                  }`}>
-                    {step.id < currentStep || completedSteps.has(step.id) ? '✓' : step.id + 1}
-                  </span>
-                  <span className="hidden md:inline">{step.title}</span>
-                </button>
+                <div key={step.id} className="flex items-center">
+                  {/* Step Circle */}
+                  <button
+                    onClick={() => goToStep(step.id)}
+                    disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
+                    className={`relative flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-all duration-300 ${
+                      step.id === currentStep
+                        ? 'bg-blue-600 text-white shadow-lg scale-110'
+                        : step.id < currentStep || completedSteps.has(step.id)
+                        ? 'bg-green-600 text-white shadow-md'
+                        : step.id > currentStep && !completedSteps.has(step.id - 1)
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                    }`}
+                  >
+                    {step.id < currentStep || completedSteps.has(step.id) ? (
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      step.id + 1
+                    )}
+                  </button>
+
+                  {/* Step Title */}
+                  <div className="ml-3 hidden lg:block">
+                    <div className={`text-sm font-semibold ${
+                      step.id === currentStep
+                        ? 'text-blue-700'
+                        : step.id < currentStep || completedSteps.has(step.id)
+                        ? 'text-green-700'
+                        : 'text-gray-600'
+                    }`}>
+                      {step.title}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-0.5">
+                      {step.description}
+                    </div>
+                  </div>
+
+                  {/* Connector Line */}
+                  {index < WIZARD_STEPS.length - 1 && (
+                    <div className={`w-8 h-0.5 mx-2 ${
+                      step.id < currentStep || completedSteps.has(step.id)
+                        ? 'bg-green-400'
+                        : 'bg-gray-300'
+                    }`} />
+                  )}
+                </div>
               ))}
             </div>
-            <div className="text-xs text-gray-600 ml-4 hidden lg:block">
-              Step {currentStep + 1} of {WIZARD_STEPS.length}
+          </div>
+
+          {/* Current Step Info */}
+          <div className="text-center mt-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-200">
+              <span className="text-sm font-medium text-gray-700">
+                Step {currentStep + 1} of {WIZARD_STEPS.length}
+              </span>
+              <span className="text-xs text-gray-500">
+                {WIZARD_STEPS[currentStep]?.title}
+              </span>
             </div>
           </div>
 
           {/* Step Errors */}
           {stepErrors[currentStep]?.length > 0 && (
-            <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
-              <h4 className="text-xs font-semibold text-red-800 mb-1">Please complete:</h4>
-              <ul className="text-xs text-red-700 space-y-0.5">
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg max-w-md mx-auto">
+              <h4 className="text-sm font-semibold text-red-800 mb-2 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                Please complete:
+              </h4>
+              <ul className="text-sm text-red-700 space-y-1">
                 {stepErrors[currentStep].map((error, index) => (
-                  <li key={index}>• {error}</li>
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="text-red-500 mt-1">•</span>
+                    <span>{error}</span>
+                  </li>
                 ))}
               </ul>
             </div>
