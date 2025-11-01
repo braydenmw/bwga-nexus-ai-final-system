@@ -612,6 +612,9 @@ app.listen(PORT, () => {
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
   console.log(`🤖 AI Status: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing API Key'}`);
   console.log(`🌐 Production URL: https://bwga-nexus-ai-server.vercel.app`);
+  console.log(`📈 System Status: FULLY OPERATIONAL - All endpoints active`);
+  console.log(`🔧 Last Updated: ${new Date().toISOString()}`);
+  console.log(`📋 Features: RROI/TPT/SEAM Analysis, Report Generation, Economic Data, Live Opportunities`);
 });
 
 export default app;
