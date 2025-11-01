@@ -636,7 +636,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
       {/* Step Navigation Header */}
       <div className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="px-4 sm:px-6 py-4 sm:py-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           {/* Mobile: Current step info at top */}
           <div className="block lg:hidden text-center mb-4">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full shadow-sm border border-gray-200">
@@ -650,16 +650,16 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
           </div>
 
           <div className="flex items-center justify-center">
-            <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto max-w-full">
+            <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto max-w-full">
               {WIZARD_STEPS.map((step, index) => (
                 <div key={step.id} className="flex items-center flex-shrink-0">
                   {/* Step Circle */}
                   <button
                     onClick={() => goToStep(step.id)}
                     disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
-                    className={`relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
+                    className={`relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
                       step.id === currentStep
-                        ? 'bg-blue-600 text-white shadow-lg scale-105 sm:scale-110'
+                        ? 'bg-blue-600 text-white shadow-lg scale-105'
                         : step.id < currentStep || completedSteps.has(step.id)
                         ? 'bg-green-600 text-white shadow-md'
                         : step.id > currentStep && !completedSteps.has(step.id - 1)
@@ -668,7 +668,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                     }`}
                   >
                     {step.id < currentStep || completedSteps.has(step.id) ? (
-                      <svg className="w-3 h-3 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 lg:w-4 lg:h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     ) : (
@@ -677,8 +677,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                   </button>
 
                   {/* Step Title - Desktop only */}
-                  <div className="ml-2 sm:ml-3 hidden xl:block">
-                    <div className={`text-xs sm:text-sm font-semibold ${
+                  <div className="ml-1.5 sm:ml-2 lg:ml-2.5 hidden xl:block">
+                    <div className={`text-xs lg:text-sm font-semibold ${
                       step.id === currentStep
                         ? 'text-blue-700'
                         : step.id < currentStep || completedSteps.has(step.id)
@@ -694,7 +694,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
                   {/* Connector Line */}
                   {index < WIZARD_STEPS.length - 1 && (
-                    <div className={`w-4 sm:w-6 lg:w-8 h-0.5 mx-1 sm:mx-2 ${
+                    <div className={`w-3 sm:w-4 lg:w-5 h-0.5 mx-1 sm:mx-1.5 ${
                       step.id < currentStep || completedSteps.has(step.id)
                         ? 'bg-green-400'
                         : 'bg-gray-300'
@@ -802,7 +802,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 order-1 lg:order-2">
-          <div className="max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto space-y-6 pb-20">
+          <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto space-y-6 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
