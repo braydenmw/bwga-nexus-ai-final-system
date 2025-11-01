@@ -609,9 +609,9 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-y-auto">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-blue-600 p-2 rounded-lg">
@@ -634,53 +634,117 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </div>
       </header>
 
-      <div className="flex min-h-[calc(100vh-80px)]">
-        {/* Stepper Sidebar */}
-        <aside className="w-80 bg-white border-r border-gray-200 p-6 overflow-y-auto">
-          <div className="space-y-4">
-            {WIZARD_STEPS.map((step, index) => (
-              <button
-                key={step.id}
-                onClick={() => goToStep(step.id)}
-                disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
-                className={`w-full text-left p-4 rounded-lg border transition-all ${
-                  step.id === currentStep
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : step.id < currentStep || completedSteps.has(step.id)
-                    ? 'border-green-500 bg-green-50 text-green-700'
-                    : 'border-gray-300 bg-white text-gray-500'
-                } ${step.id > currentStep && !completedSteps.has(step.id - 1) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-md'}`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+      {/* Step Navigation Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-[73px] z-10">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4 overflow-x-auto">
+              {WIZARD_STEPS.map((step, index) => (
+                <button
+                  key={step.id}
+                  onClick={() => goToStep(step.id)}
+                  disabled={step.id > currentStep && !completedSteps.has(step.id - 1)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                     step.id === currentStep
                       ? 'bg-blue-600 text-white'
                       : step.id < currentStep || completedSteps.has(step.id)
                       ? 'bg-green-600 text-white'
-                      : 'bg-gray-300 text-gray-600'
+                      : step.id > currentStep && !completedSteps.has(step.id - 1)
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
+                    step.id === currentStep
+                      ? 'bg-white text-blue-600'
+                      : step.id < currentStep || completedSteps.has(step.id)
+                      ? 'bg-white text-green-600'
+                      : 'bg-gray-400 text-white'
                   }`}>
                     {step.id < currentStep || completedSteps.has(step.id) ? '✓' : step.id + 1}
-                  </div>
-                  <div>
-                    <div className="font-semibold">{step.title}</div>
-                    <div className="text-sm opacity-75">{step.description}</div>
-                  </div>
-                </div>
-              </button>
-            ))}
+                  </span>
+                  <span className="hidden sm:inline">{step.title}</span>
+                </button>
+              ))}
+            </div>
+            <div className="text-sm text-gray-600 hidden md:block">
+              Step {currentStep + 1} of {WIZARD_STEPS.length}
+            </div>
           </div>
 
           {/* Step Errors */}
           {stepErrors[currentStep]?.length > 0 && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <h4 className="text-sm font-semibold text-red-800 mb-2">Please complete:</h4>
-              <ul className="text-sm text-red-700 space-y-1">
+            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <h4 className="text-sm font-semibold text-red-800 mb-1">Please complete:</h4>
+              <ul className="text-sm text-red-700 space-y-0.5">
                 {stepErrors[currentStep].map((error, index) => (
                   <li key={index}>• {error}</li>
                 ))}
               </ul>
             </div>
           )}
+        </div>
+      </div>
+
+      <div className="flex min-h-[calc(100vh-140px)]">
+        {/* AI Co-Pilot Sidebar - Now sticky and follows scrolling */}
+        <aside className="w-80 bg-white border-r border-gray-200 sticky top-[140px] h-[calc(100vh-140px)] overflow-y-auto">
+          <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white">
+            <div className="flex items-center gap-2">
+              <ChatBubbleLeftRightIcon className="w-5 h-5" />
+              <h3 className="font-semibold">AI Co-Pilot</h3>
+            </div>
+            <p className="text-xs opacity-90 mt-1">
+              Your intelligent assistant for guidance and insights
+            </p>
+          </div>
+
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+            {chatMessages.map((msg, index) => (
+              <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[85%] p-3 rounded-lg ${
+                  msg.sender === 'user'
+                    ? 'bg-nexus-accent-cyan text-white'
+                    : 'bg-gray-100 text-gray-800 border border-gray-200'
+                }`}>
+                  <div className="text-sm whitespace-pre-line">{msg.text}</div>
+                </div>
+              </div>
+            ))}
+
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-gray-100 p-3 rounded-lg border border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <SpinnerSmall />
+                    <span className="text-sm text-gray-600">AI Co-Pilot is analyzing...</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="p-4 border-t border-gray-200">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                placeholder="Ask me anything..."
+                className="flex-1 p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={isTyping}
+                title="AI Co-Pilot chat input"
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={!currentMessage.trim() || isTyping}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm"
+              >
+                Send
+              </button>
+            </div>
+          </div>
         </aside>
 
         {/* Main Content */}
@@ -860,92 +924,6 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
           </div>
         </main>
 
-        {/* Floating AI Co-Pilot */}
-        {showCopilot && (
-          <div className="fixed bottom-4 right-4 z-50">
-            <div className="bg-white border border-gray-200 rounded-2xl shadow-2xl w-80 h-96 flex flex-col overflow-hidden">
-              {/* Header */}
-              <div className="p-3 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white rounded-t-2xl">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <ChatBubbleLeftRightIcon className="w-4 h-4" />
-                    <span className="text-sm font-semibold">AI Co-Pilot</span>
-                  </div>
-                  <button
-                    onClick={() => setShowCopilot(false)}
-                    className="text-white/70 hover:text-white transition-colors"
-                    title="Close AI Co-Pilot"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              {/* Messages */}
-              <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0">
-                {chatMessages.map((msg, index) => (
-                  <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[85%] p-2 rounded-lg text-xs ${
-                      msg.sender === 'user'
-                        ? 'bg-nexus-accent-cyan text-white'
-                        : 'bg-gray-100 text-gray-800 border border-gray-200'
-                    }`}>
-                      <div className="whitespace-pre-line">{msg.text}</div>
-                    </div>
-                  </div>
-                ))}
-
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 p-2 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-2">
-                        <SpinnerSmall />
-                        <span className="text-xs text-gray-600">AI analyzing...</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Input */}
-              <div className="p-3 border-t border-gray-200">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={currentMessage}
-                    onChange={(e) => setCurrentMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    placeholder="Ask me anything..."
-                    className="flex-1 p-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    disabled={isTyping}
-                    title="AI Co-Pilot chat input"
-                  />
-                  <button
-                    onClick={handleSendMessage}
-                    disabled={!currentMessage.trim() || isTyping}
-                    className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-xs"
-                  >
-                    Send
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* AI Co-Pilot Toggle Button */}
-        {!showCopilot && (
-          <button
-            onClick={() => setShowCopilot(true)}
-            className="fixed bottom-4 right-4 z-40 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 group"
-            title="Open AI Co-Pilot"
-            aria-label="Open AI Co-Pilot chat"
-          >
-            <ChatBubbleLeftRightIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          </button>
-        )}
 
         {/* Intelligent Tier Selection Modal */}
         {showTierSelection && (
