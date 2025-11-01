@@ -537,59 +537,49 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         );
       case 4:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4">
             <Card>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Select Analysis Tiers</h3>
-              <p className="text-gray-600 mb-4">
-                Choose up to 3 tiers that best match your objectives. The Nexus AI will provide confidence ratings and recommendations.
+              <h3 className="text-base font-semibold text-gray-800 mb-3">Select Analysis Tiers</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Choose the analysis tiers that best match your {formData.organizationType?.toLowerCase() || 'organization'} objectives.
               </p>
 
-              {showTierSelection ? (
-                <div className="space-y-3">
-                  {recommendedTiers.map((tier, index) => (
-                    <div key={tier.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="flex-1">
-                        <div className="font-medium text-gray-900">{tier.name}</div>
-                        <div className="text-sm text-gray-600">{tier.rationale}</div>
-                      </div>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <div className="text-sm font-bold text-green-600">{tier.confidence}%</div>
-                        <input
-                          type="checkbox"
-                          checked={formData.tier?.includes(tier.id) || false}
-                          onChange={() => handleTierToggle(tier.id)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                        />
-                      </div>
+              <div className="grid grid-cols-1 gap-2">
+                {currentTiers.map((tier) => (
+                  <label key={tier.id} className="flex items-center gap-3 p-2 rounded-lg border border-gray-200 hover:border-blue-300 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.tier?.includes(tier.id) || false}
+                      onChange={() => handleTierToggle(tier.id)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-sm text-gray-900">{tier.title}</div>
+                      <div className="text-xs text-gray-600">{tier.desc}</div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <SpinnerSmall />
-                  <p className="text-sm text-gray-600 mt-2">AI is assessing your needs...</p>
-                </div>
-              )}
+                  </label>
+                ))}
+              </div>
             </Card>
           </div>
         );
       case 5:
         return (
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-4">
             <Card>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Industry Analysis</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <h3 className="text-base font-semibold text-gray-800 mb-3">Industry Analysis</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {INDUSTRIES.map((industry) => (
                   <button
                     key={industry.id}
                     onClick={() => handleIndustryToggle(industry.id)}
-                    className={`p-3 rounded-lg border text-center transition-all ${
+                    className={`p-2 rounded-lg border text-center transition-all ${
                       formData.industry?.includes(industry.id)
                         ? 'border-blue-500 bg-blue-50 text-blue-700'
                         : 'border-gray-300 hover:border-gray-400 bg-white'
                     }`}
                   >
-                    <div className="text-sm font-medium">{industry.title}</div>
+                    <div className="text-xs font-medium">{industry.title}</div>
                   </button>
                 ))}
               </div>
@@ -598,13 +588,13 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         );
       case 6:
         return (
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-4">
             <Card>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">AI Configuration</h3>
-              <div className="space-y-4">
+              <h3 className="text-base font-semibold text-gray-800 mb-3">AI Configuration</h3>
+              <div className="space-y-3">
                 <div>
                   <label className={labelStyles}>AI Analysis Lenses</label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2">
                     {['Strategic', 'Financial', 'Operational', 'Risk'].map((lens) => (
                       <label key={lens} className="flex items-center gap-2">
                         <input
@@ -619,7 +609,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                           }}
                           className="h-4 w-4 text-blue-600"
                         />
-                        <span className="text-sm">{lens}</span>
+                        <span className="text-xs">{lens}</span>
                       </label>
                     ))}
                   </div>
@@ -650,94 +640,69 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-20">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <NexusLogo className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-grow">
-              <h1 className="text-lg font-bold text-gray-900">NEXUS AI Global Intelligence Platform</h1>
-              <p className="text-sm text-gray-500">Intelligence in Minutes, Not Hours</p>
-            </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* AI Co-Pilot Sidebar - Left side */}
+      <aside className="w-80 bg-white border-r border-gray-200 flex flex-col min-h-screen">
+        <div className="p-3 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+          <div className="flex items-center gap-2">
+            <ChatBubbleLeftRightIcon className="w-4 h-4" />
+            <h3 className="font-semibold text-sm">AI Co-Pilot</h3>
           </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-500">Analysis Progress</div>
-            <div className="w-32 bg-gray-200 rounded-full h-2 mt-1">
-              <div
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${analysisProgress}%` }}
-              ></div>
+          <p className="text-xs opacity-90 mt-1">
+            Your intelligent assistant
+          </p>
+        </div>
+
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-3 space-y-2">
+          {chatMessages.map((msg, index) => (
+            <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] p-2 rounded-lg text-xs ${
+                msg.sender === 'user'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-800 border border-gray-200 shadow-sm'
+              }`}>
+                <div className="whitespace-pre-line">{msg.text}</div>
+              </div>
             </div>
+          ))}
+
+          {isTyping && (
+            <div className="flex justify-start">
+              <div className="bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <SpinnerSmall />
+                  <span className="text-xs text-gray-600">AI Co-Pilot is analyzing...</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="p-3 border-t border-gray-200 bg-gray-50">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={currentMessage}
+              onChange={(e) => setCurrentMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Ask me anything..."
+              className="flex-1 p-2 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              disabled={isTyping}
+            />
+            <button
+              onClick={handleSendMessage}
+              disabled={!currentMessage.trim() || isTyping}
+              className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:opacity-50 text-xs"
+            >
+              Send
+            </button>
           </div>
         </div>
-      </header>
-
-      <div className="flex-grow flex flex-col min-h-0">
-        {/* AI Co-Pilot Sidebar - Compact and non-intrusive */}
-        <aside className="w-full bg-white border-b border-gray-200 flex flex-col max-h-80 overflow-hidden">
-          <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-            <div className="flex items-center gap-2">
-              <ChatBubbleLeftRightIcon className="w-5 h-5" />
-              <h3 className="font-semibold text-base">AI Co-Pilot</h3>
-            </div>
-            <p className="text-xs opacity-90 mt-1">
-              Your intelligent assistant for guidance and insights
-            </p>
-          </div>
-
-          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-3 space-y-3">
-            {chatMessages.map((msg, index) => (
-              <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] p-3 rounded-lg ${
-                  msg.sender === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-800 border border-gray-200 shadow-sm'
-                }`}>
-                  <div className="text-sm whitespace-pre-line">{msg.text}</div>
-                </div>
-              </div>
-            ))}
-
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
-                  <div className="flex items-center gap-2">
-                    <SpinnerSmall />
-                    <span className="text-sm text-gray-600">AI Co-Pilot is analyzing...</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="p-3 border-t border-gray-200 bg-gray-50">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={currentMessage}
-                onChange={(e) => setCurrentMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Ask me anything..."
-                className="flex-1 p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                disabled={isTyping}
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={!currentMessage.trim() || isTyping}
-                className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm"
-              >
-                Send
-              </button>
-            </div>
-          </div>
-        </aside>
+      </aside>
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
-          <div className="max-w-5xl mx-auto space-y-4 pb-20">
+          <div className="max-w-4xl mx-auto space-y-3 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
@@ -753,25 +718,25 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             )}
 
             {/* Step Content */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                 <EnhancedStepper steps={WIZARD_STEPS} currentStep={currentStep} onStepClick={goToStep} />
             </div>
 
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {renderStepContent()}
 
               {/* Navigation */}
-              <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+              <div className="flex justify-between items-center pt-4 border-t border-gray-200">
                 <button
                   onClick={prevStep}
                   disabled={currentStep === 0 || isAnalyzing || isGeneratingReport}
-                  className="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   Previous
                 </button>
 
-                <div className="text-sm text-gray-600">
+                <div className="text-xs text-gray-600">
                   Step {currentStep + 1} of {WIZARD_STEPS.length}
                 </div>
 
@@ -779,16 +744,16 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                   <button
                     onClick={nextStep}
                     disabled={isAnalyzing || isGeneratingReport}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm"
                   >
                     Next
                   </button>
                 ) : (
                   <button
                     onClick={generateReport}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors text-sm"
                   >
-                    Generate Intelligence Report
+                    Generate Report
                   </button>
                 )}
               </div>
@@ -798,7 +763,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             {analysisResults && (
               <div className="space-y-6">
                 <Card>
-                  <h2 className="text-xl font-bold text-gray-900 mb-6">🧠 Nexus Brain Analysis Results</h2>
+                  <h2 className="text-lg font-bold text-gray-900 mb-4">🧠 Nexus Brain Analysis Results</h2>
 
                   <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
                     {/* RROI Results */}
@@ -836,7 +801,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             {/* Output Generation */}
             {analysisResults && (
               <Card>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Generate Intelligence Package</h2>
+                <h2 className="text-lg font-bold text-gray-900 mb-4">📊 Generate Intelligence Package</h2>
                 <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Letter Generation */}
                   <div>
