@@ -636,7 +636,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
       {/* Step Navigation Header */}
       <div className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="px-6 py-6">
           <div className="flex items-center justify-center">
             <div className="flex items-center gap-1 overflow-x-auto">
               {WIZARD_STEPS.map((step, index) => (
@@ -727,7 +727,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         </div>
       </div>
 
-      <div className="flex min-h-[calc(100vh-140px)] max-w-7xl mx-auto">
+      <div className="flex min-h-[calc(100vh-140px)]">
         {/* AI Co-Pilot Sidebar - Now sticky and follows scrolling */}
         <aside className="w-72 bg-white border-r border-gray-200 sticky top-[140px] h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
           <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white">
@@ -790,7 +790,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-3xl mx-auto space-y-6 pb-20">
+          <div className="max-w-4xl mx-auto space-y-6 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
