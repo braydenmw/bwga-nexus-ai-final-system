@@ -941,7 +941,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
     </div>
   );
 
-  async function handleSendMessage() {
+  const handleSendMessage = useCallback(async () => {
     if (!currentMessage.trim()) return;
 
     const userMessage = { sender: 'user' as const, text: currentMessage };
@@ -968,7 +968,6 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
     } finally {
       setIsTyping(false);
     }
-  }
-};
+  }, [currentMessage, currentStep, formData]);
 
 export default InstantNexusIntelligencePlatform;
