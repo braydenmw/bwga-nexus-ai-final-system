@@ -552,7 +552,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                         <div className="font-medium text-gray-900">{tier.name}</div>
                         <div className="text-sm text-gray-600">{tier.rationale}</div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <div className="text-sm font-bold text-green-600">{tier.confidence}%</div>
                         <input
                           type="checkbox"
@@ -575,7 +575,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         );
       case 5:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card>
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Industry Analysis</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -598,7 +598,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
         );
       case 6:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card>
               <h3 className="text-lg font-semibold text-gray-800 mb-4">AI Configuration</h3>
               <div className="space-y-4">
@@ -677,10 +677,10 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
       {/* Stage Navigation Header */}
       <div className="bg-white border-b border-gray-200 sticky top-[73px] z-10">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           {/* Stage Progress */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
               {STAGES.map((stage, stageIndex) => (
                 <div key={stage.id} className="flex items-center gap-3">
                   {/* Stage Circle */}
@@ -714,7 +714,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
                   {/* Connector Line */}
                   {stageIndex < STAGES.length - 1 && (
-                    <div className={`w-16 h-0.5 ${
+                    <div className={`w-8 sm:w-12 lg:w-16 h-0.5 ${
                       stageIndex < getCurrentStage() ? 'bg-green-400' : 'bg-gray-300'
                     }`} />
                   )}
@@ -734,7 +734,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
           </div>
 
           {/* Step Progress within Current Stage */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-700">
                 Stage {getCurrentStage() + 1}: {STAGES[getCurrentStage()]?.title}
@@ -814,8 +814,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
       <div className="flex flex-col 2xl:flex-row min-h-[calc(100vh-140px)]">
         {/* AI Co-Pilot Sidebar - Responsive positioning */}
-        <aside className="w-full 2xl:w-64 bg-white border-b 2xl:border-b-0 2xl:border-r border-gray-200 order-2 2xl:order-1 2xl:sticky 2xl:top-[140px] h-auto 2xl:h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
-          <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-nexus-accent-cyan text-white">
+        <aside className="w-full 2xl:w-60 bg-white border-b 2xl:border-b-0 2xl:border-r border-gray-200 order-2 2xl:order-1 2xl:sticky 2xl:top-[140px] h-auto 2xl:h-[calc(100vh-140px)] overflow-y-auto flex-shrink-0">
+          <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
             <div className="flex items-center gap-2">
               <ChatBubbleLeftRightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               <h3 className="font-semibold text-sm sm:text-base">AI Co-Pilot</h3>
@@ -830,8 +830,8 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
               <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] p-3 rounded-lg ${
                   msg.sender === 'user'
-                    ? 'bg-nexus-accent-cyan text-white'
-                    : 'bg-gray-100 text-gray-800 border border-gray-200'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-800 border border-gray-200 shadow-sm'
                 }`}>
                   <div className="text-sm whitespace-pre-line">{msg.text}</div>
                 </div>
@@ -840,7 +840,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
             {isTyping && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 p-3 rounded-lg border border-gray-200">
+                <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
                   <div className="flex items-center gap-2">
                     <SpinnerSmall />
                     <span className="text-sm text-gray-600">AI Co-Pilot is analyzing...</span>
@@ -850,7 +850,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
             )}
           </div>
 
-          <div className="p-3 sm:p-4 border-t border-gray-200">
+          <div className="p-3 sm:p-4 border-t border-gray-200 bg-gray-50">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -875,7 +875,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 order-1 2xl:order-2">
-          <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-auto space-y-6 pb-20">
+          <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-4xl mx-auto space-y-4 pb-20">
 
             {/* Progress Indicator */}
             {isAnalyzing && (
@@ -932,7 +932,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
                 <Card>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">🧠 Nexus Brain Analysis Results</h2>
 
-                  <div className="grid md:grid-cols-3 gap-6">
+                  <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
                     {/* RROI Results */}
                     <div className="border border-gray-200 rounded-lg p-4">
                       <h3 className="font-semibold text-gray-800 mb-3">Regional Readiness (RROI)</h3>
@@ -970,7 +970,7 @@ Return a JSON array of the top 3 most relevant tiers with confidence scores (0-1
               <Card>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Generate Intelligence Package</h2>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Letter Generation */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">✉️ Ice-Breaker Letter</h3>
