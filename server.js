@@ -266,7 +266,7 @@ Ensure the ecosystem design shows deep understanding of the regional context and
     }
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 2000,
       temperature: 0.7,
@@ -424,7 +424,7 @@ Focus on indicators that would actually influence the decision to pursue this ob
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 1500,
       temperature: 0.7,
@@ -597,7 +597,7 @@ Please refine and improve the objective to be more specific, actionable, and ali
 Return only the refined objective text.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 500,
       temperature: 0.7,
