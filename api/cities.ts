@@ -52,7 +52,7 @@ export default async function handler(request: Request) {
     });
 
     const jsonStr = completion.choices[0].message.content;
-    const data = JSON.parse(jsonStr);
+    const data = JSON.parse(jsonStr || '{}');
     
     return new Response(JSON.stringify(data), {
       status: 200,

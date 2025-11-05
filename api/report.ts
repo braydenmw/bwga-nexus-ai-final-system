@@ -1,8 +1,7 @@
-import OpenAI from 'openai';
-import type { ReportParameters } from '../types.ts';
+const OpenAI = require('openai');
 
 // Live UN Comtrade API integration for Vercel Edge Functions
-const COUNTRY_CODES: Record<string, string> = {
+const COUNTRY_CODES = {
   "Philippines": "608",
   "Singapore": "702",
   "Malaysia": "458",
@@ -20,56 +19,62 @@ const COUNTRY_CODES: Record<string, string> = {
   "Australia": "036"
 };
 
-async function fetchUNComtradeData(reporterCode: string): Promise<any[]> {
-  // UN Comtrade API v1 endpoint (free tier)
-  const baseUrl = "https://comtradeapi.un.org/data/v1/get";
-  const params = new URLSearchParams({
-    subscription: "free",
-    classification: "HS",
-    cmdCode: "TOTAL", // All commodities
-    reporterCode: reporterCode,
-    partnerCode: "0", // World
-    flowCode: "X", // Exports
-    period: "2022",
-    format: "json",
-    maxRecords: "5"
-  });
+function fetchUNComtradeData(reporterCode) {
+  return new Promise(function(resolve) {
+    // UN Comtrade API v1 endpoint (free tier)
+    const baseUrl = "https://comtradeapi.un.org/data/v1/get";
+    const params = new URLSearchParams({
+      subscription: "free",
+      classification: "HS",
+      cmdCode: "TOTAL", // All commodities
+      reporterCode: reporterCode,
+      partnerCode: "0", // World
+      flowCode: "X", // Exports
+      period: "2022",
+      format: "json",
+      maxRecords: "5"
+    });
 
-  const url = `${baseUrl}/HS/X?${params.toString()}`;
+    const url = `${baseUrl}/HS/X?${params.toString()}`;
 
-  try {
-    const response = await fetch(url, {
+    fetch(url, {
       headers: {
         'User-Agent': 'BWGA-Nexus-AI/1.0'
       }
+    }).then(function(response) {
+      if (!response.ok) {
+        console.error(`UN Comtrade API error: ${response.status} for reporter ${reporterCode}`);
+        resolve([]);
+        return;
+      }
+
+      response.json().then(function(data) {
+        if (data.data && Array.isArray(data.data)) {
+          const processedData = data.data.slice(0, 5).map(function(item) {
+            return {
+              commodity: item.cmdDescE || "Various Products",
+              tradeValue: parseFloat(item.primaryValue || 0),
+              year: item.period || "2022"
+            };
+          });
+          console.log(`Fetched ${processedData.length} trade records for reporter ${reporterCode}`);
+          resolve(processedData);
+        } else {
+          resolve([]);
+        }
+      }).catch(function(error) {
+        console.error("UN Comtrade API error:", error);
+        resolve([]);
+      });
+    }).catch(function(error) {
+      console.error("UN Comtrade API error:", error);
+      resolve([]);
     });
-
-    if (!response.ok) {
-      console.error(`UN Comtrade API error: ${response.status} for reporter ${reporterCode}`);
-      return [];
-    }
-
-    const data = await response.json();
-
-    if (data.data && Array.isArray(data.data)) {
-      const processedData = data.data.slice(0, 5).map((item: any) => ({
-        commodity: item.cmdDescE || "Various Products",
-        tradeValue: parseFloat(item.primaryValue || 0),
-        year: item.period || "2022"
-      }));
-      console.log(`Fetched ${processedData.length} trade records for reporter ${reporterCode}`);
-      return processedData;
-    }
-
-    return [];
-  } catch (error) {
-    console.error("UN Comtrade API error:", error);
-    return [];
-  }
+  });
 }
 
-const getGDPData = async (country: string): Promise<any[]> => {
-  const countryCodes: Record<string, string> = {
+const getGDPData = async function(country) {
+  const countryCodes = {
     "Philippines": "PHL", "Singapore": "SGP", "Malaysia": "MYS",
     "Indonesia": "IDN", "Thailand": "THA"
   };
@@ -87,7 +92,7 @@ const getGDPData = async (country: string): Promise<any[]> => {
   }
 };
 
-const getTopExportsData = async (country: string): Promise<any[]> => {
+const getTopExportsData = async function(country) {
   const reporterCode = COUNTRY_CODES[country];
   if (!reporterCode) {
     return [];
@@ -96,12 +101,11 @@ const getTopExportsData = async (country: string): Promise<any[]> => {
   return await fetchUNComtradeData(reporterCode);
 };
 
-
-export const config = {
+const config = {
   runtime: 'edge',
 };
 
-const PERSONA_PROMPTS: Record<string, string> = {
+const PERSONA_PROMPTS = {
     'Venture Capitalist': `You are a Venture Capitalist. Your analysis must focus on market size, scalability, competitive landscape (Moat), revenue models, team strength, and potential return on investment (ROI). You are skeptical but opportunistic. Use business and finance terminology.`,
     'Regional Economist': `You are a Regional Economist. Your analysis must focus on macroeconomic factors, supply chain implications, labor market impact, economic multipliers, long-term sustainable development, and public-private partnership models. Use economic and policy terminology.`,
     'Geopolitical Strategist': `You are a Geopolitical Strategist. Your analysis must focus on international trade relations, political stability, regulatory risk, sovereign risk, regional power dynamics, and national security implications. Use diplomacy and international relations terminology.`,
@@ -112,8 +116,8 @@ const PERSONA_PROMPTS: Record<string, string> = {
 };
 
 
-const getSystemPrompt = (params: ReportParameters) => {
-    let personaDirectives: string[] = [];
+const getSystemPrompt = function(params) {
+    let personaDirectives = [];
     if (params.aiPersona && params.aiPersona.length > 0) {
         params.aiPersona.forEach(personaId => {
             if (personaId === 'Custom' && params.customAiPersona) {
@@ -175,19 +179,19 @@ Be professional, data-driven, and action-oriented. Your goal is to provide a tan
 `;
 }
 
-const getCountryFromRegion = (region: string): string | null => {
+const getCountryFromRegion = function(region) {
     if (!region) return null;
     const parts = region.split(',').map(p => p.trim());
-    return parts.length > 1 ? parts.pop()! : parts[0];
+    return parts.length > 1 ? parts.pop() : parts[0];
 }
 
-export default async function handler(request: Request) {
+export async function handler(request: any) {
   if (request.method !== 'POST') {
     return new Response('Method Not Allowed', { status: 405 });
   }
 
   try {
-    const params = (await request.json()) as ReportParameters;
+    const params = (await request.json()) as any;
 
     if (!process.env.OPENAI_API_KEY) {
         return new Response('API key is not configured.', { status: 500 });
@@ -196,7 +200,7 @@ export default async function handler(request: Request) {
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
-    
+
     // --- Data Grounding Step ---
     let groundingDataPrompt = '';
     const country = getCountryFromRegion(params.region);
@@ -210,18 +214,20 @@ export default async function handler(request: Request) {
 
             groundingDataPrompt += '\n**Authoritative Grounding Data:**\n';
             if (gdpData && gdpData.length > 0) {
-                const latestGdp = gdpData.sort((a,b) => parseInt(b.date) - parseInt(a.date))[0];
+                const latestGdp = gdpData.sort((a: any,b: any) => parseInt(b.date) - parseInt(a.date))[0];
                 groundingDataPrompt += `- **Latest World Bank GDP:** ${latestGdp.value ? '$' + latestGdp.value.toLocaleString() : 'N/A'} (Year: ${latestGdp.date})\n`;
             }
-            if (exportsData && exportsData.length > 0) {
-                const topExports = exportsData.slice(0, 5).map(e => `${e.commodity} ($${e.tradeValue.toLocaleString()})`);
+            if (exportsData && (exportsData as any[]).length > 0) {
+                const topExports = (exportsData as any[]).slice(0, 5).map((e: any) => `${e.commodity} ($${e.tradeValue.toLocaleString()})`);
                 groundingDataPrompt += `- **Top UN Comtrade Exports:** ${topExports.join(', ')}\n`;
             }
         } catch (e) {
             console.error("Failed to fetch grounding data:", e);
             groundingDataPrompt += '\n**Authoritative Grounding Data:**\n- Failed to retrieve live economic data. Proceed with web search only.\n';
         }
-    }
+      };
+
+      // Continue with the rest of the function...
     // --- End Data Grounding ---
 
     let prompt = `
@@ -328,7 +334,7 @@ export default async function handler(request: Request) {
 
   } catch (error) {
     console.error("Error in /api/report:", error);
-    return new Response(JSON.stringify({ error: (error as Error).message }), {
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

@@ -44,7 +44,7 @@ export default async function handler(request: Request) {
       response_format: { type: "json_object" }
     });
 
-    const analysis = JSON.parse(completion.choices[0].message.content);
+    const analysis = JSON.parse(completion.choices[0].message.content || '{}');
 
     return new Response(JSON.stringify(analysis), {
       status: 200,

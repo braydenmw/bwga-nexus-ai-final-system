@@ -53,7 +53,7 @@ export default async function handler(request: Request) {
     });
 
     const jsonStr = completion.choices[0].message.content;
-    const data = JSON.parse(jsonStr);
+    const data = JSON.parse(jsonStr || '{}');
 
     return new Response(JSON.stringify(data), {
       status: 200,
@@ -65,7 +65,7 @@ export default async function handler(request: Request) {
 
   } catch (error) {
     console.error(`Error in /api/dashboard for category ${category}:`, error);
-    return new Response(JSON.stringify({ error: `Failed to fetch or parse dashboard intelligence for ${category}. The AI service may be temporarily unavailable or the response was malformed. Details: ${error.message}` }), {
+    return new Response(JSON.stringify({ error: `Failed to fetch or parse dashboard intelligence for ${category}. The AI service may be temporarily unavailable or the response was malformed. Details: ${error instanceof Error ? error.message : 'Unknown error'}` }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
