@@ -1,24 +1,49 @@
-# TODO: Improve Report and Generator Styling
+# Robust Report-Generation System for BWGA-Nexus-AI
 
-## Font Improvements
-- [x] Update tailwind.config.js to add custom font families (Inter for UI, Georgia for report headers)
-- [x] Update index.css to import Google Fonts and apply font stacks
+## Overview
+Build a production-ready report-generation system by enhancing and integrating existing components (ReportGenerator.tsx frontend, report.ts backend, customer-work-report.html demo) into a cohesive, robust platform.
 
-## Report Professionalism (ReportViewer.tsx)
-- [x] Enhance typography hierarchy in ReportMetadata component
-- [x] Improve spacing, shadows, and borders for metadata, disclaimer, and content areas
-- [x] Polish chart styling in NsilChart component
-- [x] Refine interactive elements and symbiosis triggers
-- [x] Update report footer and loading indicator styles
+## Current System Analysis
+- **Frontend**: Multi-step wizard (ReportGenerator.tsx) for configuring reports (engagement style, format, length, AI config) - lacks full backend integration, progress tracking, error handling.
+- **Backend**: OpenAI-powered generation (report.ts) with NSIL schema, data grounding from World Bank/UN Comtrade APIs, AI personas - functional but needs more data sources, better error handling, scalability.
+- **Demos**: customer-work-report.html shows working HTML wizard - not integrated with React app.
+- **Gaps**: No export formats (PDF/DOCX), limited data sources, no report storage/persistence, weak validation, no real-time progress/retry.
 
-## Generator Enhancements (ReportGenerator.tsx)
-- [x] Refine step navigation and wizard header
-- [x] Improve button styles and add smooth transitions
-- [x] Enhance form layouts and input styling
-- [x] Add better visual feedback for selections
-- [x] Polish card layouts and spacing
+## Plan
+1. Integrate Frontend Wizard with Backend
+2. Expand Data Sources
+3. Enhance AI Personas & Lenses
+4. Add Export & Storage
+5. Improve Robustness
+6. UI/UX Enhancements
+7. Security & Performance
 
-## Followup Steps
-- [ ] Test report generation and PDF export
-- [ ] Verify responsiveness on different screen sizes
-- [ ] Ensure accessibility and readability
+## Tasks
+- [ ] Create TODO.md (this file)
+- [ ] Integrate ReportGenerator.tsx with report.ts API
+- [ ] Add progress tracking and error states to frontend
+- [ ] Enhance report.ts with more data sources (Bloomberg, regional stats)
+- [ ] Add more AI personas and lenses
+- [ ] Implement PDF/DOCX export using Puppeteer/jsPDF
+- [ ] Add report storage/persistence
+- [ ] Add input validation and retry logic
+- [ ] Create ReportViewer component
+- [ ] Integrate customer-work-report.html as React component
+- [ ] Add security (API key rotation, throttling)
+- [ ] Optimize performance for large reports
+- [ ] Thorough testing: frontend flows, backend APIs, exports, edge cases
+- [ ] Deploy and monitor
+
+## Dependent Files
+- src/components/reports/ReportGenerator.tsx
+- report.ts
+- types.ts
+- services/nexusService.ts
+- customer-work-report.html
+- New: components/ReportViewer.tsx, utils/reportExporter.ts, services/reportStorage.ts
+
+## Followup
+- Install dependencies: puppeteer, jspdf, html2canvas
+- Test thoroughly: unit, integration, UI, API
+- Deploy: update Docker/Vercel
+- Monitor: add logging/metrics

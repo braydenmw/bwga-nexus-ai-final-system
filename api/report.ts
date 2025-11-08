@@ -191,7 +191,19 @@ export async function generateReport(params: any) {
     json: async () => params
   };
   const response = await handler(request);
-  return response;
+  if (response.ok) {
+    const reader = response.body.getReader();
+    let content = '';
+    const decoder = new TextDecoder();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      content += decoder.decode(value);
+    }
+    return content;
+  } else {
+    throw new Error(`Failed to generate report: ${response.status} ${response.statusText}`);
+  }
 }
 
 export async function handler(request: any) {

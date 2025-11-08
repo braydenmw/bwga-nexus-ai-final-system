@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ReportParameters, EngagementStyle, ReportFormat, UserProfile, WorkflowStep } from '../../../types';
+import { ReportParameters, EngagementStyle, ReportFormat, UserProfile, WorkflowStep } from '../../types';
 import { generateReport } from '../../../report';
 import { generateLetter } from '../../../letter';
 
@@ -23,6 +23,8 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(1);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const engagementStyles = [
     {
@@ -113,9 +115,10 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     return Math.round((completedComplexity / totalPossible) * 100);
   };
 
-  const generateReportContent = async () => {
+  const generateReportContent = async (attempt = 0) => {
     setIsGenerating(true);
     setProgress(0);
+    setError(null);
 
     try {
       // Simulate progress
@@ -148,7 +151,7 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
       // Generate report
       const reportContent = await generateReport(reportParams);
-      
+
       let letterContent = '';
       if (includeLetter) {
         // Generate introduction letter
@@ -162,12 +165,25 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         onReportGenerated(reportContent, letterContent);
         setIsGenerating(false);
         setProgress(0);
+        setRetryCount(0);
       }, 500);
 
     } catch (error) {
       console.error('Error generating report:', error);
-      setIsGenerating(false);
+      clearInterval(progressInterval);
       setProgress(0);
+
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+
+      if (attempt < 2) {
+        setRetryCount(attempt + 1);
+        setError(`Generation failed. Retrying... (${attempt + 1}/3)`);
+        setTimeout(() => generateReportContent(attempt + 1), 2000);
+      } else {
+        setError(`Report generation failed after 3 attempts: ${errorMessage}`);
+        setIsGenerating(false);
+        setRetryCount(0);
+      }
     }
   };
 
