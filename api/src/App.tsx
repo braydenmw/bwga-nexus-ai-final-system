@@ -1,244 +1,645 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import type { View, ReportParameters, LiveOpportunityItem, SymbiosisContext, UserProfile as UserProfileType, ChatMessage, ReportSuggestions } from '../types.ts';
-import { Header } from '../components/Header.tsx';
+import { SidePanel } from './components/layout/SidePanel';
+import { UserProfileSetup, UserProfileData } from './components/core/UserProfileSetup';
+import { TwelveStepWorkflow, WorkflowStep, EngagementStyle, ReportFormat } from './components/core/TwelveStepWorkflow';
+import { ReportGenerator } from './components/reports/ReportGenerator';
+import { ReportViewer } from './components/reports/ReportViewer';
+import { WORKFLOW_STEPS } from './data/workflowSteps';
+import { NexusIntelligenceHub } from './components/core/NexusIntelligenceHub';
+import { CopilotAssistant } from './components/core/CopilotAssistant';
+import { IntelligenceDashboard } from './components/core/IntelligenceDashboard';
+import { ContextualHelp } from './components/shared/ContextualHelp';
+import { NexusIntegration } from './components/integration/NexusIntegration';
 
-import { LiveOpportunities } from '../components/LiveOpportunities.tsx';
-import ReportViewer from '../components/ReportViewer.tsx';
-import Compliance from '../components/Compliance.tsx';
-import SymbiosisChatModal from '../components/SymbiosisChatModal.tsx';
-import { AnalysisModal } from '../components/AnalysisModal.tsx';
-import { LetterGeneratorModal } from '../components/LetterGeneratorModal.tsx';
-import { generateLetterStream, fetchSymbiosisResponse } from '../services/nexusService.ts';
-import { ErrorBoundary } from '../components/ErrorBoundary.tsx';
-import { COUNTRIES, INDUSTRIES, AI_PERSONAS, ORGANIZATION_TYPES, ANALYTICAL_LENSES, TONES_AND_STYLES } from '../constants.tsx';
-import { SampleReport } from '../components/SampleReport.tsx';
-import { TechnicalManual } from '../components/TechnicalManual.tsx';
-import WhoWeAre from '../components/WhoWeAre.tsx';
-import TermsAndConditions from '../components/TermsAndConditions.tsx';
+// Import the original dist components
+import { GoalAnalyzer } from './components/dist/GoalAnalyzer';
+import { ContextEngine } from './components/dist/ContextEngine';
+import { RROIDisplay } from './components/dist/RROIDisplay';
+import { TPTSimulator } from './components/dist/TPTSimulator';
+import { SEAMMapper } from './components/dist/SEAMMapper';
+import { PartnerNetwork } from './components/dist/PartnerNetwork';
+import { RiskMatrix } from './components/dist/RiskMatrix';
+import { ImplementationRoadmap } from './components/dist/ImplementationRoadmap';
+import { OpportunityTracker } from './components/dist/OpportunityTracker';
 
-// Terms acceptance check
-const hasAcceptedTerms = localStorage.getItem('bwga-nexus-terms-accepted') === 'true';
-import NexusReportStudio from '../components/NexusReportStudio.tsx';
-import DebugReportGenerator from '../components/DebugReportGenerator.tsx';
-import InstantNexusIntelligencePlatform from '../components/InstantNexusIntelligencePlatform.tsx';
-import { saveAutoSave, loadAutoSave, clearAutoSave, getSavedReports, saveReport, deleteReport } from '../services/storageService.ts';
-
-const initialReportParams: ReportParameters = {
-    reportName: '',
-    tier: [],
-    userName: '',
-    userDepartment: '',
-    organizationType: ORGANIZATION_TYPES[0],
-    userCountry: '',
-    aiPersona: [AI_PERSONAS[0].id],
-    customAiPersona: '',
-    analyticalLens: [ANALYTICAL_LENSES[0]],
-    toneAndStyle: [TONES_AND_STYLES[0]],
-    region: '',
-    industry: [INDUSTRIES[0].id],
-    customIndustry: '',
-    idealPartnerProfile: '',
-    problemStatement: '',
-    analysisTimeframe: 'Any Time',
-    analyticalModules: [],
-    reportLength: 'standard',
-    outputFormat: 'report',
-};
+interface AppState {
+  userProfile: UserProfileData | null;
+  currentView: string;
+  showProfileSetup: boolean;
+  sidePanelCollapsed: boolean;
+  workflowData: Record<number, any>;
+  currentWorkflowStep: number;
+  completedWorkflowSteps: number[];
+  selectedEngagementStyle?: EngagementStyle;
+  selectedReportFormat?: ReportFormat;
+  showCopilot: boolean;
+  showHelp: boolean;
+  helpContext: string;
+  generatedReport: string | null;
+  generatedLetter: string | null;
+  showReportViewer: boolean;
+}
 
 function App() {
-  const [currentView, setCurrentView] = useState<View>('who-we-are');
-  // Terms are now handled within BlueprintReportWizard
+  const [appState, setAppState] = useState<AppState>({
+    userProfile: null,
+    currentView: 'dashboard',
+    showProfileSetup: true,
+    sidePanelCollapsed: false,
+    workflowData: {},
+    currentWorkflowStep: 1,
+    completedWorkflowSteps: [],
+    showCopilot: false,
+    showHelp: false,
+    helpContext: '',
+    generatedReport: null,
+    generatedLetter: null,
+    showReportViewer: false
+  });
 
-  // Terms are now handled globally
-  const [savedReports, setSavedReports] = useState<ReportParameters[]>([]);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  // State for modals and shared context
-  const [symbiosisContext, setSymbiosisContext] = useState<SymbiosisContext | null>(null);
-  const [analysisItem, setAnalysisItem] = useState<LiveOpportunityItem | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
-  const [letterModalOpen, setLetterModalOpen] = useState(false);
-
-  // --- Saved Work Logic ---
-
-  // Initial load
+  // Load user profile from localStorage on mount
   useEffect(() => {
-    setSavedReports(getSavedReports());
-  }, []);
-
-  // Toast message handler
-  useEffect(() => {
-    if (toastMessage) {
-        const timer = setTimeout(() => setToastMessage(null), 3000);
-        return () => clearTimeout(timer);
-    }
-  }, [toastMessage]);
-
-  const handleSaveReport = useCallback((params: ReportParameters) => {
-    try {
-        const newSavedReports = saveReport(params);
-        setSavedReports(newSavedReports);
-        setToastMessage(`Blueprint "${params.reportName}" saved.`);
-    } catch (e) {
-        console.error(e);
-        const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
-        setToastMessage(`Error: ${errorMessage}`);
+    const savedProfile = localStorage.getItem('nexusUserProfile');
+    if (savedProfile) {
+      try {
+        const profile = JSON.parse(savedProfile);
+        setAppState(prev => ({
+          ...prev,
+          userProfile: profile,
+          showProfileSetup: false
+        }));
+      } catch (error) {
+        console.error('Failed to load saved profile:', error);
+      }
     }
   }, []);
 
-  const handleLoadReport = useCallback((params: ReportParameters) => {
-    setToastMessage(`Blueprint "${params.reportName}" loaded.`);
+  const handleProfileComplete = useCallback((profile: UserProfileData) => {
+    setAppState(prev => ({
+      ...prev,
+      userProfile: profile,
+      showProfileSetup: false
+    }));
+    localStorage.setItem('nexusUserProfile', JSON.stringify(profile));
   }, []);
 
-  const handleDeleteReport = useCallback((reportName: string) => {
-    try {
-        const newSavedReports = deleteReport(reportName);
-        setSavedReports(newSavedReports);
-        setToastMessage(`Blueprint "${reportName}" deleted.`);
-    } catch (e) {
-        console.error(e);
-        const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
-        setToastMessage(`Error: ${errorMessage}`);
-    }
+  const handleViewChange = useCallback((view: string) => {
+    setAppState(prev => ({
+      ...prev,
+      currentView: view
+    }));
   }, []);
 
-  const handleViewChange = (view: View) => {
-    setCurrentView(view);
-    // Auto-scroll to top when changing views
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleDeclineTerms = () => {
-    // Redirect to external site or show message
-    window.location.href = 'https://www.bwga.com.au';
-  };
-
-  // Terms handling is now within BlueprintReportWizard
-
-  // BlueprintReportWizard handles its own suggestions internally
-  const handleApplySuggestions = useCallback((suggestions: ReportSuggestions) => {
-      // This function is kept for compatibility but BlueprintReportWizard manages its own state
-      console.log('Suggestions applied:', suggestions);
+  const handleProfileClick = useCallback(() => {
+    setAppState(prev => ({
+      ...prev,
+      showProfileSetup: true
+    }));
   }, []);
 
-  // BlueprintReportWizard handles report updates internally
-  const handleReportUpdate = useCallback((params: ReportParameters, content: string, error: string | null, generating: boolean) => {
-    // This function is kept for compatibility but BlueprintReportWizard manages its own state
-    console.log('Report update:', { params, content, error, generating });
+  const handleHelpClick = useCallback(() => {
+    setAppState(prev => ({
+      ...prev,
+      showHelp: true,
+      helpContext: 'General help and support'
+    }));
   }, []);
 
-  const handleAnalyzeOpportunity = useCallback((item: LiveOpportunityItem) => {
-    setAnalysisItem(item);
+  const handleWorkflowStepComplete = useCallback((stepId: number, data: any) => {
+    setAppState(prev => ({
+      ...prev,
+      workflowData: {
+        ...prev.workflowData,
+        [stepId]: data
+      },
+      completedWorkflowSteps: prev.completedWorkflowSteps.includes(stepId)
+        ? prev.completedWorkflowSteps
+        : [...prev.completedWorkflowSteps, stepId]
+    }));
   }, []);
 
-  const handleStartSymbiosis = useCallback((context: SymbiosisContext) => {
-    setSymbiosisContext(context);
+  const handleWorkflowStepSelect = useCallback((stepId: number) => {
+    setAppState(prev => ({
+      ...prev,
+      currentWorkflowStep: stepId,
+      currentView: 'workflow-step'
+    }));
   }, []);
 
-  const handleGenerateLetter = useCallback(() => {
-    setLetterModalOpen(true);
+  const handleEngagementStyleSelect = useCallback((style: EngagementStyle) => {
+    setAppState(prev => ({
+      ...prev,
+      selectedEngagementStyle: style
+    }));
   }, []);
 
-  const handleProfileUpdate = useCallback((profile: UserProfileType) => {
-    setUserProfile(profile);
+  const handleReportFormatSelect = useCallback((format: ReportFormat) => {
+    setAppState(prev => ({
+      ...prev,
+      selectedReportFormat: format
+    }));
+  }, []);
+
+  const toggleCopilot = useCallback(() => {
+    setAppState(prev => ({
+      ...prev,
+      showCopilot: !prev.showCopilot
+    }));
+  }, []);
+
+  const closeHelp = useCallback(() => {
+    setAppState(prev => ({
+      ...prev,
+      showHelp: false,
+      helpContext: ''
+    }));
+  }, []);
+
+  const handleReportGenerated = useCallback((report: string, letter: string) => {
+    setAppState(prev => ({
+      ...prev,
+      generatedReport: report,
+      generatedLetter: letter,
+      showReportViewer: true
+    }));
+  }, []);
+
+  const handleCloseReportViewer = useCallback(() => {
+    setAppState(prev => ({
+      ...prev,
+      showReportViewer: false
+    }));
+  }, []);
+
+  const handleDownloadReport = useCallback((format: 'pdf' | 'word' | 'markdown') => {
+    // Implement download functionality
+    console.log(`Downloading report in ${format} format`);
+    // This would typically involve calling a backend API or using a client-side library
+    alert(`Report download in ${format} format would be implemented here`);
   }, []);
 
   const renderCurrentView = () => {
-    switch (currentView) {
-      case 'sample-report':
-        return <div className="view-container"><SampleReport /></div>;
-      case 'technical-manual':
-        return <div className="view-container"><TechnicalManual onGetStarted={() => handleViewChange('report')} /></div>;
-      case 'who-we-are':
-        return <div className="view-container"><WhoWeAre onViewChange={handleViewChange} /></div>;
-      case 'opportunities':
-        return <div className="view-container"><LiveOpportunities onAnalyze={handleAnalyzeOpportunity} onStartSymbiosis={handleStartSymbiosis} /></div>;
-      case 'report':
-        return (
-          <InstantNexusIntelligencePlatform
-            onViewChange={handleViewChange}
-            onReportUpdate={handleReportUpdate}
-            onProfileUpdate={handleProfileUpdate}
+    if (appState.showProfileSetup) {
+      return (
+        <div className="flex-1 flex items-center justify-center bg-nexus-surface-900">
+          <UserProfileSetup
+            onProfileComplete={handleProfileComplete}
+            onRequestHelp={(context) => {
+              setAppState(prev => ({
+                ...prev,
+                showHelp: true,
+                helpContext: context
+              }));
+            }}
           />
-        );
-      case 'debug-report':
+        </div>
+      );
+    }
+
+    switch (appState.currentView) {
+      case 'dashboard':
         return (
-          <div className="h-full">
-            <DebugReportGenerator />
+          <div className="flex-1 overflow-auto">
+            <NexusIntelligenceHub
+              onStepComplete={handleWorkflowStepComplete}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
           </div>
         );
-      case 'compliance':
-        return <div className="view-container"><Compliance /></div>;
+
+      case 'workflow':
+        return (
+          <div className="flex-1 overflow-auto">
+            <TwelveStepWorkflow
+              userTier={appState.userProfile ? require('./components/core/UserProfileSetup').USER_TIERS.find(t => t.id === appState.userProfile!.tier) : require('./components/core/UserProfileSetup').USER_TIERS[0]}
+              currentStep={appState.currentWorkflowStep}
+              completedSteps={appState.completedWorkflowSteps}
+              onStepComplete={handleWorkflowStepComplete}
+              onStepSelect={handleWorkflowStepSelect}
+              onEngagementStyleSelect={handleEngagementStyleSelect}
+              onReportFormatSelect={handleReportFormatSelect}
+              selectedEngagementStyle={appState.selectedEngagementStyle}
+              selectedReportFormat={appState.selectedReportFormat}
+              workflowData={appState.workflowData}
+            />
+          </div>
+        );
+
+      case 'workflow-step':
+        return renderWorkflowStep();
+
+      case 'opportunities':
+        return (
+          <div className="flex-1 overflow-auto">
+            <OpportunityTracker
+              onOpportunitySelect={(opportunity) => {
+                console.log('Selected opportunity:', opportunity);
+              }}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+
+      case 'partners':
+        return (
+          <div className="flex-1 overflow-auto">
+            <PartnerNetwork
+              onPartnerSelect={(partner) => {
+                console.log('Selected partner:', partner);
+              }}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+
+      case 'intelligence':
+        return (
+          <div className="flex-1 overflow-auto">
+            <IntelligenceDashboard
+              onInsightSelect={(insight) => {
+                console.log('Selected insight:', insight);
+              }}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+
+      case 'reports':
+        return (
+          <div className="flex-1 overflow-auto">
+            <ReportGenerator
+              userProfile={appState.userProfile!}
+              workflowSteps={WORKFLOW_STEPS}
+              completedSteps={appState.completedWorkflowSteps}
+              onReportGenerated={handleReportGenerated}
+            />
+          </div>
+        );
+      
+      case 'integration':
+        return (
+          <div className="flex-1 overflow-auto">
+            <NexusIntegration
+              userProfile={appState.userProfile!}
+              currentView={appState.currentView}
+              onViewChange={handleViewChange}
+            />
+          </div>
+        );
+
+      case 'letters':
+        return (
+          <div className="flex-1 overflow-auto">
+            <div className="p-8">
+              <h1 className="text-3xl font-bold text-nexus-text-primary mb-6">Letter Generator</h1>
+              <p className="text-nexus-text-secondary">Professional letter generation coming soon...</p>
+            </div>
+          </div>
+        );
+
+      case 'chat':
+        return (
+          <div className="flex-1 overflow-auto">
+            <CopilotAssistant
+              onMessageSend={(message) => {
+                console.log('User message:', message);
+              }}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+
+      case 'analytics':
+        return (
+          <div className="flex-1 overflow-auto">
+            <div className="p-8">
+              <h1 className="text-3xl font-bold text-nexus-text-primary mb-6">Analytics Dashboard</h1>
+              <p className="text-nexus-text-secondary">Analytics and insights coming soon...</p>
+            </div>
+          </div>
+        );
+
+      case 'settings':
+        return (
+          <div className="flex-1 overflow-auto">
+            <div className="p-8">
+              <h1 className="text-3xl font-bold text-nexus-text-primary mb-6">Settings</h1>
+              <p className="text-nexus-text-secondary">Settings and preferences coming soon...</p>
+            </div>
+          </div>
+        );
+
       default:
-        return <div className="view-container"><WhoWeAre onViewChange={handleViewChange} /></div>;
+        return (
+          <div className="flex-1 overflow-auto">
+            <div className="p-8">
+              <h1 className="text-3xl font-bold text-nexus-text-primary mb-6">Page Not Found</h1>
+              <p className="text-nexus-text-secondary">The requested page could not be found.</p>
+            </div>
+          </div>
+        );
     }
   };
 
+  const renderWorkflowStep = () => {
+    const stepId = appState.currentWorkflowStep;
+    const stepData = appState.workflowData[stepId];
 
-  // Show terms and conditions if not accepted and trying to access report
-  if (!hasAcceptedTerms && currentView === 'report') {
-    return (
-      <ErrorBoundary>
-        <TermsAndConditions
-          onAccept={() => {
-            localStorage.setItem('bwga-nexus-terms-accepted', 'true');
-            window.location.reload(); // Force reload to update terms state
-          }}
-          onDecline={handleDeclineTerms}
-          isModal={true}
-        />
-      </ErrorBoundary>
-    );
-  }
+    switch (stepId) {
+      case 1:
+        return (
+          <div className="flex-1 overflow-auto">
+            <GoalAnalyzer
+              initialGoal={stepData?.goal || ''}
+              onGoalSubmit={(goal) => handleWorkflowStepComplete(stepId, { goal })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 2:
+        return (
+          <div className="flex-1 overflow-auto">
+            <ContextEngine
+              initialContext={stepData?.context || {}}
+              onContextSubmit={(context) => handleWorkflowStepComplete(stepId, { context })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 3:
+        return (
+          <div className="flex-1 overflow-auto">
+            <OpportunityTracker
+              onOpportunitySelect={(opportunity) => handleWorkflowStepComplete(stepId, { opportunity })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 4:
+        return (
+          <div className="flex-1 overflow-auto">
+            <PartnerNetwork
+              onPartnerSelect={(partner) => handleWorkflowStepComplete(stepId, { partner })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 5:
+        return (
+          <div className="flex-1 overflow-auto">
+            <RiskMatrix
+              onRiskAssessment={(risks) => handleWorkflowStepComplete(stepId, { risks })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 6:
+        return (
+          <div className="flex-1 overflow-auto">
+            <RROIDisplay
+              onROIAnalysis={(roi) => handleWorkflowStepComplete(stepId, { roi })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 7:
+        return (
+          <div className="flex-1 overflow-auto">
+            <TPTSimulator
+              onPathwaySelect={(pathway) => handleWorkflowStepComplete(stepId, { pathway })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 8:
+        return (
+          <div className="flex-1 overflow-auto">
+            <SEAMMapper
+              onArchitectureSelect={(architecture) => handleWorkflowStepComplete(stepId, { architecture })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 9:
+        return (
+          <div className="flex-1 overflow-auto">
+            <ImplementationRoadmap
+              onRoadmapSelect={(roadmap) => handleWorkflowStepComplete(stepId, { roadmap })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      case 10:
+        return (
+          <div className="flex-1 overflow-auto">
+            <IntelligenceDashboard
+              onInsightSelect={(insight) => handleWorkflowStepComplete(stepId, { insight })}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
+        );
+      default:
+        return (
+          <div className="flex-1 overflow-auto">
+            <div className="p-8">
+              <h1 className="text-3xl font-bold text-nexus-text-primary mb-6">Workflow Step {stepId}</h1>
+              <p className="text-nexus-text-secondary">This step is under development...</p>
+            </div>
+          </div>
+        );
+    }
+  };
 
   return (
-    <React.StrictMode>
-      <ErrorBoundary>
-        <div className="bg-gray-50 dark:bg-nexus-primary-900" style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
-          <Header currentView={currentView} onViewChange={handleViewChange} />
-          <main className="pt-20 flex-grow overflow-y-auto" style={{height: 'calc(100vh - 80px)'}} id="main-content">
-            {/* The container below ensures consistent padding and max-width for non-workspace views */}
-            <div className={`min-h-full ${currentView !== 'report' ? 'max-w-6xl mx-auto px-4 md:px-8' : ''}`}>
-              {renderCurrentView()}
-            </div>
-          </main>
+    <div className="h-screen bg-nexus-surface-900 text-nexus-text-primary flex">
+      {/* Side Panel */}
+      <SidePanel
+        userProfile={appState.userProfile}
+        currentView={appState.currentView}
+        onViewChange={handleViewChange}
+        onProfileClick={handleProfileClick}
+        onHelpClick={handleHelpClick}
+        workflowProgress={{
+          currentStep: appState.currentWorkflowStep,
+          completedSteps: appState.completedWorkflowSteps,
+          totalSteps: 12
+        }}
+        isCollapsed={appState.sidePanelCollapsed}
+        onToggleCollapse={() => setAppState(prev => ({
+          ...prev,
+          sidePanelCollapsed: !prev.sidePanelCollapsed
+        }))}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {renderCurrentView()}
+      </div>
+
+      {/* Copilot Assistant */}
+      {appState.showCopilot && (
+        <div className="w-96 bg-nexus-surface-800 border-l border-nexus-surface-700 flex flex-col">
+          <div className="p-4 border-b border-nexus-surface-700 flex items-center justify-between">
+            <h3 className="font-semibold text-nexus-text-primary">AI Copilot</h3>
+            <button
+              onClick={toggleCopilot}
+              className="text-nexus-text-secondary hover:text-nexus-text-primary transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="flex-1 overflow-auto">
+            <CopilotAssistant
+              onMessageSend={(message) => {
+                console.log('Copilot message:', message);
+              }}
+              onRequestHelp={(context) => {
+                setAppState(prev => ({
+                  ...prev,
+                  showHelp: true,
+                  helpContext: context
+                }));
+              }}
+            />
+          </div>
         </div>
+      )}
 
-        {toastMessage && (
-            <div className="fixed bottom-4 right-4 bg-nexus-surface-700 text-nexus-text-primary px-4 py-2 rounded-lg shadow-lg border border-nexus-accent-cyan/50 animate-fadeIn z-50">
-                {toastMessage}
+      {/* Contextual Help */}
+      {appState.showHelp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-nexus-surface-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto">
+            <div className="p-6 border-b border-nexus-surface-700 flex items-center justify-between">
+              <h3 className="text-xl font-semibold text-nexus-text-primary">Help & Support</h3>
+              <button
+                onClick={closeHelp}
+                className="text-nexus-text-secondary hover:text-nexus-text-primary transition-colors"
+              >
+                ✕
+              </button>
             </div>
-        )}
+            <div className="p-6">
+              <ContextualHelp
+                context={appState.helpContext}
+                onClose={closeHelp}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
-        {symbiosisContext && (
-          <SymbiosisChatModal
-            isOpen={!!symbiosisContext}
-            onClose={() => setSymbiosisContext(null)}
-            context={symbiosisContext}
-            onSendMessage={(history) => fetchSymbiosisResponse(symbiosisContext, history)}
-          />
-        )}
+      {/* Floating Copilot Toggle */}
+      {!appState.showCopilot && (
+        <button
+          onClick={toggleCopilot}
+          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-nexus-accent-cyan to-nexus-accent-purple rounded-full shadow-lg flex items-center justify-center text-white hover:shadow-xl transition-all hover:scale-110"
+          title="Open AI Copilot"
+        >
+          <span className="text-xl">🤖</span>
+        </button>
+      )}
 
-        {analysisItem && (
-          <AnalysisModal
-            item={analysisItem}
-            region={userProfile?.userCountry || analysisItem.country}
-            onClose={() => setAnalysisItem(null)}
-          />
-        )}
-
-        {letterModalOpen && (
-          <LetterGeneratorModal
-            isOpen={letterModalOpen}
-            onClose={() => setLetterModalOpen(null)}
-            onGenerate={async () => {
-              // For now, return a placeholder - BlueprintReportWizard should handle letter generation
-              return "Letter generation is handled within the Blueprint Report Wizard.";
-            }}
-          />
-        )}
-      </ErrorBoundary>
-    </React.StrictMode>
+      {/* Report Viewer Modal */}
+      {appState.showReportViewer && appState.generatedReport && (
+        <ReportViewer
+          report={appState.generatedReport}
+          letter={appState.generatedLetter || ''}
+          userProfile={appState.userProfile!}
+          onClose={handleCloseReportViewer}
+          onDownload={handleDownloadReport}
+        />
+      )}
+    </div>
   );
 }
 

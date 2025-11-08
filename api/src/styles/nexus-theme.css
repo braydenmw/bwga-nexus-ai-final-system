@@ -1,0 +1,463 @@
+/* Nexus AI Theme - Inspired by the Pinterest reference */
+
+:root {
+  /* Primary Colors */
+  --nexus-primary-900: #0a0a0a;
+  --nexus-primary-800: #1a1a1a;
+  --nexus-primary-700: #2a2a2a;
+  --nexus-primary-600: #3a3a3a;
+  --nexus-primary-500: #4a4a4a;
+  
+  /* Surface Colors */
+  --nexus-surface-900: #0f0f0f;
+  --nexus-surface-800: #1f1f1f;
+  --nexus-surface-700: #2f2f2f;
+  --nexus-surface-600: #3f3f3f;
+  --nexus-surface-500: #4f4f4f;
+  
+  /* Text Colors */
+  --nexus-text-primary: #ffffff;
+  --nexus-text-secondary: #b0b0b0;
+  --nexus-text-muted: #808080;
+  
+  /* Accent Colors */
+  --nexus-accent-cyan: #00d4ff;
+  --nexus-accent-cyan-dark: #0099cc;
+  --nexus-accent-purple: #8b5cf6;
+  --nexus-accent-purple-dark: #6d28d9;
+  --nexus-accent-green: #10b981;
+  --nexus-accent-yellow: #f59e0b;
+  --nexus-accent-red: #ef4444;
+  
+  /* Gradient Colors */
+  --nexus-gradient-cyan: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  --nexus-gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  --nexus-gradient-cyan-purple: linear-gradient(135deg, #00d4ff 0%, #8b5cf6 100%);
+  --nexus-gradient-dark: linear-gradient(135deg, #1f1f1f 0%, #0f0f0f 100%);
+  
+  /* Shadows */
+  --nexus-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --nexus-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --nexus-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --nexus-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --nexus-shadow-glow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--nexus-surface-900);
+  color: var(--nexus-text-primary);
+}
+
+/* Utility Classes */
+.bg-nexus-primary-900 { background-color: var(--nexus-primary-900); }
+.bg-nexus-primary-800 { background-color: var(--nexus-primary-800); }
+.bg-nexus-primary-700 { background-color: var(--nexus-primary-700); }
+.bg-nexus-primary-600 { background-color: var(--nexus-primary-600); }
+.bg-nexus-primary-500 { background-color: var(--nexus-primary-500); }
+
+.bg-nexus-surface-900 { background-color: var(--nexus-surface-900); }
+.bg-nexus-surface-800 { background-color: var(--nexus-surface-800); }
+.bg-nexus-surface-700 { background-color: var(--nexus-surface-700); }
+.bg-nexus-surface-600 { background-color: var(--nexus-surface-600); }
+.bg-nexus-surface-500 { background-color: var(--nexus-surface-500); }
+
+.text-nexus-text-primary { color: var(--nexus-text-primary); }
+.text-nexus-text-secondary { color: var(--nexus-text-secondary); }
+.text-nexus-text-muted { color: var(--nexus-text-muted); }
+
+.text-nexus-accent-cyan { color: var(--nexus-accent-cyan); }
+.text-nexus-accent-purple { color: var(--nexus-accent-purple); }
+.text-nexus-accent-green { color: var(--nexus-accent-green); }
+.text-nexus-accent-yellow { color: var(--nexus-accent-yellow); }
+.text-nexus-accent-red { color: var(--nexus-accent-red); }
+
+.bg-nexus-accent-cyan { background-color: var(--nexus-accent-cyan); }
+.bg-nexus-accent-purple { background-color: var(--nexus-accent-purple); }
+.bg-nexus-accent-green { background-color: var(--nexus-accent-green); }
+.bg-nexus-accent-yellow { background-color: var(--nexus-accent-yellow); }
+.bg-nexus-accent-red { background-color: var(--nexus-accent-red); }
+
+.border-nexus-accent-cyan { border-color: var(--nexus-accent-cyan); }
+.border-nexus-accent-purple { border-color: var(--nexus-accent-purple); }
+.border-nexus-accent-green { border-color: var(--nexus-accent-green); }
+.border-nexus-accent-yellow { border-color: var(--nexus-accent-yellow); }
+.border-nexus-accent-red { border-color: var(--nexus-accent-red); }
+
+.border-nexus-accent-cyan\/30 { border-color: rgba(0, 212, 255, 0.3); }
+.border-nexus-accent-cyan\/50 { border-color: rgba(0, 212, 255, 0.5); }
+
+/* Gradient Backgrounds */
+.bg-gradient-cyan {
+  background: var(--nexus-gradient-cyan);
+}
+
+.bg-gradient-purple {
+  background: var(--nexus-gradient-purple);
+}
+
+.bg-gradient-cyan-purple {
+  background: var(--nexus-gradient-cyan-purple);
+}
+
+.bg-gradient-dark {
+  background: var(--nexus-gradient-dark);
+}
+
+/* Shadows */
+.shadow-nexus-sm { box-shadow: var(--nexus-shadow-sm); }
+.shadow-nexus-md { box-shadow: var(--nexus-shadow-md); }
+.shadow-nexus-lg { box-shadow: var(--nexus-shadow-lg); }
+.shadow-nexus-xl { box-shadow: var(--nexus-shadow-xl); }
+.shadow-nexus-glow { box-shadow: var(--nexus-shadow-glow); }
+
+/* Hover Effects */
+.hover\:bg-nexus-surface-700:hover {
+  background-color: var(--nexus-surface-700);
+}
+
+.hover\:bg-nexus-surface-600:hover {
+  background-color: var(--nexus-surface-600);
+}
+
+.hover\:text-nexus-text-primary:hover {
+  color: var(--nexus-text-primary);
+}
+
+.hover\:text-nexus-accent-cyan:hover {
+  color: var(--nexus-accent-cyan);
+}
+
+.hover\:text-nexus-accent-cyan\/80:hover {
+  color: rgba(0, 212, 255, 0.8);
+}
+
+/* Focus States */
+.focus\:outline-none:focus {
+  outline: none;
+}
+
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px var(--nexus-accent-cyan);
+}
+
+.focus\:ring-nexus-accent-cyan:focus {
+  box-shadow: 0 0 0 2px var(--nexus-accent-cyan);
+}
+
+.focus\:border-transparent:focus {
+  border-color: transparent;
+}
+
+/* Transitions */
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.transition-colors {
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.transition-opacity {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.transition-transform {
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Animations */
+@keyframes nexus-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-nexus-pulse {
+  animation: nexus-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes nexus-bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+.animate-nexus-bounce {
+  animation: nexus-bounce 1s infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--nexus-surface-800);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nexus-surface-600);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nexus-surface-500);
+}
+
+/* Glass Morphism Effect */
+.nexus-glass {
+  background: rgba(31, 31, 31, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Button Styles */
+.nexus-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.nexus-button-primary {
+  background: var(--nexus-gradient-cyan);
+  color: var(--nexus-primary-900);
+}
+
+.nexus-button-primary:hover {
+  background: linear-gradient(135deg, #00b8e6 0%, #0088aa 100%);
+  box-shadow: var(--nexus-shadow-glow);
+}
+
+.nexus-button-secondary {
+  background: var(--nexus-surface-700);
+  color: var(--nexus-text-primary);
+  border: 1px solid var(--nexus-surface-600);
+}
+
+.nexus-button-secondary:hover {
+  background: var(--nexus-surface-600);
+  border-color: var(--nexus-accent-cyan);
+}
+
+.nexus-button-outline {
+  background: transparent;
+  color: var(--nexus-accent-cyan);
+  border: 2px solid var(--nexus-accent-cyan);
+}
+
+.nexus-button-outline:hover {
+  background: var(--nexus-accent-cyan);
+  color: var(--nexus-primary-900);
+}
+
+/* Card Styles */
+.nexus-card {
+  background: var(--nexus-surface-800);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--nexus-surface-700);
+  transition: all 0.2s ease-in-out;
+}
+
+.nexus-card:hover {
+  border-color: var(--nexus-accent-cyan);
+  box-shadow: var(--nexus-shadow-lg);
+}
+
+.nexus-card-glow {
+  background: var(--nexus-surface-800);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--nexus-accent-cyan);
+  box-shadow: var(--nexus-shadow-glow);
+}
+
+/* Input Styles */
+.nexus-input {
+  background: var(--nexus-surface-700);
+  border: 1px solid var(--nexus-surface-600);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: var(--nexus-text-primary);
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.nexus-input:focus {
+  outline: none;
+  border-color: var(--nexus-accent-cyan);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+}
+
+.nexus-input::placeholder {
+  color: var(--nexus-text-secondary);
+}
+
+/* Badge Styles */
+.nexus-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nexus-badge-cyan {
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--nexus-accent-cyan);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.nexus-badge-purple {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--nexus-accent-purple);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.nexus-badge-green {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--nexus-accent-green);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.nexus-badge-yellow {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--nexus-accent-yellow);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.nexus-badge-red {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--nexus-accent-red);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Progress Bar */
+.nexus-progress {
+  background: var(--nexus-surface-700);
+  border-radius: 9999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.nexus-progress-bar {
+  background: var(--nexus-gradient-cyan);
+  height: 100%;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Loading Animation */
+.nexus-loading {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--nexus-surface-600);
+  border-top: 2px solid var(--nexus-accent-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nexus-card {
+    padding: 1rem;
+  }
+  
+  .nexus-button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --nexus-surface-900: #0f0f0f;
+    --nexus-surface-800: #1f1f1f;
+    --nexus-surface-700: #2f2f2f;
+    --nexus-surface-600: #3f3f3f;
+    --nexus-surface-500: #4f4f4f;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --nexus-text-secondary: #ffffff;
+    --nexus-text-muted: #cccccc;
+    --nexus-accent-cyan: #00ffff;
+    --nexus-accent-purple: #bb86fc;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Utility for text truncation */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}

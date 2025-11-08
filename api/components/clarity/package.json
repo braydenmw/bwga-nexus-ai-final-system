@@ -1,0 +1,65 @@
+{
+  "name": "@bwga/clarity-matrix-ui",
+  "version": "1.0.0",
+  "description": "A sophisticated 12-step intelligence generation system for AI-powered economic frameworks and strategic insights",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "react",
+    "ui",
+    "intelligence",
+    "economic-frameworks",
+    "business-intelligence",
+    "ai",
+    "dashboard",
+    "clarity-matrix",
+    "bwga",
+    "nexus-ai"
+  ],
+  "author": "BWGA Nexus AI Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bwga/nexus-ai/tree/main/clarity-matrix"
+  },
+  "bugs": {
+    "url": "https://github.com/bwga/nexus-ai/issues"
+  },
+  "homepage": "https://github.com/bwga/nexus-ai#readme",
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "styled-jsx": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jest": "^29.6.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "typescript": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

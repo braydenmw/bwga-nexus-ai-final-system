@@ -185,6 +185,15 @@ const getCountryFromRegion = function(region) {
     return parts.length > 1 ? parts.pop() : parts[0];
 }
 
+export async function generateReport(params: any) {
+  const request = {
+    method: 'POST',
+    json: async () => params
+  };
+  const response = await handler(request);
+  return response;
+}
+
 export async function handler(request: any) {
   if (request.method !== 'POST') {
     return new Response('Method Not Allowed', { status: 405 });

@@ -17,6 +17,15 @@ You are a senior business development and communications strategist specializing
 6.  **Do NOT Invent Facts:** Base the letter *only* on the information provided in the user's prompt.
 `;
 
+export async function generateLetter(params: ReportParameters) {
+  const request = {
+    method: 'POST',
+    json: async () => params
+  } as Request;
+  const response = await handler(request);
+  return response;
+}
+
 export default async function handler(request: Request) {
   if (request.method !== 'POST') {
     return new Response('Method Not Allowed', { status: 405 });
